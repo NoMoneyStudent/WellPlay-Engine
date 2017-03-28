@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window >
+  <Font name="Microsoft Yahei" size="12" id="0" shared="true"/>
+
+  <Default name="Menu" value="inset=&quot;0,3,0,3&quot; itemtextpadding=&quot;20,0,0,0&quot; bkimage=&quot;file='menu_bk.png' itemtextcolor=&quot;0xff555555&quot; itemselectedbkcolor=&quot;0xFFE5E5E5&quot; itemselectedtextcolor=&quot;0xff444444&quot; itemfont=&quot;0&quot;" shared="true" />
+  <Menu>
+  </Menu>
+</Window>

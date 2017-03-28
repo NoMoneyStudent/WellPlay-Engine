@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="400,800" caption="0,0,0,25">
+  <Font name="微软雅黑" size="13" default="true" id="1"/>
+
+  <VerticalLayout name="background" width="400" height="600"  bkcolor="#FF252A2F">
+    <VerticalLayout >
+      <HorizontalLayout height="31" bkcolor="#FF252A2F" >
+        <HorizontalLayout>
+          <Control width="24" height="26" bkimage="file='hehe.jpg' source='0,0,64,64' dest='3,4,24,25' " />
+          <Text text="WellPlay Editor" pos="25, 6, 200, 24" float="true" textcolor="#ff5a5e68" font="1" />
+        </HorizontalLayout>
+        <HorizontalLayout width="148" >
+          <Control></Control>
+          <Button name="minbtn" width="27" height="22" normalimage="file='sys_btn_min.png' source='0,0,26,22'" hotimage="file='sys_btn_min.png' source='27,0,53,22'" pushedimage="file='sys_btn_min.png' source='54,0,80,22'"/>
+          <Button name="maxbtn" width="27" height="22" normalimage="file='sys_btn_max.png' source='0,0,26,22'" hotimage="file='sys_btn_max.png' source='27,0,53,22'" pushedimage="file='sys_btn_max.png' source='54,0,80,22'"/>
+          <Button name="restorebtn"  visible="false" width="27" height="22" normalimage="file='sys_btn_restore.png' source='0,0,26,22'" hotimage="file='sys_btn_restore.png' source='27,0,53,22'" pushedimage="file='sys_btn_restore.png' source='54,0,80,22'"/>
+          <Button name="closebtn" width="27" height="22" normalimage="file='sys_btn_close.png' source='0,0,26,22'" hotimage="file='sys_btn_close.png' source='27,0,53,22'" pushedimage="file='sys_btn_close.png' source='54,0,80,22'"/>
+          <Control width="5"></Control>
+        </HorizontalLayout>
+      </HorizontalLayout>
+      <HorizontalLayout height="40" bkcolor="#FF252A2F">
+        <Button name="File" text ="文件" width="100" height="40" hotbkcolor="#FF888888"/>
+       <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
+      <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
+       <Button name="Setting" text ="设置" width="100" height="40" hotbkcolor="#FF888888"/>
+      </HorizontalLayout>
+     
+      </VerticalLayout>
+    </VerticalLayout>
+</Window>
