@@ -111,7 +111,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\visual studio 2015\Projects\WellPlay\FBX SDK\2017.0.1\lib\vs2015\x64\debug;D:\visual studio 2015\Projects\WellPlay\3rd\DuiLib\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;D:\visual studio 2015\Projects\WellPlay\3rd\DuiLib\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -271,12 +271,9 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\x64\Debug\skin\DXSkin.xml" />
-    <Xml Include="..\x64\Debug\skin\EditorSkin.xml">
-      <SubType>Designer</SubType>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\FileMenu.xml">
-      <SubType>Designer</SubType>
-    </Xml>
+    <Xml Include="..\x64\Debug\skin\EditorSkin.xml" />
+    <Xml Include="..\x64\Debug\skin\FileMenu.xml" />
+    <Xml Include="..\x64\Debug\skin\VarMenu.xml" />
     <Xml Include="C:\Users\杨周\Desktop\DuiLib_Ultimate-master\Help\属性列表.xml" />
   </ItemGroup>
   <ItemGroup>

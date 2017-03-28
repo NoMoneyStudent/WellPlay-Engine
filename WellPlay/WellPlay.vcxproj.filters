@@ -331,16 +331,19 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="C:\Users\杨周\Desktop\DuiLib_Ultimate-master\Help\属性列表.xml">
+      <Filter>资源文件</Filter>
+    </Xml>
     <Xml Include="..\x64\Debug\skin\DXSkin.xml">
       <Filter>资源文件</Filter>
     </Xml>
     <Xml Include="..\x64\Debug\skin\EditorSkin.xml">
       <Filter>资源文件</Filter>
     </Xml>
-    <Xml Include="C:\Users\杨周\Desktop\DuiLib_Ultimate-master\Help\属性列表.xml">
+    <Xml Include="..\x64\Debug\skin\FileMenu.xml">
       <Filter>资源文件</Filter>
     </Xml>
-    <Xml Include="..\x64\Debug\skin\FileMenu.xml">
+    <Xml Include="..\x64\Debug\skin\VarMenu.xml">
       <Filter>资源文件</Filter>
     </Xml>
   </ItemGroup>
