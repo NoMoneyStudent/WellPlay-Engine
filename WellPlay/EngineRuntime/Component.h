@@ -6,6 +6,7 @@ class Component
 	friend class GameObject;
 protected:
 	Component() {}
+	Component& operator=(Component&) = default;
     virtual ~Component() {}
 	bool m_isEnable = true;
 

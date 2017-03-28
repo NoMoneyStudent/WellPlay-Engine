@@ -186,6 +186,12 @@
     <ClInclude Include="Utility\Utility.h">
       <Filter>编译环境相关</Filter>
     </ClInclude>
+    <ClInclude Include="EngineRuntime\Scene.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineRuntime\SceneManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WellPlayMain.cpp">
@@ -307,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="Utility\Utility.cpp">
       <Filter>编译环境相关</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\Scene.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\SceneManager.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
