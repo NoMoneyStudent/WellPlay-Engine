@@ -6,7 +6,7 @@ class Component
 	friend class GameObject;
 protected:
 	Component() {}
-	Component& operator=(Component&) = default;
+	Component& operator=(Component&) = delete;
     virtual ~Component() {}
 	bool m_isEnable = true;
 
@@ -16,11 +16,12 @@ private:
 	virtual void OnDestroy() {}
 	virtual void OnEnable() {}
 	virtual void OnDisable() {}
+	virtual Component* Clone();
 
 	GameObject* m_gameobject;
 public:
 	virtual void SetEnable(bool setenable);
 	virtual bool GetEnable();
 
-	GameObject* GameObject() { return m_gameobject; }
+	GameObject* gameobject() { return m_gameobject; }
 };

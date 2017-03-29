@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "GameObject.h"
 #include <vector>
 #include <DirectXMath.h>
 
@@ -9,33 +10,33 @@ class Transform:public Component
 {
 	friend class GameObject;
 public:
-	XMFLOAT3 GetPosition();
-	XMFLOAT3 GetLocalPosition();
-	XMFLOAT4 GetRotation();
-	XMFLOAT4 GetLocalRotation();
+	XMVECTOR GetPosition();
+	XMVECTOR GetLocalPosition();
+	XMVECTOR GetRotation();
+	XMVECTOR GetLocalRotation();
 	XMFLOAT3 GetEulerAngles();
 	XMFLOAT3 GetLocalEulerAngles();
-	XMFLOAT3 GetScale();
-	XMFLOAT3 GetLocalScale();
+	XMVECTOR GetScale();
+	XMVECTOR GetLocalScale();
 
-	void Translate(XMFLOAT3 distance);
+	void Translate(FXMVECTOR distance);
 	void Translate(float x,float y,float z);
-	void SetPositon(XMFLOAT3 position);
-	void SetLocalposition(XMFLOAT3 position);
-	void SetScale(XMFLOAT3 scale);
-	void SetLocalScale(XMFLOAT3 localscale);
+	void SetPositon(FXMVECTOR position);
+	void SetLocalposition(FXMVECTOR position);
+	void SetScale(FXMVECTOR scale);
+	void SetLocalScale(FXMVECTOR localscale);
 	void RotateX(float angles);
-	void RotateY(float angels);
-	void RotateZ(float angels);
-	void SetRotation(XMFLOAT4 rotation);
-	void SetLocalRotation(XMFLOAT4 rotation);
+	void RotateY(float angles);
+	void RotateZ(float angles);
+	void SetRotation(FXMVECTOR rotation);
+	void SetLocalRotation(FXMVECTOR rotation);
 
-	XMFLOAT3 GetRight();
-	XMFLOAT3 GetUp();
-	XMFLOAT3 GetForward();
-	XMFLOAT3 GetBehind();
-	XMFLOAT3 GetLeft();
-	XMFLOAT3 GetDown();
+	XMVECTOR GetRight();
+	XMVECTOR GetUp();
+	XMVECTOR GetForward();
+	XMVECTOR GetBehind();
+	XMVECTOR GetLeft();
+	XMVECTOR GetDown();
 
 	Transform* GetParent() { return m_parent; }
 	std::vector<Transform*> GetChildren() { return m_children; }
@@ -51,13 +52,7 @@ private:
 	std::vector<Transform*> m_children;
 
 	Transform();
-	~Transform();
+	virtual ~Transform();
+	
+	virtual Component* Clone()override;
 };
-
-Transform::Transform()
-{
-}
-
-Transform::~Transform()
-{
-}

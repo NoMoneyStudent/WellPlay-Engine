@@ -41,6 +41,9 @@ private:
 	std::string m_name;
 	bool self_active = true;
 
+	void InitName();
+	void DestroyHelper();
+
 protected:
 	~GameObject();
 };
