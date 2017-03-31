@@ -4,18 +4,15 @@
 
 namespace Render
 {
-	RenderObject::RenderObject():
-		m_SRVs(nullptr)
+	RenderObject::RenderObject()
 	{
-		Clear();
 	}
 
 	RenderObject::~RenderObject()
 	{
-		Clear();
 	}
 
-	void RenderObject::Create(Mesh& mesh, std::vector<Bone>& bone,int materialindex)
+	/*void RenderObject::Create(Mesh& mesh, std::vector<Bone>& bone,int materialindex)
 	{
 		boneList = &bone;
 
@@ -65,15 +62,6 @@ namespace Render
 		m_VertexBuffer.Create(L"VertexBuffer", vertexCount, vertexStride, vertexs.data());
 		m_IndexBuffer.Create(L"IndexBuffer", indexCount, indexStride, indices.data());
 	}
+*/
 
-	void RenderObject::Clear()
-	{
-		m_VertexBuffer.Destroy();
-		m_IndexBuffer.Destroy();
-	}
-
-	void RenderObject::ComputeBoundingBox(unsigned int meshIndex, BoundingBox &bbox) const
-	{
-
-	}
 }

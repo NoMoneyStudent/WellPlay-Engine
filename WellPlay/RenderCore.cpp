@@ -67,7 +67,7 @@ void Render::Initialize(HWND m_hwnd)
 	};
 
 	m_ModelPSO.SetRootSignature(m_RootSig);
-	m_ModelPSO.SetRasterizerState(RasterizerDefault);
+	m_ModelPSO.SetRasterizerState(RasterizerDefaultCW);
 	m_ModelPSO.SetInputLayout(_countof(vertElem), vertElem);
 	m_ModelPSO.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	m_ModelPSO.SetBlendState(BlendDisable);
@@ -129,68 +129,77 @@ void Render::RenderObjects(GraphicsContext& gfxContext)
 		XMMatrixTranspose(perspectiveMatrix)
 	);
 	
-	static const XMVECTORF32 eye = { 0.0f, 0.25f, -1.00f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, 0.25f, 0.0f, 0.0f };
-	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static XMVECTORF32 eye = { 0.0f, 1.0f, 2.0f, 0.0f };
+	static XMVECTORF32 at = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static float anger = 0;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_x))
+		eye.f[1] -= 0.02f;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_s))
+		eye.f[1] += 0.02f;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_a))
+		anger += XM_PI / 180;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_d))
+		anger -= XM_PI / 180;
 
 	XMStoreFloat4x4(&vsConstants.view, XMMatrixTranspose(XMMatrixLookAtLH(eye, at, up)));
-	XMStoreFloat4x4(&vsConstants.model, XMMatrixTranspose(XMMatrixRotationY(0)));
+	XMStoreFloat4x4(&vsConstants.model, XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back().model)*XMMatrixRotationY(anger)));
 
-	Ani(renderQueue[0]);
-	vector<Bone>& BoneList = *(renderQueue[0].boneList);
-	for (int i = 0; i < BoneList.size(); i++)
-	{
-		XMStoreFloat4x4(&vsConstants.transformbones[i], XMLoadFloat4x4(&BoneList[i].Bind) * XMLoadFloat4x4(&BoneList[i].SRT));
-	}
+	//Ani(renderQueue[0]);
+	//vector<Bone>& BoneList = *(renderQueue[0].boneList);
+	//for (int i = 0; i < BoneList.size(); i++)
+	//{
+		//XMStoreFloat4x4(&vsConstants.transformbones[i], XMLoadFloat4x4(&BoneList[i].Bind) * XMLoadFloat4x4(&BoneList[i].SRT));
+	//}
 
 	gfxContext.SetDynamicConstantBufferView(0, sizeof(vsConstants), &vsConstants);
 	if(isTexture)
 	   gfxContext.SetDynamicDescriptors(3, 0, 1, &texture);
 
-	gfxContext.DrawIndexed(renderQueue[0].indices.size());
+	gfxContext.DrawIndexed(renderQueue.back().indexCount);
 }
 
-void Render::Render( void )
+void Render::Render(void)
 {
-	if (renderQueue.empty())
+	while (!renderQueue.empty())
 	{
-		return;
-	}
-	GraphicsContext& gfxContext = GraphicsContext::Begin(L"Scene Render");
-	{
-		ScopedTimer _prof(L"Main Render", gfxContext);
-
-		gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
-		gfxContext.ClearColor(g_SceneColorBuffer);
-
-		// Set the default state for command lists
-		auto& pfnSetupGraphicsState = [&](void)
+		GraphicsContext& gfxContext = GraphicsContext::Begin(L"Scene Render");
 		{
-			gfxContext.SetRootSignature(m_RootSig);
-			gfxContext.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			gfxContext.SetIndexBuffer(renderQueue[0].m_IndexBuffer.IndexBufferView());
-			gfxContext.SetVertexBuffer(0, renderQueue[0].m_VertexBuffer.VertexBufferView());
-			gfxContext.SetDynamicDescriptors(4, 0, 2, m_ExtraTextures);
-			//gfxContext.SetDynamicConstantBufferView(1, sizeof(XMFLOAT4X4)*64, renderQueue[0].BoneTransforms);
-		};
+			ScopedTimer _prof(L"Main Render", gfxContext);
 
-		pfnSetupGraphicsState();
+			gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
+			gfxContext.ClearColor(g_SceneColorBuffer);
 
-		{
-			ScopedTimer _prof(L"Render Color", gfxContext);
-			gfxContext.SetPipelineState(m_ModelPSO);
-			//gfxContext.TransitionResource(g_SSAOFullScreen, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-			gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
-			//gfxContext.TransitionResource(g_SceneDepthBuffer, D3D12_RESOURCE_STATE_DEPTH_READ);
-			gfxContext.TransitionResource(g_SceneDepthBuffer, D3D12_RESOURCE_STATE_DEPTH_WRITE);
-			gfxContext.ClearDepth(g_SceneDepthBuffer);
-			gfxContext.SetDepthStencilTarget(g_SceneDepthBuffer.GetDSV());
-			gfxContext.SetRenderTarget(g_SceneColorBuffer.GetRTV(), g_SceneDepthBuffer.GetDSV());
-			gfxContext.SetViewportAndScissor(m_MainViewport, m_MainScissor);
-			RenderObjects( gfxContext);
+			// Set the default state for command lists
+			auto& pfnSetupGraphicsState = [&](void)
+			{
+				gfxContext.SetRootSignature(m_RootSig);
+				gfxContext.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				gfxContext.SetIndexBuffer(renderQueue.back().m_IndexBuffer->IndexBufferView());
+				gfxContext.SetVertexBuffer(0, renderQueue.back().m_VertexBuffer->VertexBufferView());
+				gfxContext.SetDynamicDescriptors(4, 0, 2, m_ExtraTextures);
+				//gfxContext.SetDynamicConstantBufferView(1, sizeof(XMFLOAT4X4)*64, renderQueue[0].BoneTransforms);
+			};
+
+			pfnSetupGraphicsState();
+
+			{
+				ScopedTimer _prof(L"Render Color", gfxContext);
+				gfxContext.SetPipelineState(m_ModelPSO);
+				//gfxContext.TransitionResource(g_SSAOFullScreen, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+				gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+				//gfxContext.TransitionResource(g_SceneDepthBuffer, D3D12_RESOURCE_STATE_DEPTH_READ);
+				gfxContext.TransitionResource(g_SceneDepthBuffer, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+				gfxContext.ClearDepth(g_SceneDepthBuffer);
+				gfxContext.SetDepthStencilTarget(g_SceneDepthBuffer.GetDSV());
+				gfxContext.SetRenderTarget(g_SceneColorBuffer.GetRTV(), g_SceneDepthBuffer.GetDSV());
+				gfxContext.SetViewportAndScissor(m_MainViewport, m_MainScissor);
+				RenderObjects(gfxContext);
+			}
 		}
+		gfxContext.Finish();
+		renderQueue.pop_back();
 	}
-	gfxContext.Finish();
 	Graphics::Present();
 }
 

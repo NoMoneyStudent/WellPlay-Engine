@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Window size="400,800" caption="0,0,0,25">
   <Font name="微软雅黑" size="13" default="true" id="1"/>
+  <Default name="VScrollBar" shared="true" value="width=&quot;8&quot; showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file='vscrollbar.png' source='0,60,8,100' corner='0,4,0,4'&quot; thumbhotimage=&quot;file='vscrollbar.png' source='8,60,16,100' corner='0,4,0,4'&quot; thumbpushedimage=&quot;file='vscrollbar.png' source='16,60,24,100' corner='0,4,0,4'&quot; railnormalimage=&quot;&quot; railhotimage=&quot;&quot; railpushedimage=&quot;&quot; raildisabledimage=&quot;&quot; bknormalimage=&quot;file='vscrollbar.png' source='0,0,8,60' corner='0,4,0,4'&quot; bkhotimage=&quot;&quot; bkpushedimage=&quot;&quot; bkdisabledimage=&quot;&quot; "/>
 
   <VerticalLayout name="background" width="400" height="600"  bkcolor="#FF252A2F">
     <VerticalLayout >
@@ -20,11 +21,18 @@
       </HorizontalLayout>
       <HorizontalLayout height="40" bkcolor="#FF252A2F">
         <Button name="File" text ="文件" width="100" height="40" hotbkcolor="#FF888888"/>
-       <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
-      <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
-       <Button name="Setting" text ="设置" width="100" height="40" hotbkcolor="#FF888888"/>
+        <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
+        <Button name="xx" text ="按钮" width="100" height="40" hotbkcolor="#FF888888"/>
+        <Button name="Setting" text ="设置" width="100" height="40" hotbkcolor="#FF888888"/>
       </HorizontalLayout>
-     
-      </VerticalLayout>
+      <Label height="1" bkimage="hor_line.png"/>
+      <TreeView name="SceneTreeView" bkcolor="#FF888888" visiblefolderbtn="true" vscrollbar="true" >
+        <TreeNode text="场景视图" style="treeview_style" itemattr="visible=&quot;true&quot; font=&quot;3&quot;">
+        </TreeNode>
+
+      </TreeView>
+
+
     </VerticalLayout>
+  </VerticalLayout>
 </Window>

@@ -2,25 +2,79 @@
 #include "Transform.h"
 #include "Scene.h"
 
+XMMATRIX Transform::GetLocalTranslationMatrix()
+{
+	XMMATRIX t= XMMatrixScalingFromVector(GetLocalScale())*XMMatrixRotationQuaternion(GetLocalRotation())*XMMatrixTranslationFromVector(GetLocalPosition());
+	return t;
+}
+
+XMMATRIX Transform::GetWorldTranslationMatrix()
+{
+	XMMATRIX worldSRT = GetLocalTranslationMatrix();
+	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
+	{
+		worldSRT = p->GetLocalTranslationMatrix()*worldSRT;
+	}
+	return worldSRT;
+}
+
+void Transform::GetWorldSRT(XMVECTOR & scale, XMVECTOR & rotation, XMVECTOR & position)
+{
+	XMMATRIX worldSRT = GetLocalTranslationMatrix();
+	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
+	{
+		worldSRT = p->GetLocalTranslationMatrix()*worldSRT;
+	}
+	XMMatrixDecompose(&scale, &rotation, &position, worldSRT);
+}
+
+void Transform::SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR position)
+{
+	XMMATRIX parentSRT = XMMatrixIdentity();
+	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
+	{
+		parentSRT = p->GetLocalTranslationMatrix()*parentSRT;
+	}
+	XMMATRIX localSRT = XMMatrixScalingFromVector(scale)*XMMatrixRotationQuaternion(rotation)*XMMatrixTranslationFromVector(position);
+	localSRT = XMMatrixInverse(nullptr, parentSRT)*localSRT;
+	XMVECTOR s, r, t;
+	XMMatrixDecompose(&s, &r, &t, localSRT);
+	XMStoreFloat3(&localPosition, t);
+	XMStoreFloat4(&localRotation, r);
+	XMStoreFloat3(&localScale, s);
+}
+
 Transform::Transform():
-	worldPosition(XMFLOAT3(0,0,0)),
-	worldRotation(XMFLOAT4(0, 0, 0, 1)),
-	worldScale(XMFLOAT3(1, 1, 1))
+	localPosition(XMFLOAT3(0,0,0)),
+	localRotation(XMFLOAT4(0, 0, 0, 1)),
+	localScale(XMFLOAT3(1, 1, 1)),
+	m_parent(nullptr)
 {
 }
 
 Transform::~Transform()
 {
+
 }
 
 void Transform::SetParent(Transform * parent)
 {
-	for (auto iter = m_parent->m_children.begin(); iter != m_parent->m_children.end(); iter++)
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	if (m_parent == nullptr)
 	{
-		if (*iter = this)
+		Scene* s = Scene::GetCurrentScene();
+		s->RemoveRootGameObject(gameobject());
+	}
+	else
+	{
+		for (auto iter = m_parent->m_children.begin(); iter != m_parent->m_children.end(); iter++)
 		{
-			m_parent->m_children.erase(iter);
-			break;
+			if (*iter = this)
+			{
+				m_parent->m_children.erase(iter);
+				break;
+			}
 		}
 	}
 
@@ -34,18 +88,31 @@ void Transform::SetParent(Transform * parent)
 	{
 		parent->m_children.push_back(this);
 	}
+	SetWorldSRT(s, r, t);
 }
 
 void Transform::AddChild(Transform * child, int index)
 {
-	for (auto iter = child->m_parent->m_children.begin(); iter != child->m_parent->m_children.end(); iter++)
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+
+	if (child->m_parent == nullptr)
 	{
-		if (*iter = child)
+		Scene* s = Scene::GetCurrentScene();
+		s->RemoveRootGameObject(child->gameobject());
+	}
+	else
+	{
+		for (auto iter = child->m_parent->m_children.begin(); iter != child->m_parent->m_children.end(); iter++)
 		{
-			child->m_parent->m_children.erase(iter);
-			break;
+			if (*iter = child)
+			{
+				child->m_parent->m_children.erase(iter);
+				break;
+			}
 		}
 	}
+
 	child->m_parent = this;
 	if (index < 0||index>=m_children.size())
 		m_children.push_back(child);
@@ -55,6 +122,8 @@ void Transform::AddChild(Transform * child, int index)
 		iter += index;
 		m_children.insert(iter, child);
 	}
+
+	SetWorldSRT(s, r, t);
 }
 
 Component* Transform::Clone()
@@ -65,158 +134,85 @@ Component* Transform::Clone()
 		GameObject* child = new GameObject(m_children[i]->gameobject());
 		child->GetTransform()->SetParent(this);
 	}
-	copy->worldPosition = worldPosition;
-	copy->worldRotation = worldRotation;
-	copy->worldScale = worldScale;
+	copy->localPosition = localPosition;
+	copy->localRotation = localRotation;
+	copy->localScale = localScale;
 	return static_cast<Component*>(copy);
-}
-
-XMVECTOR Transform::GetPosition()
-{
-	return XMLoadFloat3(&worldPosition);
 }
 
 XMVECTOR Transform::GetLocalPosition()
 {
-	if (m_parent == nullptr)
-		return GetPosition();
-	else
-		return GetPosition() - m_parent->GetPosition();
-}
-
-XMVECTOR Transform::GetRotation()
-{
-	return XMLoadFloat4(&worldRotation);
+	return XMLoadFloat3(&localPosition);
 }
 
 XMVECTOR Transform::GetLocalRotation()
 {
-	if (m_parent == nullptr)
-		return GetRotation();
-	else
-		return XMQuaternionMultiply(GetRotation(), XMQuaternionInverse(m_parent->GetRotation()));
-}
-
-XMFLOAT3 Transform::GetEulerAngles()
-{
-	return XMQuaternion2Euler(GetRotation());
+	return XMLoadFloat4(&localRotation);
 }
 
 XMFLOAT3 Transform::GetLocalEulerAngles()
 {
-	if (m_parent == nullptr)
-		return GetEulerAngles();
-	else
-	{
-		XMFLOAT3 myEuler = GetEulerAngles();
-		XMFLOAT3 parentEuler = m_parent->GetEulerAngles();
-		return XMFLOAT3(myEuler.x - parentEuler.x, myEuler.y - parentEuler.y, myEuler.z - parentEuler.z);
-	}
-}
-
-XMVECTOR Transform::GetScale()
-{
-	return XMLoadFloat3(&worldScale);
+	return XMQuaternion2Euler(GetLocalRotation());
 }
 
 XMVECTOR Transform::GetLocalScale()
 {
-	if (m_parent == nullptr)
-		return GetScale();
-	else
-		return XMVectorMultiply(GetScale(), XMVectorReciprocalEst(m_parent->GetScale()));
+	return XMLoadFloat3(&localScale);
 }
 
-void Transform::Translate(FXMVECTOR distance)
+void Transform::SetLocalPosition(FXMVECTOR position)
 {
-	XMStoreFloat3(&worldPosition, XMVectorAdd(distance,GetPosition()));
-}
-
-void Transform::Translate(float x, float y, float z)
-{
-	Translate(XMVectorSet(x, y, z, 0));
-}
-
-void Transform::SetPositon(FXMVECTOR position)
-{
-	XMStoreFloat3(&worldPosition, position);
-}
-
-void Transform::SetLocalposition(FXMVECTOR position)
-{
-	if (m_parent == nullptr)
-		XMStoreFloat3(&worldPosition, position);
-	else
-		XMStoreFloat3(&worldPosition, XMVectorAdd(m_parent->GetPosition(), position));
-}
-
-void Transform::SetScale(FXMVECTOR scale)
-{
-	XMStoreFloat3(&worldScale, scale);
+	XMStoreFloat3(&localPosition, position);
 }
 
 void Transform::SetLocalScale(FXMVECTOR localscale)
 {
-	if (m_parent == nullptr)
-		XMStoreFloat3(&worldScale, localscale);
-	else
-		XMStoreFloat3(&worldScale, XMVectorMultiply(localscale, m_parent->GetScale()));
-}
-
-void Transform::RotateX(float angles)
-{
-	XMStoreFloat4(&worldRotation, XMQuaternionMultiply(GetRotation(), XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), angles)));
-}
-
-void Transform::RotateY(float angles)
-{
-	XMStoreFloat4(&worldRotation, XMQuaternionMultiply(GetRotation(), XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), angles)));
-}
-
-void Transform::RotateZ(float angles)
-{
-	XMStoreFloat4(&worldRotation, XMQuaternionMultiply(GetRotation(), XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), angles)));
-}
-
-void Transform::SetRotation(FXMVECTOR rotation)
-{
-	XMStoreFloat4(&worldRotation, rotation);
+	XMStoreFloat3(&localScale, localscale);
 }
 
 void Transform::SetLocalRotation(FXMVECTOR rotation)
 {
-	if (m_parent == nullptr)
-		XMStoreFloat4(&worldRotation, rotation);
-	else
-		XMStoreFloat4(&worldRotation, XMQuaternionMultiply(GetRotation(), rotation));
+	XMStoreFloat4(&localRotation, rotation);
 }
 
 XMVECTOR Transform::GetRight()
 {
-	return XMQuaternionRotate(XMVectorSet(1, 0, 0, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(1, 0, 0, 0), r);
 }
 
 XMVECTOR Transform::GetUp()
 {
-	return XMQuaternionRotate(XMVectorSet(0, 1, 0, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(0, 1, 0, 0), r);
 }
 
 XMVECTOR Transform::GetForward()
 {
-	return XMQuaternionRotate(XMVectorSet(0, 0, 1, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(0, 0, 1, 0), r);
 }
 
 XMVECTOR Transform::GetBehind()
 {
-	return XMQuaternionRotate(XMVectorSet(0, 0, -1, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(0, 0, -1, 0), r);
 }
 
 XMVECTOR Transform::GetLeft()
 {
-	return XMQuaternionRotate(XMVectorSet(-1, 0, 0, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(-1, 0, 0, 0), r);
 }
 
 XMVECTOR Transform::GetDown()
 {
-	return XMQuaternionRotate(XMVectorSet(0, -1, 0, 0), GetRotation());
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternionRotate(XMVectorSet(0, -1, 0, 0), r);
 }

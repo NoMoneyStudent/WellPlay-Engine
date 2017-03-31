@@ -192,6 +192,15 @@
     <ClInclude Include="EngineRuntime\SceneManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Wnd\LogWnd.h">
+      <Filter>窗口相关类</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineRuntime\SkinMeshRender.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>系统模块</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WellPlayMain.cpp">
@@ -320,6 +329,15 @@
     <ClCompile Include="EngineRuntime\SceneManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Wnd\LogWnd.cpp">
+      <Filter>窗口相关类</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\SkinMeshRender.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>系统模块</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WellPlay.rc">
@@ -356,6 +374,9 @@
       <Filter>资源文件</Filter>
     </Xml>
     <Xml Include="..\x64\Debug\skin\VarMenu.xml">
+      <Filter>资源文件</Filter>
+    </Xml>
+    <Xml Include="..\x64\Debug\skin\LogSkin.xml">
       <Filter>资源文件</Filter>
     </Xml>
   </ItemGroup>

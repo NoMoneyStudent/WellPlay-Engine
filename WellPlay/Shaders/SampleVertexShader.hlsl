@@ -21,7 +21,7 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
 	matrix model;
 	matrix view;
 	matrix projection;
-	matrix Transforms[64];
+	//matrix Transforms[64];
 };
 
 // 用作顶点着色器输入的每个顶点的数据。
@@ -51,11 +51,11 @@ PixelShaderInput main(VertexShaderInput input)
 {
 	PixelShaderInput output;
 	float4 pos = float4(input.pos, 1.0f);
-	float4 truepos = float4(0.0, 0.0, 0.0, 1.0f);
+	//float4 truepos = float4(0.0, 0.0, 0.0, 1.0f);
 
-	float weight[4] = { input.weights.x,input.weights.y,input.weights.z,input.weights.w };
+	//float weight[4] = { input.weights.x,input.weights.y,input.weights.z,input.weights.w };
 
-	for (int i = 0; i < 4; i++)
+	/*for (int i = 0; i < 4; i++)
 	{
 		if (input.indices[i] != 65536)
 		{
@@ -63,8 +63,8 @@ PixelShaderInput main(VertexShaderInput input)
 			temp.z = -temp.z;
 			truepos += temp*weight[i];
 		}
-	}
-	pos = truepos;
+	}*/
+	//pos = truepos;
 	// 将顶点位置转换为投影空间。
 	pos = mul(pos, model);
 	pos = mul(pos, view);
@@ -74,6 +74,6 @@ PixelShaderInput main(VertexShaderInput input)
 	// 不加修改地传递颜色。
 	output.color = input.color;
 	output.uv0 = input.uv0;
-	output.uv0.y = 1 - output.uv0.y;
+
 	return output;
 }

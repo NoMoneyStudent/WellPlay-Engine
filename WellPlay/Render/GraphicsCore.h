@@ -35,7 +35,7 @@ namespace Graphics
 	float GetFrameRate(void);
 
 	extern HWND m_hwnd;
-	extern std::vector<std::shared_ptr<Model>> RenderObjects;
+	extern std::vector<int> RenderObjects;
 	extern ID3D12Device* g_Device;
 	extern CommandListManager g_CommandManager;
 	extern ContextManager g_ContextManager;

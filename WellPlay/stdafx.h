@@ -75,17 +75,17 @@ public:
 /*增加一个四元数转欧拉角的函数*/
 namespace DirectX
 {
-	XMFLOAT3 DirectX::XMQuaternion2Euler(FXMVECTOR q)
+	inline XMFLOAT3 XMQuaternion2Euler(FXMVECTOR q)
 	{
 		return XMFLOAT3
 		{
-			atan2f(2 * (q.m128_f32[3] * q.m128_f32[2] + q.m128_f32[0] * q.m128_f32[1]),1 - 2 * (q.m128_f32[2] * q.m128_f32[2] + q.m128_f32[0] * q.m128_f32[0]))*57.3,
-			asinf(2 * (q.m128_f32[3] * q.m128_f32[0] - q.m128_f32[1] * q.m128_f32[2]))*57.3,
-			atan2f(2 * (q.m128_f32[3] * q.m128_f32[1] + q.m128_f32[2] * q.m128_f32[0]),1 - 2 * (q.m128_f32[1] * q.m128_f32[1] + q.m128_f32[0] * q.m128_f32[0]))*57.3
+			atan2(2 * (q.m128_f32[3] * q.m128_f32[2] + q.m128_f32[0] * q.m128_f32[1]),1 - 2 * (q.m128_f32[2] * q.m128_f32[2] + q.m128_f32[0] * q.m128_f32[0]))*57.3f,
+			asin(2 * (q.m128_f32[3] * q.m128_f32[0] - q.m128_f32[1] * q.m128_f32[2]))*57.3f,
+			atan2(2 * (q.m128_f32[3] * q.m128_f32[1] + q.m128_f32[2] * q.m128_f32[0]),1 - 2 * (q.m128_f32[1] * q.m128_f32[1] + q.m128_f32[0] * q.m128_f32[0]))*57.3f
 		};
 	}
 
-	XMVECTOR DirectX::XMQuaternionRotate(FXMVECTOR source, FXMVECTOR rotation)
+	inline XMVECTOR XMQuaternionRotate(FXMVECTOR source, FXMVECTOR rotation)
 	{
 		XMVECTOR result;
 		result = XMQuaternionMultiply(source, rotation);

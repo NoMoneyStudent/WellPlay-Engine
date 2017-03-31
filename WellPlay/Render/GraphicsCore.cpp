@@ -38,7 +38,7 @@ namespace
 namespace Graphics
 {
 	HWND m_hwnd;
-	std::vector<std::shared_ptr<Model>> RenderObjects;
+	std::vector<int> RenderObjects;
 
 	void PreparePresentLDR();
 	void SetNativeResolution(void);

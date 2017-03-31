@@ -1,58 +1,96 @@
 #pragma once
 #include "stdafx.h"
+#include "Render\GpuBuffer.h"
 #include <array>
 
 typedef std::vector<std::array<float, 2>> Curve;
 typedef Curve CurveXYZ[3];
 
-struct Vertex
+struct CommonVertex
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT4 color;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT3 tangent;
 	DirectX::XMFLOAT2 UV0;
 	DirectX::XMFLOAT2 UV1;
-	std::vector<float> BoneWeights;
-	std::vector<UINT> BoneIndex;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT3 tangent;
+};
+
+struct AniVertex:public CommonVertex
+{
+	float BoneWeights[4] = { 0,0,0,0 };
+	uint32_t BoneIndex[4] = { 65536,65536,65536,65536 };
 };
 
 struct Animation
 {
-	CurveXYZ T;
-	CurveXYZ R;
-	CurveXYZ S;
+	std::vector<std::pair<DirectX::XMFLOAT3, float>> T;
+	std::vector<std::pair<DirectX::XMFLOAT4, float>> R;
+	std::vector<std::pair<DirectX::XMFLOAT3, float>> S;
 };
 
 struct Bone
 {
 	std::string name;
-	int parentindex;
-	float preRotation[3];
 
-	DirectX::XMFLOAT4X4 SRT;
 	DirectX::XMFLOAT4X4 Bind;
+};
 
-	std::vector<Animation> Animaions;
+struct Avatar
+{
+	std::vector<Bone> bonelists;
+};
+
+struct AnimationClip
+{
+	std::vector<std::pair<std::string, Animation>> clips;
+	float durning;
+	std::string name;
 };
 
 struct Material
 {
+	//XMFLOAT3 diffuse;
+	//XMFLOAT3 specular;
+	//XMFLOAT3 ambient;
+	//XMFLOAT3 emissive;
+	//XMFLOAT3 transparent; // light passing through a transparent surface is multiplied by this filter color
+	//float opacity;
+	//float shininess; // specular exponent
+	//float specularStrength; // multiplier on top of specular color
 
+	//enum { maxTexPath = 128 };
+	//enum { texCount = 6 };
+	//char texDiffusePath[maxTexPath];
+	//char texSpecularPath[maxTexPath];
+	//char texEmissivePath[maxTexPath];
+	//char texNormalPath[maxTexPath];
+	//char texLightmapPath[maxTexPath];
+	//char texReflectionPath[maxTexPath];
+
+	//enum { maxMaterialName = 128 };
+	//char name[maxMaterialName];
+	//void ReleaseTextures();
+	//void LoadTextures();
 };
 
-struct Mesh
+struct AniMesh
 {
-	std::vector<Vertex> vertexs;
+	std::string name;
+	std::vector<AniVertex> vertexs;
 	std::vector<UINT> indexs;
+	//std::vector<std::vector<UINT>> indexs;
 
-	int materialindex;
-	int parentindex;
+	std::vector<Material*> materials;
+	Avatar* avatra;
 };
 
-struct Model
+struct CommonMesh
 {
-	std::vector<Mesh> meshs;
-	std::vector<Bone> bones;
-	std::vector<Material> materials;
+	std::string name;
+	std::vector<CommonVertex> vertexs;
+	std::vector<UINT> indexs;
+	//std::vector<std::vector<UINT>> indexs;
+	
+	std::vector<Material*> materials;
 };

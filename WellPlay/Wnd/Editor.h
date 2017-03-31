@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "DXWindows.h"
 #include "EditorMainWnd.h"
+#include "LogWnd.h"
 
 class Editor
 {
@@ -20,6 +21,7 @@ private:
 
 	EditorWindows::EditorMainWnd* EditorWnd;
 	EditorWindows::DXWindows* DXWnd;
+	EditorWindows::LogWnd* Log;
 };
 
 inline Editor::Editor(HINSTANCE hInstance)
@@ -36,6 +38,10 @@ inline Editor::Editor(HINSTANCE hInstance)
 	DXWnd = new EditorWindows::DXWindows(_T("DXSkin.xml"));
 	DXWnd->Create(NULL, _T("RenderWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
 	DXWnd->ShowWindow();
+
+	Log = new EditorWindows::LogWnd(_T("LogSkin.xml"));
+	Log->Create(NULL, _T("LogWnd"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+	Log->ShowWindow();
 
 	CenterWindows();
 }

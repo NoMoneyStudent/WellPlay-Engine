@@ -7,6 +7,7 @@
 #include "AnimationCore.h"
 #include "Render\EngineTuning.h"
 #include "resource.h"
+#include "EngineRuntime\Scene.h"
 
 using namespace EditorWindows;
 using namespace std;
@@ -97,11 +98,11 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 			string ex = FileUtility::GetExtension(filepath);
 			if (ex == "fbx")
 			{
-				mo = FBXImport::ImportModel(string(filepath.begin(), filepath.end()));
+				 FBXImport::ImportModel(string(filepath.begin(), filepath.end()));
 				RenderObject object;
-				object.Create(mo->meshs[mo->meshs.size() - 1], mo->bones, 0);
-				renderQueue.push_back(std::move(object));
-				InitAni(renderQueue[0]);
+				//object.Create(mo->meshs[mo->meshs.size() - 1], mo->bones, 0);
+				//renderQueue.push_back(std::move(object));
+				//InitAni(renderQueue[0]);
 			}
 			else if (ex == "tga")
 			{

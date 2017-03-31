@@ -10,25 +10,17 @@ class Transform:public Component
 {
 	friend class GameObject;
 public:
-	XMVECTOR GetPosition();
 	XMVECTOR GetLocalPosition();
-	XMVECTOR GetRotation();
 	XMVECTOR GetLocalRotation();
-	XMFLOAT3 GetEulerAngles();
 	XMFLOAT3 GetLocalEulerAngles();
-	XMVECTOR GetScale();
 	XMVECTOR GetLocalScale();
+	XMMATRIX GetLocalTranslationMatrix();
+	XMMATRIX GetWorldTranslationMatrix();
+	void GetWorldSRT(XMVECTOR& scale, XMVECTOR& rotation, XMVECTOR& position);
+	void SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR position);
 
-	void Translate(FXMVECTOR distance);
-	void Translate(float x,float y,float z);
-	void SetPositon(FXMVECTOR position);
-	void SetLocalposition(FXMVECTOR position);
-	void SetScale(FXMVECTOR scale);
+	void SetLocalPosition(FXMVECTOR position);
 	void SetLocalScale(FXMVECTOR localscale);
-	void RotateX(float angles);
-	void RotateY(float angles);
-	void RotateZ(float angles);
-	void SetRotation(FXMVECTOR rotation);
 	void SetLocalRotation(FXMVECTOR rotation);
 
 	XMVECTOR GetRight();
@@ -44,9 +36,9 @@ public:
 	void AddChild(Transform* child, int index = -1);
 
 private:
-	XMFLOAT3 worldPosition;
-	XMFLOAT4 worldRotation;
-	XMFLOAT3 worldScale;
+	XMFLOAT3 localPosition;
+	XMFLOAT4 localRotation;
+	XMFLOAT3 localScale;
 
 	Transform* m_parent;
 	std::vector<Transform*> m_children;

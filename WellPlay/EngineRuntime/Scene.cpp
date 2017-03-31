@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Scene.h"
+#include "GameObject.h"
 
 Scene* Scene::currentscene = nullptr;
 
@@ -30,6 +31,23 @@ void Scene::RemoveRootGameObject(GameObject * object)
 		}
 	}
 	ASSERT(false, "目标不在场景根下！");
+}
+
+void Scene::Update()
+{
+	for (int i = 0; i < rootObject.size(); i++)
+	{
+		rootObject[i]->Update();
+	}
+}
+
+Scene * Scene::GetCurrentScene()
+{
+	if (currentscene == nullptr)
+	{
+		currentscene = new Scene();
+	}
+	return currentscene;
 }
 
 Scene::Scene()

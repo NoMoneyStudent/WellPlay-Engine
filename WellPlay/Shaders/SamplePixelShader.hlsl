@@ -50,5 +50,5 @@ float4 main(PixelShaderInput input) : SV_Target0
 {
 	float3 c = texDiffuse.Sample(sampler0,input.uv0);
 	return float4(c, 1.0f);
-	//return float4(input.uv0,0.0f, 1.0f);
+	//return float4(0.0f,1.0f,0.0f, 1.0f);
 }

@@ -22,6 +22,6 @@ namespace EditorWindows
 	private:
 		CDuiString		m_strXMLPath;
 		CStdStringPtrMap m_MenuCheckInfo; //保存菜单的单选复选信息
-		std::shared_ptr<Model> mo;
+		//std::shared_ptr<Model> mo;
 	};
 }

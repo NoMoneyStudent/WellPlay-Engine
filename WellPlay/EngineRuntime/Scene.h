@@ -12,7 +12,9 @@ public:
 	void RemoveRootGameObject(GameObject* object);
 	std::vector<GameObject*> GetRootGameObject() { return rootObject; }
 
-	static Scene* GetCurrentScene() { return currentscene; }
+	void Update();
+
+	static Scene* GetCurrentScene();
 
 private:
 	Scene();
