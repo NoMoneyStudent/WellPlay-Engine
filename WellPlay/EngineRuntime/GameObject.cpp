@@ -4,144 +4,32 @@
 
 using namespace std;
 
-//template<class T>
-//T* GameObject::GetComponent()
-//{
-//	for (auto& iter : m_components)
-//	{
-//		if (iter.first == typeid(T).name())
-//			return dynamic_cast<T*>(&iter.second);
-//	}
-//	return nullptr;
-//}
-//
-//template<class T>
-//T* GameObject::AddComponent()
-//{
-//	(T*) newT = new T();
-//	Component* newComponent = static_cast<Component>(newcomponent);
-//	if (newComponent!=nullptr)
-//	{
-//		m_components.push_back(make_pair(typeid(T).name(), newComponent));
-//		newComponent->m_gameobject = this;
-//		newComponent->m_isEnable = true;
-//		return newComponent;
-//	}
-//	else
-//	{
-//		delete newT;
-//		return nullptr;
-//	}
-//}
-//
-//template<>
-//Transform* GameObject::AddComponent()
-//{
-//	ASSERT(false, "不允许创建Transform组件");
-//	return nullptr;
-//}
-//
-//template<class T>
-//T* GameObject::GetComponentInChildren()
-//{
-//	(T*) mycom = GetComponent<T>();
-//	if (mycom != nullptr)
-//		return mycom;
-//	else
-//	{
-//		std::vector<Transform*>& children = m_transform->m_children;
-//		for (int i = 0; i < children.size(); i++)
-//		{
-//			mycom = children[i]->m_gameobject->GetComponentInChildren<T>();
-//			if (mycom != nullptr)
-//				return mycom;
-//		}
-//		return nullptr;
-//	}
-//}
-//
-//template<class T>
-//T* GameObject::GetComponentInParent()
-//{
-//	(T*) mycom= GetComponent<T>();
-//	if (mycom != nullptr)
-//		return mycom;
-//	else
-//	{
-//		Transform* parent = m_transform->GetParent();
-//		if (parent != nullptr)
-//			return parent->m_gameobject->GetComponentInParent<T>();
-//		else
-//			return nullptr;
-//	}
-//}
-//
-//template<class T>
-//std::vector<T*> GameObject::GetComponents()
-//{
-//	std::vector<T*> mycom;
-//	for (auto& iter : m_components)
-//	{
-//		if (iter.first == typeid(T).name())
-//			mycom.push_back(dynamic_cast<T*>(&iter.second));
-//	}
-//	return mycom;
-//}
-//
-//template<class T>
-//std::vector<T*> GameObject::GetComponentsInChildren()
-//{
-//	std::vector<T*> result;
-//	std::vector<T*> mycom = GetComponents<T>();
-//	if (!mycom.empty())
-//		result.insert(result.end(), mycom.begin(), mycom.end());
-//
-//	std::vector<Transform*>& children = m_transform->m_children;
-//	for (int i = 0; i < children.size(); i++)
-//	{
-//		mycom = children[i]->m_gameobject->GetComponentsInChildren<T>();
-//		if (!mycom.empty())
-//			result.insert(result.end(), mycom.begin(), mycom.end());
-//	}
-//
-//	return result;
-//}
-//
-//template<class T>
-//std::vector<T*> GameObject::GetComponentsInParent()
-//{
-//	std::vector<T*> result;
-//	std::vector<T*> mycom = GetComponents<T>();
-//	if (!mycom.empty())
-//		result.insert(result.end(), mycom.begin(), mycom.end());
-//
-//	Transform* parent = m_transform->GetParent();
-//	if (parent != nullptr)
-//	{
-//		mycom = parent->m_gameobject->GetComponentsInParent<T>();
-//		if (!mycom.empty())
-//			result.insert(result.end(), mycom.begin(), mycom.end());
-//	}
-//	return result;
-//}
-
 GameObject::GameObject(const std::string & name):
 	m_name(name)
 {
-	InitName();
-	m_transform = new Transform();
-	m_transform->m_gameobject = this;
-	m_transform->m_isEnable = true;
-	m_components.push_back(make_pair(typeid(Transform).name(), static_cast<Component*>(m_transform)));
+	InitObject();
+	m_transform->OnInit();
+	m_transform->OnEnable();
 }
 
 GameObject::GameObject(GameObject * prototype):
 	m_name(prototype->m_name)
 {
-	InitName();
+	InitObject();
+	CreateHierarchy(prototype);
+	InitHierarchy();
+	EnableHierarchy();
+}
 
+void GameObject::CreateHierarchy(GameObject* prototype)
+{
+	m_transform->localPosition = prototype->m_transform->localPosition;
+	m_transform->localRotation = prototype->m_transform->localRotation;
+	m_transform->localScale = prototype->m_transform->localScale;
+	m_transform->m_isEnable = prototype->m_transform->m_isEnable;
 	m_components.reserve(prototype->m_components.size());
-	for (int i = 0; i < prototype->m_components.size(); i++)
+
+	for (int i = 1; i < prototype->m_components.size(); i++)
 	{
 		std::pair<std::string, Component*> temp(prototype->m_components[i].first, nullptr);
 		temp.second = prototype->m_components[i].second->Clone();
@@ -153,9 +41,42 @@ GameObject::GameObject(GameObject * prototype):
 	self_active = prototype->self_active;
 	m_transform = dynamic_cast<Transform*>(m_components[0].second);
 	ASSERT(m_transform != nullptr, "游戏对象复制出现问题");
+	for (int i = 0; i < prototype->m_transform->m_children.size(); i++)
+	{
+		GameObject* child = new GameObject(prototype->m_transform->m_children[i]->m_gameobject->m_name);
+		child->m_transform->SetParent(m_transform);
+		child->CreateHierarchy(prototype->m_transform->m_children[i]->m_gameobject);
+	}
 }
 
-void GameObject::InitName()
+void GameObject::InitHierarchy()
+{
+	for (int i = 0; i < m_components.size(); i++)
+	{
+		m_components[i].second->OnInit();
+	}
+	for (int i = 0; i < m_transform->m_children.size(); i++)
+	{
+		m_transform->m_children[i]->m_gameobject->InitHierarchy();
+	}
+}
+
+void GameObject::EnableHierarchy()
+{
+	for (int i = 0; i < m_components.size(); i++)
+	{
+		if (m_components[i].second->m_isEnable)
+			m_components[i].second->OnEnable();
+		else
+			m_components[i].second->OnDisable();
+	}
+	for (int i = 0; i < m_transform->m_children.size(); i++)
+	{
+		m_transform->m_children[i]->m_gameobject->EnableHierarchy();
+	}
+}
+
+void GameObject::InitObject()
 {
 	Scene* s = Scene::GetCurrentScene();
 	std::vector<GameObject*> root = s->GetRootGameObject();
@@ -170,6 +91,10 @@ void GameObject::InitName()
 		m_name += " (" + to_string(count) + ")";
 	}
 	s->AddRootGameObject(this);
+	m_transform = new Transform();
+	m_transform->m_gameobject = this;
+	m_transform->m_isEnable = true;
+	m_components.push_back(make_pair(typeid(Transform).name(), static_cast<Component*>(m_transform)));
 }
 
 GameObject::~GameObject()
@@ -212,6 +137,16 @@ std::vector<GameObject*> GameObject::FindAllChildren(std::string & name)
 	return children;
 }
 
+GameObject * GameObject::FindRootParent()
+{
+	Transform* temp = m_transform;
+	while (temp->m_parent != nullptr)
+	{
+		temp = temp->m_parent;
+	}
+	return temp->m_gameobject;
+}
+
 GameObject * GameObject::Find(std::string & name)
 {
 	Scene* s = Scene::GetCurrentScene();
@@ -252,7 +187,9 @@ std::vector<GameObject*> GameObject::FindAll(std::string & name)
 void GameObject::Destroy(Component * target)
 {
 	ASSERT(typeid(target) != typeid(Transform), "不能删除Transform组件");
+
 	GameObject* own = target->m_gameobject;
+	target->SetEnable(false);
 	target->OnDestroy();
 	for (auto iter = own->m_components.begin(); iter != own->m_components.end(); iter++)
 	{
@@ -266,7 +203,7 @@ void GameObject::Destroy(Component * target)
 	delete target;
 }
 
-void GameObject::DestroyHelper()
+void GameObject::DestroyHierarchy()
 {
 	for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
 	{
@@ -275,25 +212,39 @@ void GameObject::DestroyHelper()
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
 		GameObject* child = m_transform->m_children[i]->m_gameobject;
-		child->DestroyHelper();
+		child->DestroyHierarchy();
+	}
+}
+
+void GameObject::DisableHierarchy()
+{
+	for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+	{
+		iter->second->OnDisable();
+	}
+	for (int i = 0; i < m_transform->m_children.size(); i++)
+	{
+		GameObject* child = m_transform->m_children[i]->m_gameobject;
+		child->DisableHierarchy();
 	}
 }
 
 void GameObject::Destroy(GameObject * target)
 {
-	target->DestroyHelper();
+	target->DisableHierarchy();
 	for (int i = 0; i < target->m_transform->m_children.size(); i++)
 	{
 		GameObject* child = target->m_transform->m_children[i]->m_gameobject;
 		GameObject::Destroy(child);
 	}
+	target->DestroyHierarchy();
 	target->m_transform->SetParent(nullptr);
 	
 	for (auto iter = target->m_components.begin(); iter != target->m_components.end(); iter++)
 	{
 		delete iter->second;
 	}
-
+	target->m_components.clear();
 	delete target;
 }
 
@@ -311,5 +262,17 @@ void GameObject::Update()
 	for (int i = 0; i < m_transform->GetChildren().size(); i++)
 	{
 		m_transform->GetChildren()[i]->gameobject()->Update();
+	}
+}
+
+void GameObject::EditorUpdate()
+{
+	for (int i = 0; i < m_editorcomponents.size(); i++)
+	{
+		m_editorcomponents[i]->Update();
+	}
+	for (int i = 0; i < m_transform->GetChildren().size(); i++)
+	{
+		m_transform->GetChildren()[i]->gameobject()->EditorUpdate();
 	}
 }

@@ -156,10 +156,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationCore.h" />
-    <ClInclude Include="EngineRuntime\Animation.h" />
+    <ClInclude Include="EngineRuntime\Animator.h" />
     <ClInclude Include="EngineRuntime\Component.h" />
+    <ClInclude Include="EngineRuntime\EditorComponent.h" />
     <ClInclude Include="EngineRuntime\GameObject.h" />
     <ClInclude Include="EngineRuntime\MeshRender.h" />
+    <ClInclude Include="EngineRuntime\Render.h" />
     <ClInclude Include="EngineRuntime\Scene.h" />
     <ClInclude Include="EngineRuntime\SceneManager.h" />
     <ClInclude Include="EngineRuntime\SkinMeshRender.h" />
@@ -213,10 +215,12 @@
     <ClCompile Include="AnimationCore.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClCompile Include="EngineRuntime\Animation.cpp" />
+    <ClCompile Include="EngineRuntime\Animator.cpp" />
     <ClCompile Include="EngineRuntime\Component.cpp" />
+    <ClCompile Include="EngineRuntime\EditorComponent.cpp" />
     <ClCompile Include="EngineRuntime\GameObject.cpp" />
     <ClCompile Include="EngineRuntime\MeshRender.cpp" />
+    <ClCompile Include="EngineRuntime\Render.cpp" />
     <ClCompile Include="EngineRuntime\Scene.cpp" />
     <ClCompile Include="EngineRuntime\SceneManager.cpp" />
     <ClCompile Include="EngineRuntime\SkinMeshRender.cpp" />
@@ -240,7 +244,6 @@
     <ClCompile Include="Render\LinearAllocator.cpp" />
     <ClCompile Include="Render\PipelineState.cpp" />
     <ClCompile Include="Render\PixelBuffer.cpp" />
-    <ClCompile Include="Render\RenderObject.cpp" />
     <ClCompile Include="Render\RootSignature.cpp" />
     <ClCompile Include="Render\SamplerManager.cpp" />
     <ClCompile Include="Render\ShadowBuffer.cpp" />

@@ -1,22 +1,22 @@
 #include "stdafx.h"
-#include "AnimationCore.h"
-#include "SystemTime.h"
-#include "Spline\spline.h"
-
-using namespace Render;
-using namespace std;
-using namespace DirectX;
-
-struct AniTable
-{
-	vector<double> T[3][2];
-	vector<double> R[3][2];
-	vector<double> S[3][2];
-};
-vector<AniTable> samples;
-vector<tk::spline> splines;
-float sincetime = 0;
-float finaltime = 0;
+//#include "AnimationCore.h"
+//#include "SystemTime.h"
+//#include "Spline\spline.h"
+//
+//using namespace Render;
+//using namespace std;
+//using namespace DirectX;
+//
+//struct AniTable
+//{
+//	vector<double> T[3][2];
+//	vector<double> R[3][2];
+//	vector<double> S[3][2];
+//};
+//vector<AniTable> samples;
+//vector<tk::spline> splines;
+//float sincetime = 0;
+//float finaltime = 0;
 
 //void Ani(Render::RenderObject& model)
 //{

@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "Render\RenderObject.h"
 
-namespace Render
+namespace RenderCore
 {
 	void Initialize(HWND m_hwnd);
 	void Shutdown(void);

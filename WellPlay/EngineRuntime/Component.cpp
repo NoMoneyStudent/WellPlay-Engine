@@ -15,8 +15,3 @@ void Component::SetEnable(bool setenable)
 		m_isEnable ? OnEnable() : OnDisable();
 	}
 }
-
-bool Component::GetEnable()
-{
-	return m_isEnable;
-}

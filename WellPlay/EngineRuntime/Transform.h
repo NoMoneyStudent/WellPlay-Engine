@@ -1,8 +1,8 @@
 #pragma once
 #include "Component.h"
-#include "GameObject.h"
 #include <vector>
 #include <DirectXMath.h>
+class GameObject;
 
 using namespace DirectX;
 

@@ -4,16 +4,12 @@
 #include "GpuBuffer.h"
 #include "Resource\Model.h"
 
-namespace Render
+namespace RenderCore
 {
 	using namespace DirectX;
 
 	struct RenderObject
 	{
-	public:
-		RenderObject();
-		~RenderObject();
-
 		struct BoundingBox
 		{
 			XMFLOAT3 min;
@@ -27,13 +23,10 @@ namespace Render
 
 		XMFLOAT4X4 model;
 		XMFLOAT4X4* BoneTransforms;
+		unsigned int BoneCount;
 
 		StructuredBuffer* m_VertexBuffer;
 		ByteAddressBuffer* m_IndexBuffer;
-
-	private:
-
-		void ComputeBoundingBox(unsigned int meshIndex, BoundingBox &bbox) const;
 	};
 
 }

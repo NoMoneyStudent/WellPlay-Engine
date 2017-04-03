@@ -15,7 +15,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	Editor m_Editor(hInstance);
 
-	Render::Initialize(m_Editor.GetDXWndHwnd());
+	RenderCore::Initialize(m_Editor.GetDXWndHwnd());
 	GameInput::Initialize(m_Editor.GetDXWndHwnd());
 	SystemTime::Initialize();
 
@@ -37,12 +37,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		GameInput::Update();
 		Scene::GetCurrentScene()->Update();
 
-		Render::Update();
-		Render::Render();
+		RenderCore::Update();
+		RenderCore::Render();
 	}
 
 	GameInput::Shutdown();
-	Render::Shutdown();
+	RenderCore::Shutdown();
 
 	return 0;
 }

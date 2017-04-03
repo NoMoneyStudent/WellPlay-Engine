@@ -1,8 +1,8 @@
 #pragma once
-#include "Component.h"
+#include "Render.h"
 #include "Resource\Model.h"
 
-class MeshRender:public Component
+class MeshRender:public Render
 {
 	friend class GameObject;
 public:

@@ -6,12 +6,12 @@
 #include "EngineRuntime\Transform.h"
 #include "EngineRuntime\MeshRender.h"
 #include "EngineRuntime\SkinMeshRender.h"
+#include "EngineRuntime\Animator.h"
 #include "FBXImport.h"
-
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
-#include <assimp\matrix4x4.h>
+
 using namespace EditorWindows;
 using namespace std;
 
@@ -25,7 +25,7 @@ void FBXImport::ImportModel(string path)
 	Assimp::Importer importer;
 	
 	const aiScene* scene = importer.ReadFile(path,
-		aiProcessPreset_TargetRealtime_MaxQuality |
+		//aiProcessPreset_TargetRealtime_MaxQuality |
 		aiProcess_ConvertToLeftHanded
 		);
 
@@ -34,9 +34,8 @@ void FBXImport::ImportModel(string path)
 		MessageBox(NULL, MakeWStr(importer.GetErrorString()).data(), TEXT("导入失败"), 0);
 		return;
 	}
-
-	ProcessNode(scene, nullptr, scene->mRootNode, aiMatrix4x4());
 	ProcessAnimation(scene);
+	ProcessNode(scene, nullptr, scene->mRootNode, aiMatrix4x4());
 
 	int hehe = 0;
 }
@@ -129,9 +128,9 @@ void ReadVertexUtility(CommonVertex& v,aiMesh* mesh,int index)
 
 void ReshIndicesUtility(vector<UINT>& I, aiMesh* mesh)
 {
-	for (int j = 0; j < mesh->mNumFaces; j++)
+	for (UINT j = 0; j < mesh->mNumFaces; j++)
 	{
-		for (int k = 0; k < mesh->mFaces[j].mNumIndices; k++)
+		for (UINT k = 0; k < mesh->mFaces[j].mNumIndices; k++)
 		{
 			I.push_back(mesh->mFaces[j].mIndices[k]);
 		}
@@ -161,7 +160,7 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 
 	LogWnd::Print(L"生成节点" + MakeWStr(node->mName.C_Str()) + L"   父节点" + ((parent == nullptr) ? L"" : MakeWStr(parent->GetName())));
 
-	for (int i = 0; i < node->mNumMeshes; i++)
+	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		string meshname = node->mName.C_Str();
@@ -175,7 +174,7 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 
 				meshdata.name = meshname;
 				vector<AniVertex> V(mesh->mNumVertices);
-				for (int j = 0; j < mesh->mNumVertices; j++)
+				for (UINT j = 0; j < mesh->mNumVertices; j++)
 				{
 					ReadVertexUtility(V[j], mesh, j);
 				}
@@ -185,29 +184,30 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 				meshdata.indexs = std::move(I);
 
 				Avatar  avatar;
-				for (int j = 0; j < mesh->mNumBones; j++)
+				for (UINT j = 0; j < mesh->mNumBones; j++)
 				{
 					Bone bone;
 					aiBone* aibone = mesh->mBones[j];
 					bone.name = aibone->mName.C_Str();
 					bonestringlist.insert(bone.name);
 					CopyMatrix(bone.Bind, aibone->mOffsetMatrix.Transpose());
-					int index = avatar.bonelists.size();
-					for (int k = 0; k < aibone->mNumWeights; k++)
+					auto index = avatar.bonelists.size();
+					for (UINT k = 0; k < aibone->mNumWeights; k++)
 					{
 						int id = aibone->mWeights[k].mVertexId;
 						for (int q = 0; q < 4; q++)
 						{
-							if (meshdata.vertexs[k].BoneIndex[q] == 65536)
+							if (meshdata.vertexs[id].BoneIndex[q] == 65536)
 							{
-								meshdata.vertexs[k].BoneIndex[q] = index;
-								meshdata.vertexs[k].BoneWeights[1] = aibone->mWeights[k].mWeight;
+								meshdata.vertexs[id].BoneIndex[q] = index;
+								meshdata.vertexs[id].BoneWeights[q] = aibone->mWeights[k].mWeight;
 								break;
 							}
 						}
 					}
 					avatar.bonelists.push_back(bone);
 				}
+				avatar.name = meshdata.name;
 				meshdata.avatra = &avatar;
 				ResourceManager::AddAvatar(avatar);
 				ResourceManager::AddMesh(meshdata);
@@ -217,7 +217,7 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 				CommonMesh meshdata;
 				meshdata.name = meshname;
 				vector<CommonVertex> V(mesh->mNumVertices);
-				for (int j = 0; j < mesh->mNumVertices; j++)
+				for (UINT j = 0; j < mesh->mNumVertices; j++)
 				{
 					ReadVertexUtility(V[j], mesh, j);
 				}
@@ -233,6 +233,8 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 		{
 			SkinMeshRender* render = myNode->AddComponent<SkinMeshRender>();
 			render->SetMesh(ResourceManager::GetAniMesh(meshname));
+			render->SetAvatar(ResourceManager::GetAvatar(meshname));
+			Animator* ani=myNode->AddComponent<Animator>();
 		}
 		else
 		{
@@ -240,8 +242,8 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 			render->SetMesh(ResourceManager::GetCommonMesh(meshname));
 		}
 	}
-
-	for (int i = 0; i < node->mNumChildren; i++)
+	
+	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
 		ProcessNode(scene, myNode, node->mChildren[i], global);
 	}
@@ -249,37 +251,35 @@ void ProcessNode(const aiScene* scene, GameObject* parent, aiNode* node, aiMatri
 
 void ProcessAnimation(const aiScene* scene)
 {
-	for (int i = 0; i < scene->mNumAnimations; i++)
+	for (UINT i = 0; i < scene->mNumAnimations; i++)
 	{
 		aiAnimation* ani = scene->mAnimations[i];
 		AnimationClip clip;
 		clip.name = ani->mName.C_Str();
-		if (ani->mTicksPerSecond == 0)
-			clip.durning = ani->mDuration;
-		else
-			clip.durning = ani->mDuration / ani->mTicksPerSecond;
-		for (int j = 0; j < ani->mNumChannels; j++)
+		double ticks = ani->mTicksPerSecond == 0 ? 1 : ani->mTicksPerSecond;
+		clip.durning = ani->mDuration / ticks;
+		for (UINT j = 0; j < ani->mNumChannels; j++)
 		{
 			aiNodeAnim* node = ani->mChannels[j];
 			Animation oneAni;
 			string AniName = node->mNodeName.C_Str();
-			for (int j = 0; j < node->mNumPositionKeys; j++)
+			for (UINT j = 0; j < node->mNumPositionKeys; j++)
 			{
-				float time = node->mPositionKeys[j].mTime;
+				double time = node->mPositionKeys[j].mTime / ticks;
 				XMFLOAT3 pos;
 				SetVertexVector(pos, node->mPositionKeys[j].mValue);
 				oneAni.T.push_back(make_pair(pos, time));
 			}
-			for (int j = 0; j < node->mNumRotationKeys; j++)
+			for (UINT j = 0; j < node->mNumRotationKeys; j++)
 			{
-				float time = node->mRotationKeys[j].mTime;
+				double time = node->mRotationKeys[j].mTime / ticks;
 				XMFLOAT4 qua;
 				SetVertexVector(qua, node->mRotationKeys[j].mValue);
 				oneAni.R.push_back(make_pair(qua, time));
 			}
-			for (int j = 0; j < node->mNumScalingKeys; j++)
+			for (UINT j = 0; j < node->mNumScalingKeys; j++)
 			{
-				float time = node->mScalingKeys[j].mTime;
+				double time = node->mScalingKeys[j].mTime / ticks;
 				XMFLOAT3 pos;
 				SetVertexVector(pos, node->mScalingKeys[j].mValue);
 				oneAni.S.push_back(make_pair(pos, time));
@@ -387,7 +387,6 @@ void ProcessAnimation(const aiScene* scene)
 //	me *= XMMatrixScaling(localS[0], localS[1], localS[2]);
 //	me *= XMMatrixRotationX(localR[0] / 180 * XM_PI)*XMMatrixRotationY(localR[1] / 180 * XM_PI)*XMMatrixRotationZ(localR[2] / 180 * XM_PI);
 //	me *= XMMatrixTranslation(localT[0], localT[1], localT[2]);
-//	ASSERT(XMMatrixDecompose(&goodS, &goodR, &goodT, me), "草拟吗FBX SDK");
 //	mytrans->SetLocalPosition(goodT);
 //	mytrans->SetLocalRotation(goodR);
 //	mytrans->SetLocalScale(goodS);

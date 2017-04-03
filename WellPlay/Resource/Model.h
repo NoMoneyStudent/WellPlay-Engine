@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Render\GpuBuffer.h"
 #include <array>
 
 typedef std::vector<std::array<float, 2>> Curve;
@@ -24,20 +23,20 @@ struct AniVertex:public CommonVertex
 
 struct Animation
 {
-	std::vector<std::pair<DirectX::XMFLOAT3, float>> T;
-	std::vector<std::pair<DirectX::XMFLOAT4, float>> R;
-	std::vector<std::pair<DirectX::XMFLOAT3, float>> S;
+	std::vector<std::pair<DirectX::XMFLOAT3, double>> T;
+	std::vector<std::pair<DirectX::XMFLOAT4, double>> R;
+	std::vector<std::pair<DirectX::XMFLOAT3, double>> S;
 };
 
 struct Bone
 {
 	std::string name;
-
 	DirectX::XMFLOAT4X4 Bind;
 };
 
 struct Avatar
 {
+	std::string name;
 	std::vector<Bone> bonelists;
 };
 
@@ -45,6 +44,7 @@ struct AnimationClip
 {
 	std::vector<std::pair<std::string, Animation>> clips;
 	float durning;
+	bool loop = false;
 	std::string name;
 };
 

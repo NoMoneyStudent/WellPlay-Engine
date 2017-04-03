@@ -33,7 +33,7 @@ LRESULT DXWindows::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 {
 	if (uMsg == WM_SIZE) 
 	{
-		Render::ReSize((UINT)(UINT64)lParam & 0xFFFF, (UINT)(UINT64)lParam >> 16);
+		RenderCore::ReSize((UINT)(UINT64)lParam & 0xFFFF, (UINT)(UINT64)lParam >> 16);
 	}
 
 	bHandled = false;

@@ -17,7 +17,7 @@ using namespace Graphics;
 using namespace DirectX;
 using namespace std;
 
-namespace Render
+namespace RenderCore
 {
 	void RenderObjects(GraphicsContext& Context);
 
@@ -34,7 +34,7 @@ namespace Render
 	D3D12_CPU_DESCRIPTOR_HANDLE texture;
 }
 
-void Render::Initialize(HWND m_hwnd)
+void RenderCore::Initialize(HWND m_hwnd)
 {
 	Graphics::m_hwnd = m_hwnd;
 	Graphics::Initialize();
@@ -87,13 +87,13 @@ void Render::Initialize(HWND m_hwnd)
 	TextureManager::Initialize(L"Textures/");
 }
 
-void Render::Shutdown( void )
+void RenderCore::Shutdown( void )
 {
 	Graphics::Terminate();
 	Graphics::Shutdown();
 }
 
-void Render::Update( void )
+void RenderCore::Update( void )
 {
 	ScopedTimer _prof(L"Update State");
 
@@ -108,14 +108,14 @@ void Render::Update( void )
 	m_MainScissor.bottom = (LONG)g_SceneColorBuffer.GetHeight();
 }
 
-void Render::RenderObjects(GraphicsContext& gfxContext)
+void RenderCore::RenderObjects(GraphicsContext& gfxContext)
 {
 	struct VSConstants
 	{
 		XMFLOAT4X4 model;
 		XMFLOAT4X4 view;
 		XMFLOAT4X4 projection;
-		XMFLOAT4X4 transformbones[64];
+		XMFLOAT4X4 transformbones[32];
 	} vsConstants;
 
 	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovLH(
@@ -129,11 +129,11 @@ void Render::RenderObjects(GraphicsContext& gfxContext)
 		XMMatrixTranspose(perspectiveMatrix)
 	);
 	
-	static XMVECTORF32 eye = { 0.0f, 1.0f, 2.0f, 0.0f };
-	static XMVECTORF32 at = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static XMVECTORF32 eye = { 0.0f, 0.5f, 1.0f, 0.0f };
+	static XMVECTORF32 at = { 0.0f, 0.5f, 0.0f, 0.0f };
 	static XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
 	static float anger = 0;
-	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_x))
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_w))
 		eye.f[1] -= 0.02f;
 	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_s))
 		eye.f[1] += 0.02f;
@@ -147,10 +147,11 @@ void Render::RenderObjects(GraphicsContext& gfxContext)
 
 	//Ani(renderQueue[0]);
 	//vector<Bone>& BoneList = *(renderQueue[0].boneList);
-	//for (int i = 0; i < BoneList.size(); i++)
-	//{
-		//XMStoreFloat4x4(&vsConstants.transformbones[i], XMLoadFloat4x4(&BoneList[i].Bind) * XMLoadFloat4x4(&BoneList[i].SRT));
-	//}
+	for (int i = 0; i < renderQueue.back().BoneCount; i++)
+	{
+		XMStoreFloat4x4(&vsConstants.transformbones[i], XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back().BoneTransforms[i])));
+		//XMStoreFloat4x4(&vsConstants.transformbones[i], XMLoadFloat4x4(&renderQueue.back().BoneTransforms[i]));
+	}
 
 	gfxContext.SetDynamicConstantBufferView(0, sizeof(vsConstants), &vsConstants);
 	if(isTexture)
@@ -159,7 +160,7 @@ void Render::RenderObjects(GraphicsContext& gfxContext)
 	gfxContext.DrawIndexed(renderQueue.back().indexCount);
 }
 
-void Render::Render(void)
+void RenderCore::Render(void)
 {
 	while (!renderQueue.empty())
 	{
@@ -203,17 +204,17 @@ void Render::Render(void)
 	Graphics::Present();
 }
 
-void Render::ReSize(UINT width, UINT height)
+void RenderCore::ReSize(UINT width, UINT height)
 {
 	Graphics::Resize(width, height);
 }
 
-UINT Render::GetDisplayHeight()
+UINT RenderCore::GetDisplayHeight()
 {
 	return Graphics::g_DisplayHeight;
 }
 
-UINT Render::GetDisplayWidth()
+UINT RenderCore::GetDisplayWidth()
 {
 	return Graphics::g_DisplayWidth;
 }

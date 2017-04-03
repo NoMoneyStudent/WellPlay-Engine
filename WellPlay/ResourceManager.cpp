@@ -82,10 +82,25 @@ CommonMesh * ResourceManager::GetCommonMesh(const std::string & name)
 
 void ResourceManager::AddAvatar(Avatar& avatar)
 {
+	avatarList.push_back(std::move(avatar));
+}
 
+Avatar * ResourceManager::GetAvatar(const std::string & name)
+{
+	for (Avatar& iter : avatarList)
+	{
+		if (iter.name == name)
+			return &iter;
+	}
+	return nullptr;
 }
 
 void ResourceManager::AddAnimation(AnimationClip& clip)
 {
 	aniClips.push_back(std::move(clip));
+}
+
+AnimationClip& ResourceManager::GetAnimation(int index)
+{
+	return aniClips[0];
 }

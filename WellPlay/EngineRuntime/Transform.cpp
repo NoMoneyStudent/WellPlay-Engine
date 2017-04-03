@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Transform.h"
+#include "GameObject.h"
 #include "Scene.h"
 
 XMMATRIX Transform::GetLocalTranslationMatrix()
@@ -13,18 +14,14 @@ XMMATRIX Transform::GetWorldTranslationMatrix()
 	XMMATRIX worldSRT = GetLocalTranslationMatrix();
 	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
 	{
-		worldSRT = p->GetLocalTranslationMatrix()*worldSRT;
+		worldSRT *= p->GetLocalTranslationMatrix();
 	}
 	return worldSRT;
 }
 
 void Transform::GetWorldSRT(XMVECTOR & scale, XMVECTOR & rotation, XMVECTOR & position)
 {
-	XMMATRIX worldSRT = GetLocalTranslationMatrix();
-	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
-	{
-		worldSRT = p->GetLocalTranslationMatrix()*worldSRT;
-	}
+	XMMATRIX worldSRT = GetWorldTranslationMatrix();
 	XMMatrixDecompose(&scale, &rotation, &position, worldSRT);
 }
 
@@ -33,10 +30,10 @@ void Transform::SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR posit
 	XMMATRIX parentSRT = XMMatrixIdentity();
 	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
 	{
-		parentSRT = p->GetLocalTranslationMatrix()*parentSRT;
+		parentSRT *= p->GetLocalTranslationMatrix();
 	}
 	XMMATRIX localSRT = XMMatrixScalingFromVector(scale)*XMMatrixRotationQuaternion(rotation)*XMMatrixTranslationFromVector(position);
-	localSRT = XMMatrixInverse(nullptr, parentSRT)*localSRT;
+	localSRT = localSRT*XMMatrixInverse(nullptr, parentSRT);
 	XMVECTOR s, r, t;
 	XMMatrixDecompose(&s, &r, &t, localSRT);
 	XMStoreFloat3(&localPosition, t);
@@ -54,7 +51,6 @@ Transform::Transform():
 
 Transform::~Transform()
 {
-
 }
 
 void Transform::SetParent(Transform * parent)
@@ -128,16 +124,8 @@ void Transform::AddChild(Transform * child, int index)
 
 Component* Transform::Clone()
 {
-	Transform* copy = new Transform();
-	for (int i = 0; i < m_children.size(); i++)
-	{
-		GameObject* child = new GameObject(m_children[i]->gameobject());
-		child->GetTransform()->SetParent(this);
-	}
-	copy->localPosition = localPosition;
-	copy->localRotation = localRotation;
-	copy->localScale = localScale;
-	return static_cast<Component*>(copy);
+	ASSERT(false, "²»ÄÜ¿ËÂ¡Transform");
+	return nullptr;
 }
 
 XMVECTOR Transform::GetLocalPosition()

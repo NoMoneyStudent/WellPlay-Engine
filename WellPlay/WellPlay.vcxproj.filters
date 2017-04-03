@@ -141,9 +141,6 @@
     <ClInclude Include="EngineRuntime\MeshRender.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="EngineRuntime\Animation.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="EngineRuntime\Component.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -201,6 +198,15 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>系统模块</Filter>
     </ClInclude>
+    <ClInclude Include="EngineRuntime\EditorComponent.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineRuntime\Render.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineRuntime\Animator.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WellPlayMain.cpp">
@@ -216,9 +222,6 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Render\GpuTimeManager.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\RenderObject.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="AnimationCore.cpp">
@@ -284,9 +287,6 @@
     <ClCompile Include="EngineRuntime\MeshRender.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="EngineRuntime\Animation.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="EngineRuntime\Component.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -337,6 +337,15 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>系统模块</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\EditorComponent.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\Render.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\Animator.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

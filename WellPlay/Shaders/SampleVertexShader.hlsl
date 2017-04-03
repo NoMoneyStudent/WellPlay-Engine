@@ -18,10 +18,10 @@
 // 存储用于构成几何图形的三个基本列优先矩阵的常量缓冲区。
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
-	matrix model;
-	matrix view;
-	matrix projection;
-	//matrix Transforms[64];
+	float4x4 model;
+	float4x4 view;
+	float4x4 projection;
+	float4x4 Transforms[32];
 };
 
 // 用作顶点着色器输入的每个顶点的数据。
@@ -51,22 +51,21 @@ PixelShaderInput main(VertexShaderInput input)
 {
 	PixelShaderInput output;
 	float4 pos = float4(input.pos, 1.0f);
-	//float4 truepos = float4(0.0, 0.0, 0.0, 1.0f);
+	float4 truepos = float4(0.0, 0.0, 0.0, 1.0f);
 
-	//float weight[4] = { input.weights.x,input.weights.y,input.weights.z,input.weights.w };
+	float weight[4] = { input.weights.x,input.weights.y,input.weights.z,input.weights.w };
 
-	/*for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (input.indices[i] != 65536)
 		{
-			float4 temp = mul(Transforms[input.indices[i]], pos);
-			temp.z = -temp.z;
+			float4 temp = mul(pos, Transforms[input.indices[i]]);
 			truepos += temp*weight[i];
 		}
-	}*/
-	//pos = truepos;
+	}
+	pos = truepos;
 	// 将顶点位置转换为投影空间。
-	pos = mul(pos, model);
+	//pos = mul(pos, model);
 	pos = mul(pos, view);
 	pos = mul(pos, projection);
 	output.pos = pos;

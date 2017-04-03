@@ -11,7 +11,7 @@
 
 using namespace EditorWindows;
 using namespace std;
-using namespace Render;
+using namespace RenderCore;
 
 EditorMainWnd::EditorMainWnd( LPCTSTR pszXMLPath )
 	:  m_strXMLPath(pszXMLPath)
@@ -99,7 +99,7 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 			if (ex == "fbx")
 			{
 				 FBXImport::ImportModel(string(filepath.begin(), filepath.end()));
-				RenderObject object;
+				//RenderObject object;
 				//object.Create(mo->meshs[mo->meshs.size() - 1], mo->bones, 0);
 				//renderQueue.push_back(std::move(object));
 				//InitAni(renderQueue[0]);
