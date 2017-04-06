@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Scene.h"
 
+using namespace std;
+
 XMMATRIX Transform::GetLocalTranslationMatrix()
 {
 	XMMATRIX t= XMMatrixScalingFromVector(GetLocalScale())*XMMatrixRotationQuaternion(GetLocalRotation())*XMMatrixTranslationFromVector(GetLocalPosition());
@@ -12,7 +14,7 @@ XMMATRIX Transform::GetLocalTranslationMatrix()
 XMMATRIX Transform::GetWorldTranslationMatrix()
 {
 	XMMATRIX worldSRT = GetLocalTranslationMatrix();
-	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
+	for (auto p = m_parent; p != nullptr; p = p->m_parent)
 	{
 		worldSRT *= p->GetLocalTranslationMatrix();
 	}
@@ -28,7 +30,7 @@ void Transform::GetWorldSRT(XMVECTOR & scale, XMVECTOR & rotation, XMVECTOR & po
 void Transform::SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR position)
 {
 	XMMATRIX parentSRT = XMMatrixIdentity();
-	for (Transform* p = m_parent; p != nullptr; p = p->m_parent)
+	for (auto p = m_parent; p != nullptr; p = p->m_parent)
 	{
 		parentSRT *= p->GetLocalTranslationMatrix();
 	}
@@ -42,6 +44,8 @@ void Transform::SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR posit
 }
 
 Transform::Transform():
+	Component::Component(),
+	enable_shared_from_this<Transform>::enable_shared_from_this(),
 	localPosition(XMFLOAT3(0,0,0)),
 	localRotation(XMFLOAT4(0, 0, 0, 1)),
 	localScale(XMFLOAT3(1, 1, 1)),
@@ -51,22 +55,25 @@ Transform::Transform():
 
 Transform::~Transform()
 {
+	m_parent.reset();
+	m_children.clear();
+	Component::~Component();
 }
 
-void Transform::SetParent(Transform * parent)
+void Transform::SetParent(shared_ptr<Transform> parent)
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	if (m_parent == nullptr)
 	{
-		Scene* s = Scene::GetCurrentScene();
+		auto s = Scene::GetCurrentScene();
 		s->RemoveRootGameObject(gameobject());
 	}
 	else
 	{
 		for (auto iter = m_parent->m_children.begin(); iter != m_parent->m_children.end(); iter++)
 		{
-			if (*iter = this)
+			if (*iter = shared_from_this())
 			{
 				m_parent->m_children.erase(iter);
 				break;
@@ -75,26 +82,26 @@ void Transform::SetParent(Transform * parent)
 	}
 
 	m_parent = parent;
-	if (parent == nullptr)
+	if (m_parent == nullptr)
 	{
-		Scene* s = Scene::GetCurrentScene();
+		auto s = Scene::GetCurrentScene();
 		s->AddRootGameObject(gameobject());
 	}
 	else
 	{
-		parent->m_children.push_back(this);
+		parent->m_children.push_back(shared_from_this());
 	}
 	SetWorldSRT(s, r, t);
 }
 
-void Transform::AddChild(Transform * child, int index)
+void Transform::AddChild(shared_ptr<Transform> child, int index)
 {
 	XMVECTOR s, r, t;
-	GetWorldSRT(s, r, t);
+	child->GetWorldSRT(s, r, t);
 
 	if (child->m_parent == nullptr)
 	{
-		Scene* s = Scene::GetCurrentScene();
+		auto s = Scene::GetCurrentScene();
 		s->RemoveRootGameObject(child->gameobject());
 	}
 	else
@@ -109,7 +116,7 @@ void Transform::AddChild(Transform * child, int index)
 		}
 	}
 
-	child->m_parent = this;
+	child->m_parent = shared_from_this();
 	if (index < 0||index>=m_children.size())
 		m_children.push_back(child);
 	else
@@ -119,7 +126,7 @@ void Transform::AddChild(Transform * child, int index)
 		m_children.insert(iter, child);
 	}
 
-	SetWorldSRT(s, r, t);
+	child->SetWorldSRT(s, r, t);
 }
 
 Component* Transform::Clone()

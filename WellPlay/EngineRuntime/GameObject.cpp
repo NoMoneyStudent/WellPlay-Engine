@@ -5,49 +5,44 @@
 using namespace std;
 
 GameObject::GameObject(const std::string & name):
+	enable_shared_from_this<GameObject>::enable_shared_from_this(),
 	m_name(name)
 {
-	InitObject();
-	m_transform->OnInit();
-	m_transform->OnEnable();
 }
 
-GameObject::GameObject(GameObject * prototype):
+GameObject::GameObject(shared_ptr<GameObject> prototype):
+	enable_shared_from_this<GameObject>::enable_shared_from_this(),
 	m_name(prototype->m_name)
 {
-	InitObject();
-	CreateHierarchy(prototype);
-	InitHierarchy();
-	EnableHierarchy();
 }
 
-void GameObject::CreateHierarchy(GameObject* prototype)
-{
-	m_transform->localPosition = prototype->m_transform->localPosition;
-	m_transform->localRotation = prototype->m_transform->localRotation;
-	m_transform->localScale = prototype->m_transform->localScale;
-	m_transform->m_isEnable = prototype->m_transform->m_isEnable;
-	m_components.reserve(prototype->m_components.size());
-
-	for (int i = 1; i < prototype->m_components.size(); i++)
-	{
-		std::pair<std::string, Component*> temp(prototype->m_components[i].first, nullptr);
-		temp.second = prototype->m_components[i].second->Clone();
-		temp.second->m_gameobject = this;
-		temp.second->m_isEnable = prototype->m_components[i].second->m_isEnable;
-
-		m_components.push_back(temp);
-	}
-	self_active = prototype->self_active;
-	m_transform = dynamic_cast<Transform*>(m_components[0].second);
-	ASSERT(m_transform != nullptr, "游戏对象复制出现问题");
-	for (int i = 0; i < prototype->m_transform->m_children.size(); i++)
-	{
-		GameObject* child = new GameObject(prototype->m_transform->m_children[i]->m_gameobject->m_name);
-		child->m_transform->SetParent(m_transform);
-		child->CreateHierarchy(prototype->m_transform->m_children[i]->m_gameobject);
-	}
-}
+//void GameObject::CreateHierarchy(shared_ptr<GameObject> prototype)
+//{
+//	m_transform->localPosition = prototype->m_transform->localPosition;
+//	m_transform->localRotation = prototype->m_transform->localRotation;
+//	m_transform->localScale = prototype->m_transform->localScale;
+//	m_transform->m_isEnable = prototype->m_transform->m_isEnable;
+//	m_components.reserve(prototype->m_components.size());
+//
+//	for (int i = 1; i < prototype->m_components.size(); i++)
+//	{
+//		std::pair<std::string, shared_ptr<Component>> temp(prototype->m_components[i].first, nullptr);
+//		temp.second = prototype->m_components[i].second->Clone();
+//		temp.second->m_gameobject = shared_from_this();
+//		temp.second->m_isEnable = prototype->m_components[i].second->m_isEnable;
+//
+//		m_components.push_back(temp);
+//	}
+//	self_active = prototype->self_active;
+//	m_transform = dynamic_cast<Transform*>(m_components[0].second);
+//	ASSERT(m_transform != nullptr, "游戏对象复制出现问题");
+//	for (int i = 0; i < prototype->m_transform->m_children.size(); i++)
+//	{
+//		GameObject* child = new GameObject(prototype->m_transform->m_children[i]->m_gameobject->m_name);
+//		child->m_transform->SetParent(m_transform);
+//		child->CreateHierarchy(prototype->m_transform->m_children[i]->m_gameobject);
+//	}
+//}
 
 void GameObject::InitHierarchy()
 {
@@ -78,8 +73,8 @@ void GameObject::EnableHierarchy()
 
 void GameObject::InitObject()
 {
-	Scene* s = Scene::GetCurrentScene();
-	std::vector<GameObject*> root = s->GetRootGameObject();
+	auto s = Scene::GetCurrentScene();
+	auto root = s->GetRootGameObject();
 	int count = 0;
 	for (int i = 0; i < root.size(); i++)
 	{
@@ -90,20 +85,22 @@ void GameObject::InitObject()
 	{
 		m_name += " (" + to_string(count) + ")";
 	}
-	s->AddRootGameObject(this);
-	m_transform = new Transform();
-	m_transform->m_gameobject = this;
+	s->AddRootGameObject(shared_from_this());
+	m_transform = shared_ptr<Transform>(new Transform());
+	m_transform->m_gameobject = shared_from_this();
 	m_transform->m_isEnable = true;
-	m_components.push_back(make_pair(typeid(Transform).name(), static_cast<Component*>(m_transform)));
+	m_components.push_back(make_pair(typeid(Transform).name(), static_pointer_cast<Component>(m_transform)));
+	m_transform->OnInit();
+	m_transform->OnEnable();
 }
 
 GameObject::~GameObject()
 {
 }
 
-GameObject * GameObject::FindChild(std::string & name)
+weak_ptr<GameObject> GameObject::FindChild(std::string & name)
 {
-	GameObject* child;
+	shared_ptr<GameObject> child;
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
 		child = m_transform->m_children[i]->m_gameobject;
@@ -112,34 +109,34 @@ GameObject * GameObject::FindChild(std::string & name)
 	}
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
-		child = m_transform->m_children[i]->m_gameobject->FindChild(name);
-		if (child!=nullptr)
-			return child;
+		auto tempchild = m_transform->m_children[i]->m_gameobject->FindChild(name);
+		if (!tempchild.expired())
+			return tempchild;
 	}
-	return nullptr;
+	return weak_ptr<GameObject>();
 }
 
-std::vector<GameObject*> GameObject::FindAllChildren(std::string & name)
+std::vector<weak_ptr<GameObject>> GameObject::FindAllChildren(std::string & name)
 {
-	std::vector<GameObject*> children;
+	std::vector<weak_ptr<GameObject>> children;
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
-		GameObject* child = m_transform->m_children[i]->m_gameobject;
+		auto child = m_transform->m_children[i]->m_gameobject;
 		if (name == child->m_name)
 			children.push_back(child);
 	}
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
-		std::vector<GameObject*> child = m_transform->m_children[i]->m_gameobject->FindAllChildren(name);
+		auto child = m_transform->m_children[i]->m_gameobject->FindAllChildren(name);
 		if (!child.empty())
 			children.insert(children.end(), child.begin(), child.end());
 	}
 	return children;
 }
 
-GameObject * GameObject::FindRootParent()
+weak_ptr<GameObject> GameObject::FindRootParent()
 {
-	Transform* temp = m_transform;
+	shared_ptr<Transform> temp = m_transform;
 	while (temp->m_parent != nullptr)
 	{
 		temp = temp->m_parent;
@@ -147,10 +144,10 @@ GameObject * GameObject::FindRootParent()
 	return temp->m_gameobject;
 }
 
-GameObject * GameObject::Find(std::string & name)
+weak_ptr<GameObject> GameObject::Find(std::string & name)
 {
-	Scene* s = Scene::GetCurrentScene();
-	std::vector<GameObject*> root = s->GetRootGameObject();
+	auto s = Scene::GetCurrentScene();
+	auto root = s->GetRootGameObject();
 	for (int i = 0; i < root.size(); i++)
 	{
 		if (root[i]->m_name == name)
@@ -158,18 +155,18 @@ GameObject * GameObject::Find(std::string & name)
 	}
 	for (int i = 0; i < root.size(); i++)
 	{
-		GameObject* child = root[i]->FindChild(name);
-		if (child != nullptr)
+		weak_ptr<GameObject> child = root[i]->FindChild(name);
+		if (!child.expired())
 			return child;
 	}
-	return nullptr;
+	return weak_ptr<GameObject>();
 }
 
-std::vector<GameObject*> GameObject::FindAll(std::string & name)
+std::vector<weak_ptr<GameObject>> GameObject::FindAll(std::string & name)
 {
-	std::vector<GameObject*> result;
-	Scene* s = Scene::GetCurrentScene();
-	std::vector<GameObject*> root = s->GetRootGameObject();
+	std::vector<weak_ptr<GameObject>> result;
+	auto s = Scene::GetCurrentScene();
+	auto root = s->GetRootGameObject();
 	for (int i = 0; i < root.size(); i++)
 	{
 		if (root[i]->m_name == name)
@@ -177,20 +174,56 @@ std::vector<GameObject*> GameObject::FindAll(std::string & name)
 	}
 	for (int i = 0; i < root.size(); i++)
 	{
-		std::vector<GameObject*> children = root[i]->FindAllChildren(name);
+		auto children = root[i]->FindAllChildren(name);
 		if (!children.empty())
 			result.insert(result.end(), children.begin(), children.end());
 	}
 	return result;
 }
 
-void GameObject::Destroy(Component * target)
+shared_ptr<GameObject> GameObject::Instantiate(const std::string & name)
 {
-	ASSERT(typeid(target) != typeid(Transform), "不能删除Transform组件");
+	shared_ptr<GameObject> newobject(new GameObject(name));
+	newobject->InitObject();
+	return newobject;
+}
 
-	GameObject* own = target->m_gameobject;
+shared_ptr<GameObject> GameObject::Instantiate(std::shared_ptr<GameObject> prototype)
+{
+	shared_ptr<GameObject> newobject(new GameObject(prototype));
+	newobject->InitObject();
+	//newobject->CreateHierarchy(prototype);
+	newobject->InitHierarchy();
+	newobject->EnableHierarchy();
+	return newobject;
+}
+
+void GameObject::Destroy(shared_ptr<Component>& target)
+{
+	ASSERT(typeid(target.get()) != typeid(Transform*), "不能删除Transform组件");
+
+	shared_ptr<GameObject> own = target->m_gameobject;
 	target->SetEnable(false);
-	target->OnDestroy();
+	if (EngineUtility::isInPlay())
+	{
+		target->OnDestroy();
+	}
+	else
+	{
+		shared_ptr<EditorComponent> ec = dynamic_pointer_cast<EditorComponent>(target);
+		if (ec != nullptr)
+		{
+			ec->EditorOnDestroy();
+			for (auto iter = own->m_editorcomponents.begin(); iter != own->m_editorcomponents.end(); iter++)
+			{
+				if (*iter == ec)
+				{
+					own->m_editorcomponents.erase(iter);
+					break;
+				}
+			}
+		}
+	}
 	for (auto iter = own->m_components.begin(); iter != own->m_components.end(); iter++)
 	{
 		if (iter->second == target)
@@ -200,52 +233,86 @@ void GameObject::Destroy(Component * target)
 		}
 	}
 	
-	delete target;
+	//shared_ptr<Component> del(std::move(target));
+	//del.~shared_ptr();
+	ASSERT(target.use_count() == 1, "在其他地方存有组件的shared_ptr,组件无法被删除");
+	target.reset();
 }
 
 void GameObject::DestroyHierarchy()
 {
-	for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+	if (EngineUtility::isInPlay())
 	{
-		iter->second->OnDestroy();
+		for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+		{
+			iter->second->OnDestroy();
+		}
 	}
+	else
+	{
+		for (auto iter = m_editorcomponents.begin(); iter != m_editorcomponents.end(); iter++)
+		{
+			(*iter)->EditorOnDestroy();
+		}
+	}
+
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
-		GameObject* child = m_transform->m_children[i]->m_gameobject;
+		shared_ptr<GameObject> child = m_transform->m_children[i]->m_gameobject;
 		child->DestroyHierarchy();
 	}
 }
 
 void GameObject::DisableHierarchy()
 {
-	for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+	if (EngineUtility::isInPlay())
 	{
-		iter->second->OnDisable();
+		for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+		{
+			iter->second->SetEnable(false);
+		}
+	}
+	else
+	{
+		for (auto iter = m_editorcomponents.begin(); iter != m_editorcomponents.end(); iter++)
+		{
+			(*iter)->EditorOnDisable();
+		}
 	}
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
-		GameObject* child = m_transform->m_children[i]->m_gameobject;
+		shared_ptr<GameObject> child = m_transform->m_children[i]->m_gameobject;
 		child->DisableHierarchy();
 	}
 }
 
-void GameObject::Destroy(GameObject * target)
+void GameObject::Destroy(shared_ptr<GameObject>& object)
 {
+	shared_ptr<GameObject> target(std::move(object));
 	target->DisableHierarchy();
+	target->DestroyHierarchy();
+
 	for (int i = 0; i < target->m_transform->m_children.size(); i++)
 	{
-		GameObject* child = target->m_transform->m_children[i]->m_gameobject;
+		auto child = target->m_transform->m_children[i]->m_gameobject;
 		GameObject::Destroy(child);
 	}
-	target->DestroyHierarchy();
-	target->m_transform->SetParent(nullptr);
-	
+
+	target->m_editorcomponents.clear();
+	if (target->m_transform->m_parent == nullptr)
+	{
+		auto s = Scene::GetCurrentScene();
+		s->RemoveRootGameObject(target);
+	}
+	target->m_transform.reset();
 	for (auto iter = target->m_components.begin(); iter != target->m_components.end(); iter++)
 	{
-		delete iter->second;
+		//ASSERT(iter->second.use_count() == 1, "在其他地方存有组件的shared_ptr,组件无法被删除");
 	}
 	target->m_components.clear();
-	delete target;
+	
+	ASSERT(target.use_count() == 1, "其他地方存有GameObject的shared_ptr,GameObject无法被删除");
+	target.reset();
 }
 
 bool GameObject::GetActiveInHierarchy()

@@ -1,121 +1,127 @@
 #pragma once
 #include <vector>
-#include <utility>
 #include <string>
 #include "Component.h"
 #include "EditorComponent.h"
 #include "Transform.h"
-
 #include "MeshRender.h"
 #include "SkinMeshRender.h"
+#include "EngineUtility.h"
+#include <cereal/access.hpp>
 
 class Scene;
 
-class GameObject
+class GameObject:public std::enable_shared_from_this<GameObject>
 {
 	friend class Scene;
+	friend class cereal::access;
 public:
-	GameObject(const std::string& name = "new GameObject");
-	GameObject(GameObject* prototype);
+	GameObject(const std::string& name="new GameObject");
+	GameObject(std::shared_ptr<GameObject> prototype);
+	GameObject(GameObject*) = delete;
 	GameObject& operator=(GameObject&) = delete;
+	~GameObject();
 
 #pragma region 模板函数
-	template<class T> T* GetComponent()
+	template<class T> std::weak_ptr<T> GetComponent()
 	{
 		for (auto& iter : m_components)
 		{
 			if (iter.first == typeid(T).name())
-				return dynamic_cast<T*>(iter.second);
+				return std::dynamic_pointer_cast<T>(iter.second);
 		}
-		return nullptr;
+		return std::weak_ptr<T>();
 	}
-	template<class T> T* AddComponent()
+	template<class T> std::weak_ptr<T> AddComponent()
 	{
-		T* newT = new T();
-		Component* newComponent = static_cast<Component*>(newT);
-		if (newComponent != nullptr)
+		shared_ptr<T> newT(new T());
+		shared_ptr<Component> newComponent = std::static_pointer_cast<Component>(newT);
+		ASSERT(newComponent != nullptr, "创建的类型不是component");
+
+		m_components.push_back(make_pair(typeid(T).name(), newComponent));
+		newComponent->m_gameobject = shared_from_this();
+		newComponent->m_isEnable = true;
+
+		if (EngineUtility::isInPlay())
 		{
-			m_components.push_back(make_pair(typeid(T).name(), newComponent));
-			newComponent->m_gameobject = this;
-			newComponent->m_isEnable = true;
-			EditorComponent* editorc = dynamic_cast<EditorComponent*>(newT);
-			if (editorc != nullptr)
-				AddEditorComponent(editorc);
 			newComponent->OnInit();
-			return dynamic_cast<T*>(newComponent);
 		}
 		else
 		{
-			delete newT;
-			return nullptr;
+			shared_ptr<EditorComponent> editorc = std::dynamic_pointer_cast<EditorComponent>(newT);
+			if (editorc != nullptr)
+			{
+				m_editorcomponents.push_back(editorc);
+				editorc->EditorOnEnable();
+			}
 		}
+		return newT;
 	}
-	template<class T> T* GetComponentInChildren()
+	template<class T> std::weak_ptr<T> GetComponentInChildren()
 	{
-		T* mycom = GetComponent<T>();
-		if (mycom != nullptr)
+		std::weak_ptr<T> mycom = GetComponent<T>();
+		if (!mycom .expired())
 			return mycom;
 		else
 		{
-			std::vector<Transform*>& children = m_transform->m_children;
+			auto& children = m_transform->m_children;
 			for (int i = 0; i < children.size(); i++)
 			{
 				mycom = children[i]->m_gameobject->GetComponentInChildren<T>();
-				if (mycom != nullptr)
+				if (!mycom.expired())
 					return mycom;
 			}
-			return nullptr;
+			return std::weak_ptr<T>();
 		}
 	}
-	template<class T> T* GetComponentInParent()
+	template<class T> std::weak_ptr<T> GetComponentInParent()
 	{
-		T* mycom = GetComponent<T>();
-		if (mycom != nullptr)
+		std::weak_ptr<T> mycom = GetComponent<T>();
+		if (!mycom.expired())
 			return mycom;
 		else
 		{
-			Transform* parent = m_transform->GetParent();
+			auto parent = m_transform->GetParent();
 			if (parent != nullptr)
 				return parent->m_gameobject->GetComponentInParent<T>();
 			else
-				return nullptr;
+				return std::weak_ptr<T>();
 		}
 	}
-	template<class T> std::vector<T*> GetComponents()
+	template<class T> std::vector<std::weak_ptr<T>> GetComponents()
 	{
-		std::vector<T*> mycom;
+		std::vector<std::weak_ptr<T>> mycom;
 		for (auto& iter : m_components)
 		{
 			if (iter.first == typeid(T).name())
-				mycom.push_back(dynamic_cast<T*>(iter.second));
+				mycom.push_back(std::dynamic_pointer_cast<T>(iter.second));
 		}
 		return mycom;
 	}
-	template<class T> std::vector<T*> GetComponentsInChildren()
+	template<class T> std::vector<std::weak_ptr<T>> GetComponentsInChildren()
 	{
-		std::vector<T*> result;
-		std::vector<T*> mycom = GetComponents<T>();
+		std::vector<std::weak_ptr<T>> result;
+		std::vector<std::weak_ptr<T>> mycom = GetComponents<T>();
 		if (!mycom.empty())
 			result.insert(result.end(), mycom.begin(), mycom.end());
 
-		std::vector<Transform*>& children = m_transform->m_children;
+		auto& children = m_transform->m_children;
 		for (int i = 0; i < children.size(); i++)
 		{
 			mycom = children[i]->m_gameobject->GetComponentsInChildren<T>();
 			if (!mycom.empty())
 				result.insert(result.end(), mycom.begin(), mycom.end());
 		}
-
 		return result;
 	}
-	template<class T> std::vector<T*> GetComponentsInParent()
+	template<class T> std::vector<std::weak_ptr<T>> GetComponentsInParent()
 	{
-		std::vector<T*> result;
-		std::vector<T*> mycom = GetComponents<T>();
+		std::vector<std::weak_ptr<T>> result;
+		std::vector<std::weak_ptr<T>> mycom = GetComponents<T>();
 		if (!mycom.empty())
 			result.insert(result.end(), mycom.begin(), mycom.end());
 
-		Transform* parent = m_transform->GetParent();
+		auto parent = m_transform->GetParent();
 		if (parent != nullptr)
 		{
 			mycom = parent->m_gameobject->GetComponentsInParent<T>();
@@ -127,92 +133,85 @@ public:
 #pragma endregion
 
 #pragma region 模板特化
-	template<>
-	Transform* GameObject::AddComponent()
+	//"不允许创建Transform组件"
+	template<> std::weak_ptr<Transform> GameObject::AddComponent() = delete;
+	
+	//"不允许创建Render组件,创建MeshRender或SkinMeshRender"
+	template<> std::weak_ptr<Render> GameObject::AddComponent() = delete;
+	
+	template<> std::weak_ptr<Render> GameObject::GetComponent()
 	{
-		ASSERT(false, "不允许创建Transform组件");
-		return nullptr;
-	}
-	template<>
-	Render* GameObject::AddComponent()
-	{
-		ASSERT(false, "不允许创建Render组件,替换成MeshRender或SkinMeshRender");
-		return nullptr;
-	}
-	template<>
-	Render* GameObject::GetComponent()
-	{
-		MeshRender* meshrender = GetComponent<MeshRender>();
-		if (meshrender == nullptr)
+		auto meshrender = GetComponent<MeshRender>();
+		if (meshrender.expired())
 		{
-			SkinMeshRender* skinrender = GetComponent<SkinMeshRender>();
-			return static_cast<Render*>(skinrender);
+			auto skinrender = GetComponent<SkinMeshRender>();
+			if (skinrender.expired())
+				return std::weak_ptr<Render>();
+			else
+				return std::static_pointer_cast<Render>(skinrender.lock());
 		}
 		else
-			return static_cast<Render*>(meshrender);
+			return std::static_pointer_cast<Render>(meshrender.lock());
 	}
-	template<>
-	std::vector<Render*> GameObject::GetComponents()
+	template<> std::vector<std::weak_ptr<Render>> GameObject::GetComponents()
 	{
-		std::vector<Render*> result;
-		std::vector<MeshRender*> meshrender = GetComponents<MeshRender>();
-		std::vector<SkinMeshRender*> skinrender = GetComponents<SkinMeshRender>();
+		std::vector<std::weak_ptr<Render>> result;
+		auto meshrender = GetComponents<MeshRender>();
+		auto skinrender = GetComponents<SkinMeshRender>();
 		result.insert(result.end(), meshrender.begin(), meshrender.end());
 		result.insert(result.end(), skinrender.begin(), skinrender.end());
 		return result;
 	}
 #pragma endregion
-	/*此函数在创建组件时自动调用，无需重复调用*/
-	void AddEditorComponent(EditorComponent* component)
-	{
-		m_editorcomponents.push_back(component);
-	}
-	/*在删除编辑器组件时必须调用，否则会产生空指针*/
-	void RemoveEditorComponent(EditorComponent* component)
-	{
-		for (auto iter = m_editorcomponents.begin(); iter != m_editorcomponents.end(); iter++)
-		{
-			if (*iter == component)
-			{
-				m_editorcomponents.erase(iter);
-				break;
-			}
-		}
-	}
 
-	GameObject* FindChild(std::string& name);
-	std::vector<GameObject*> FindAllChildren(std::string& name);
-	GameObject* FindRootParent();
+	std::weak_ptr<GameObject> FindChild(std::string& name);
+	std::vector<std::weak_ptr<GameObject>> FindAllChildren(std::string& name);
+	std::weak_ptr<GameObject> FindRootParent();
 	std::string GetName() { return m_name; }
 	void SetName(const std::string& name) { m_name = name; }
 
-	Transform* GetTransform() { return m_transform; }
+	std::weak_ptr<Transform> GetTransform() { return m_transform; }
 	bool GetSelfActive() { self_active; }
 	void SetActive(bool active) { self_active = active; }
 	bool GetActiveInHierarchy();
 
-	static GameObject* Find(std::string& name);
-	static std::vector<GameObject*> FindAll(std::string& name);
+	static std::weak_ptr<GameObject> Find(std::string& name);
+	static std::vector<std::weak_ptr<GameObject>> FindAll(std::string& name);
 	
-	/*在删除编辑器组件时必须调用RemoveEditorComponent*/
-	static void Destroy(Component* target);
-	static void Destroy(GameObject* target);
+	static std::shared_ptr<GameObject> Instantiate(const std::string& name = "new GameObject");
+	static std::shared_ptr<GameObject> Instantiate(std::shared_ptr<GameObject> prototype);
+	static void Destroy(std::shared_ptr<Component>& target);
+	static void Destroy(std::shared_ptr<GameObject>& target);
 
 private:
-	std::vector<std::pair<std::string,Component*>> m_components;
-	std::vector<EditorComponent*> m_editorcomponents;
-	Transform* m_transform;
+	std::vector<std::pair<std::string, std::shared_ptr<Component>>> m_components;
+	std::vector<std::shared_ptr<EditorComponent>> m_editorcomponents;
+	std::shared_ptr<Transform> m_transform;
 	std::string m_name;
 	bool self_active = true;
 
 	void InitObject();
 	void DestroyHierarchy();
 	void DisableHierarchy();
-	void CreateHierarchy(GameObject* prototype);
+	void CreateHierarchy(std::shared_ptr<GameObject> prototype);
 	void InitHierarchy();
 	void EnableHierarchy();
+
 	void Update();
 	void EditorUpdate();
+#pragma region 序列化
+	template<class Archive>
+	void save(Archive & archive) const
+	{
+		archive(m_name, self_active);
+		archive(m_components, m_editorcomponents, m_transform);
+	}
 
-	~GameObject();
+	template<class Archive>
+	void load(Archive & archive)
+	{
+		archive(m_name, self_active);
+		archive(m_components, m_editorcomponents, m_transform);
+	}
+#pragma endregion
 };

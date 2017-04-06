@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SkinMeshRender.h"
 #include "Render\RenderObject.h"
+#include "Wnd\LogWnd.h"
 #include "ResourceManager.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -8,6 +9,7 @@
 
 using namespace RenderCore;
 using namespace DirectX;
+using namespace std;
 
 void SkinMeshRender::SetAvatar(Avatar * avatar)
 {
@@ -42,12 +44,26 @@ void SkinMeshRender::OnInit()
 
 	for (int i = 0; i < m_avatar->bonelists.size(); i++)
 	{
-		Transform* tempT = gameobject()->FindRootParent()->FindChild(m_avatar->bonelists[i].name)->GetTransform();
-		ASSERT(tempT != nullptr, "骨骼节点缺失了");
-		m_bones.push_back(tempT);
+		auto root = gameobject()->FindRootParent();
+		ASSERT(!root.expired(), "骨骼节点缺失了");
+		auto tempT = root.lock()->FindChild(m_avatar->bonelists[i].name);
+		if (!tempT.expired())
+		{
+			m_bones.push_back(tempT.lock()->GetTransform());
+		}
+		else
+		{
+			EditorWindows::LogWnd::Print(L"骨骼节点缺失:  " + MakeWStr(m_avatar->bonelists[i].name));
+			m_bones.push_back(weak_ptr<Transform>());
+		}
 	}
 	render.BoneCount = m_bones.size();
 	render.BoneTransforms = m_TransformMatrix.data();
+}
+
+void SkinMeshRender::EditorOnInit()
+{
+
 }
 
 void SkinMeshRender::Update()
@@ -55,9 +71,15 @@ void SkinMeshRender::Update()
 	for (int i = 0; i < m_bones.size(); i++)
 	{
 		XMMATRIX Bind = XMLoadFloat4x4(&m_avatar->bonelists[i].Bind);
-		XMStoreFloat4x4(&m_TransformMatrix[i], Bind * m_bones[i]->GetWorldTranslationMatrix());
+		if (!m_bones[i].expired())
+			XMStoreFloat4x4(&m_TransformMatrix[i], Bind * m_bones[i].lock()->GetWorldTranslationMatrix());
 	}
 	renderQueue.push_back(std::move(render));
+}
+
+void SkinMeshRender::EditorUpdate()
+{
+	Update();
 }
 
 Component * SkinMeshRender::Clone()
@@ -65,12 +87,13 @@ Component * SkinMeshRender::Clone()
 	SkinMeshRender* copy = new SkinMeshRender();
 	copy->m_avatar = m_avatar;
 	copy->m_mesh = m_mesh;
-	copy->m_avatar = m_avatar;
+	copy->render = render;
 
 	return static_cast<Component*>(copy);
 }
 
 SkinMeshRender::SkinMeshRender()
+	:Render::Render()
 {
 }
 

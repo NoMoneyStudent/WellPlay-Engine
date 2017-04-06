@@ -1,15 +1,22 @@
 #pragma once
 #include "Component.h"
+#include "Scene.h"
 #include <vector>
 #include <DirectXMath.h>
+#include <cereal/access.hpp>
 class GameObject;
 
 using namespace DirectX;
 
-class Transform:public Component
+class Transform:public Component,public std::enable_shared_from_this<Transform>
 {
 	friend class GameObject;
+	friend class cereal::access;
+
 public:
+	Transform();
+	virtual ~Transform();
+
 	XMVECTOR GetLocalPosition();
 	XMVECTOR GetLocalRotation();
 	XMFLOAT3 GetLocalEulerAngles();
@@ -30,21 +37,37 @@ public:
 	XMVECTOR GetLeft();
 	XMVECTOR GetDown();
 
-	Transform* GetParent() { return m_parent; }
-	std::vector<Transform*> GetChildren() { return m_children; }
-	void SetParent(Transform* parent);
-	void AddChild(Transform* child, int index = -1);
+	std::shared_ptr<Transform> GetParent() { return m_parent; }
+	std::vector<std::shared_ptr<Transform>> GetChildren() { return m_children; }
+	void SetParent(std::shared_ptr<Transform> parent);
+	void AddChild(std::shared_ptr<Transform> child, int index = -1);
 
 private:
 	XMFLOAT3 localPosition;
 	XMFLOAT4 localRotation;
 	XMFLOAT3 localScale;
 
-	Transform* m_parent;
-	std::vector<Transform*> m_children;
-
-	Transform();
-	virtual ~Transform();
+	std::shared_ptr<Transform> m_parent;
+	std::vector<std::shared_ptr<Transform>> m_children;
 	
 	virtual Component* Clone()override;
+#pragma region –Ú¡–ªØ
+	template<class Archive>
+	void save(Archive & archive) const
+	{
+		archive(localPosition, localRotation, localScale);
+		archive(m_parent, m_children);
+		archive(cereal::base_class<Component>(this));
+	}
+
+	template<class Archive>
+	void load(Archive & archive)
+	{
+		archive(localPosition, localRotation, localScale);
+		archive(m_parent, m_children);
+		archive(cereal::base_class<Component>(this));
+		if (m_parent == nullptr)
+			Scene::GetCurrentScene()->AddRootGameObject(gameobject());
+	}
+#pragma endregion
 };

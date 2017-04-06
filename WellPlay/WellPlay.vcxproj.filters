@@ -165,9 +165,6 @@
     <ClInclude Include="Utility\FileUtility.h">
       <Filter>FileOperation</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\FBXImport.h">
-      <Filter>FileOperation\Model</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\Model.h">
       <Filter>FileOperation\Model</Filter>
     </ClInclude>
@@ -206,6 +203,15 @@
     </ClInclude>
     <ClInclude Include="EngineRuntime\Animator.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\ModelImport.h">
+      <Filter>FileOperation\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineRuntime\EngineUtility.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Serialize.h">
+      <Filter>FileOperation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -311,9 +317,6 @@
     <ClCompile Include="Utility\FileUtility.cpp">
       <Filter>FileOperation</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\FBXImport.cpp">
-      <Filter>FileOperation\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\TextureManager.cpp">
       <Filter>FileOperation\Image</Filter>
     </ClCompile>
@@ -346,6 +349,15 @@
     </ClCompile>
     <ClCompile Include="EngineRuntime\Animator.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\ModelImport.cpp">
+      <Filter>FileOperation\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineRuntime\EngineUtility.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Serialize.cpp">
+      <Filter>FileOperation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include "Animator.h"
 #include "SystemTime.h"
 #include "GameObject.h"
+#include "Wnd\LogWnd.h"
 #include <limits>
 
 using namespace std;
@@ -41,9 +42,18 @@ void Animator::OnInit()
 
 	for (int i = 0; i < animationClips[currentIndex]->clips.size(); i++)
 	{
-		Transform* tempT = gameobject()->FindRootParent()->FindChild(animationClips[currentIndex]->clips[i].first)->GetTransform();
-		ASSERT(tempT != nullptr, "骨骼节点缺失了");
-		aniTransform.push_back(tempT);
+		auto root = gameobject()->FindRootParent();
+		ASSERT(!root.expired(), "骨骼节点缺失了");
+		auto tempT = root.lock()->FindChild(animationClips[currentIndex]->clips[i].first);
+		if (!tempT.expired())
+		{
+			aniTransform.push_back(tempT.lock()->GetTransform());
+		}
+		else
+		{
+			EditorWindows::LogWnd::Print(L"骨骼节点缺失:  " + MakeWStr(animationClips[currentIndex]->clips[i].first));
+			aniTransform.push_back(weak_ptr<Transform>());
+		}
 		backup.push_back(array<UINT, 3>{0, 0, 0});
 	}
 }
@@ -92,9 +102,12 @@ void Animator::Update()
 		r = XMVector4Normalize(r);
 		ASSERT(facr >= 0 && facr <= 1);
 
-		aniTransform[i]->SetLocalPosition(t);
-		aniTransform[i]->SetLocalRotation(r);
-		aniTransform[i]->SetLocalScale(s);
+		if (!aniTransform[i].expired())
+		{
+			aniTransform[i].lock()->SetLocalPosition(t);
+			aniTransform[i].lock()->SetLocalRotation(r);
+			aniTransform[i].lock()->SetLocalScale(s);
+		}
 	}
 }
 
@@ -110,7 +123,7 @@ Component * Animator::Clone()
 	return static_cast<Component*>(copy);
 }
 
-Animator::Animator()
+Animator::Animator():Component::Component()
 {
 }
 

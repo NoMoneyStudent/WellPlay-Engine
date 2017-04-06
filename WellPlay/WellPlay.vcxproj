@@ -159,6 +159,7 @@
     <ClInclude Include="EngineRuntime\Animator.h" />
     <ClInclude Include="EngineRuntime\Component.h" />
     <ClInclude Include="EngineRuntime\EditorComponent.h" />
+    <ClInclude Include="EngineRuntime\EngineUtility.h" />
     <ClInclude Include="EngineRuntime\GameObject.h" />
     <ClInclude Include="EngineRuntime\MeshRender.h" />
     <ClInclude Include="EngineRuntime\Render.h" />
@@ -197,8 +198,9 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Resource\dds.h" />
     <ClInclude Include="Resource\DDSTextureLoader.h" />
-    <ClInclude Include="Resource\FBXImport.h" />
+    <ClInclude Include="Resource\ModelImport.h" />
     <ClInclude Include="Resource\Model.h" />
+    <ClInclude Include="Resource\Serialize.h" />
     <ClInclude Include="Resource\TextureManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SystemTime.h" />
@@ -218,6 +220,7 @@
     <ClCompile Include="EngineRuntime\Animator.cpp" />
     <ClCompile Include="EngineRuntime\Component.cpp" />
     <ClCompile Include="EngineRuntime\EditorComponent.cpp" />
+    <ClCompile Include="EngineRuntime\EngineUtility.cpp" />
     <ClCompile Include="EngineRuntime\GameObject.cpp" />
     <ClCompile Include="EngineRuntime\MeshRender.cpp" />
     <ClCompile Include="EngineRuntime\Render.cpp" />
@@ -249,9 +252,10 @@
     <ClCompile Include="Render\ShadowBuffer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Resource\DDSTextureLoader.cpp" />
-    <ClCompile Include="Resource\FBXImport.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\visual studio 2015\Projects\WellPlay\FBX SDK\2017.0.1\include;D:\visual studio 2015\Projects\WellPlay\3rd\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <ClCompile Include="Resource\ModelImport.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\visual studio 2015\Projects\WellPlay\3rd\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Resource\Serialize.cpp" />
     <ClCompile Include="Resource\TextureManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

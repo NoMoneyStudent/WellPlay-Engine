@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "EngineUtility.h"
 
-Scene* Scene::currentscene = nullptr;
+std::shared_ptr<Scene> Scene::currentscene;
 
-void Scene::AddRootGameObject(GameObject * object)
+void Scene::AddRootGameObject(std::shared_ptr<GameObject> object)
 {
 #ifdef _DEBUG
 	for (auto iter = rootObject.begin(); iter != rootObject.end(); iter++)
@@ -20,7 +21,7 @@ void Scene::AddRootGameObject(GameObject * object)
 	rootObject.push_back(object);
 }
 
-void Scene::RemoveRootGameObject(GameObject * object)
+void Scene::RemoveRootGameObject(std::shared_ptr<GameObject> object)
 {
 	for (auto iter = rootObject.begin(); iter != rootObject.end();iter++)
 	{
@@ -37,15 +38,16 @@ void Scene::Update()
 {
 	for (int i = 0; i < rootObject.size(); i++)
 	{
-		rootObject[i]->Update();
+		EngineUtility::isInPlay() ? rootObject[i]->Update() : rootObject[i]->EditorUpdate();
 	}
 }
 
-Scene * Scene::GetCurrentScene()
+std::shared_ptr<Scene> Scene::GetCurrentScene()
 {
 	if (currentscene == nullptr)
 	{
-		currentscene = new Scene();
+		currentscene = std::shared_ptr<Scene>(new Scene());
+		ASSERT(currentscene != nullptr, "创建场景失败了");
 	}
 	return currentscene;
 }

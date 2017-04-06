@@ -1,15 +1,20 @@
 #pragma once
+#include<memory>
+#include "cereal\access.hpp"
+
 class GameObject;
+class EditorComponent;
 
 class Component
 {
 	friend class GameObject;
+	friend class EditorComponent;
+	friend class cereal::access;
 protected:
 	Component() {}
 	Component(Component&) = delete;
 	Component& operator=(Component&) = delete;
-    virtual ~Component() {}
-	bool m_isEnable = true;
+	virtual ~Component() { m_gameobject.reset(); }
 
 private:
 	virtual void OnInit() {}
@@ -19,10 +24,25 @@ private:
 	virtual void OnDisable() {}
 	virtual Component* Clone() = 0;
 
-	GameObject* m_gameobject;
+	bool m_isEnable = true;
+	std::shared_ptr<GameObject> m_gameobject;
+
+#pragma region –Ú¡–ªØ
+	template<class Archive>
+	void save(Archive & archive) const
+	{
+		archive(m_isEnable, m_gameobject);
+	}
+
+	template<class Archive>
+	void load(Archive & archive)
+	{
+		archive(m_isEnable, m_gameobject);
+	}
+#pragma endregion
 public:
 	virtual void SetEnable(bool setenable);
-	virtual bool GetEnable() { return m_isEnable; }
+    bool GetEnable() { return m_isEnable; }
 
-	GameObject* gameobject() { return m_gameobject; }
+	std::shared_ptr<GameObject> gameobject() { return m_gameobject; }
 };

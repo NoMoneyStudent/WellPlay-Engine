@@ -56,8 +56,10 @@ void ResourceManager::GetMeshGpuBuffer(const std::string& name, StructuredBuffer
 		{
 			*vb = &(vertexBuffer[i].second);
 			*ib = &(indexBuffer[i].second);
+			return;
 		}
 	}
+	ASSERT(false, "没有找到资源");
 }
 
 AniMesh * ResourceManager::GetAniMesh(const std::string & name)

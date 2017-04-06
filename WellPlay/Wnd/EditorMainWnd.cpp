@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "EditorMainWnd.h"
 #include "Utility\FileUtility.h"
-#include "Resource\FBXImport.h"
+#include "Resource\ModelImport.h"
 #include "RenderCore.h"
 #include "Resource\TextureManager.h"
 #include "AnimationCore.h"
 #include "Render\EngineTuning.h"
 #include "resource.h"
 #include "EngineRuntime\Scene.h"
+#include "Resource\Serialize.h"
 
 using namespace EditorWindows;
 using namespace std;
@@ -98,7 +99,7 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 			string ex = FileUtility::GetExtension(filepath);
 			if (ex == "fbx")
 			{
-				 FBXImport::ImportModel(string(filepath.begin(), filepath.end()));
+				 ModelImport::ImportModel(string(filepath.begin(), filepath.end()));
 				//RenderObject object;
 				//object.Create(mo->meshs[mo->meshs.size() - 1], mo->bones, 0);
 				//renderQueue.push_back(std::move(object));
@@ -109,6 +110,10 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 				const ManagedTexture* t = TextureManager::LoadFromFile(filepath, true);
 				isTexture = true;
 				texture = t->GetSRV();
+			}
+			else if (ex == "prefab")
+			{
+				ReadPrefab(MakeStr(filepath));
 			}
 		}
 	}
