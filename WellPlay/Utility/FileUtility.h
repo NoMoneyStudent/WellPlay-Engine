@@ -10,6 +10,8 @@ namespace FileUtility
 	void OpenFolder();
 	std::string GetExtension(const std::string& path);
 	std::string GetExtension(const std::wstring& path);
+	std::string GetFileName(const std::string& path);
+	std::string GetFileName(const std::wstring& wpath);
 	ByteArray ReadFileHelper(const std::string& fileName);
 	const unsigned char* ReadTextureStbi(const std::string path, int& w, int& h, int& channels);
 	const unsigned char* ReadTextureDDS(const std::string path, int& size);

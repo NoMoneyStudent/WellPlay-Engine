@@ -24,9 +24,10 @@ namespace RenderCore
 		XMFLOAT4X4 model;
 		XMFLOAT4X4* BoneTransforms;
 		unsigned int BoneCount;
+		std::string name;
 
-		StructuredBuffer* m_VertexBuffer;
-		ByteAddressBuffer* m_IndexBuffer;
+		std::shared_ptr<StructuredBuffer> m_VertexBuffer;
+		std::shared_ptr<ByteAddressBuffer> m_IndexBuffer;
 	};
 
 }

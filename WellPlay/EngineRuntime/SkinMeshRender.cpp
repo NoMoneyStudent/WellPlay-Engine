@@ -17,31 +17,38 @@ void SkinMeshRender::SetAvatar(Avatar * avatar)
 		return;
 
 	m_avatar = avatar;
-	OnInit();
+	FindBoneTransform();
+	InitBoneMatrix();
 }
 
-void SkinMeshRender::SetMesh(AniMesh * mesh)
+void SkinMeshRender::SetMesh(Mesh * mesh)
 {
-	if (m_mesh == mesh)
+	AniMesh* animesh = static_cast<AniMesh*>(mesh);
+	if (m_mesh == animesh)
 		return;
 
-	m_mesh = mesh;
-	ResourceManager::GetMeshGpuBuffer(m_mesh->name, &render.m_VertexBuffer, &render.m_IndexBuffer);
+	m_mesh = animesh;
+	ResourceManager::GetMeshGpuBuffer(m_mesh->name, render.m_VertexBuffer, render.m_IndexBuffer);
 	render.indexCount = m_mesh->indexs.size();
 	render.indexStride = sizeof(UINT);
 	render.vertexCount = m_mesh->vertexs.size();
 	render.vertexStride = sizeof(AniVertex);
+	render.name = m_mesh->name;
 }
 
-void SkinMeshRender::OnInit()
+void SkinMeshRender::InitBoneMatrix()
 {
-	if (m_avatar == nullptr)
-		return;
-
-	m_bones.clear();
-	m_bones.reserve(m_avatar->bonelists.size());
 	m_TransformMatrix = std::vector<XMFLOAT4X4>(m_avatar->bonelists.size());
 
+	XMStoreFloat4x4(&render.model, XMMatrixIdentity());
+	render.BoneCount = m_avatar->bonelists.size();
+	render.BoneTransforms = m_TransformMatrix.data();
+}
+
+void SkinMeshRender::FindBoneTransform()
+{
+	m_bones.clear();
+	m_bones.reserve(m_avatar->bonelists.size());
 	for (int i = 0; i < m_avatar->bonelists.size(); i++)
 	{
 		auto root = gameobject()->FindRootParent();
@@ -57,8 +64,11 @@ void SkinMeshRender::OnInit()
 			m_bones.push_back(weak_ptr<Transform>());
 		}
 	}
-	render.BoneCount = m_bones.size();
-	render.BoneTransforms = m_TransformMatrix.data();
+}
+
+void SkinMeshRender::OnInit()
+{
+
 }
 
 void SkinMeshRender::EditorOnInit()
@@ -74,7 +84,7 @@ void SkinMeshRender::Update()
 		if (!m_bones[i].expired())
 			XMStoreFloat4x4(&m_TransformMatrix[i], Bind * m_bones[i].lock()->GetWorldTranslationMatrix());
 	}
-	renderQueue.push_back(std::move(render));
+	renderQueue.push_back(&render);
 }
 
 void SkinMeshRender::EditorUpdate()

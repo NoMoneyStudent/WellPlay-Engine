@@ -24,9 +24,9 @@ namespace FileUtility
 		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项  
 		if (GetOpenFileName(&ofn))
 		{
-			//MessageBox(NULL, strFilename, TEXT("选择的文件"), 0);
+			MessageBox(NULL, strFilename, TEXT("选择失败"), 0);
 		}
-		MessageBox(NULL, strFilename, TEXT("选择的文件"), 0);
+		MessageBox(NULL, MakeWStr(GetFileName(strFilename)).data(), TEXT("选择的文件"), 0);
 		return std::wstring(strFilename);
 	}
 
@@ -119,5 +119,20 @@ namespace FileUtility
 	{
 		const std::string path = MakeStr(wpath);
 		return GetExtension(path);
+	}
+
+	std::string GetFileName(const std::wstring& wpath)
+	{
+		const std::string path = MakeStr(wpath);
+		return GetFileName(path);
+	}
+
+	std::string GetFileName(const std::string& path)
+	{
+		if (path.empty())
+			return std::string();
+		std::string result(std::find(path.crbegin(), path.crend(), '\\').base(),std::find(path.crbegin(), path.crend(), '.').base()-1);
+		std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+		return result;
 	}
 }

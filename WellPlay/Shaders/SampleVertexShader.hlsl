@@ -21,7 +21,7 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
 	float4x4 model;
 	float4x4 view;
 	float4x4 projection;
-	float4x4 Transforms[32];
+	float4x4 Transforms[96];
 };
 
 // 用作顶点着色器输入的每个顶点的数据。

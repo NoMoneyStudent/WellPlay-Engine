@@ -10,6 +10,7 @@
 #include "GameInput.h"
 #include "RenderCore.h"
 #include "Resource\Model.h"
+#include "ResourceManager.h"
 #include "Utility\FileUtility.h"
 #include "AnimationCore.h"
 
@@ -29,7 +30,7 @@ namespace RenderCore
 	GraphicsPSO m_ModelPSO;
 	GraphicsPSO m_ShadowPSO;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_ExtraTextures[2];
-	vector<RenderObject> renderQueue;
+	vector<RenderObject*> renderQueue;
 	bool isTexture = false;
 	D3D12_CPU_DESCRIPTOR_HANDLE texture;
 }
@@ -110,59 +111,56 @@ void RenderCore::Update( void )
 
 void RenderCore::RenderObjects(GraphicsContext& gfxContext)
 {
+
+	struct VSConstants
+	{
+		XMFLOAT4X4 model;
+		XMFLOAT4X4 view;
+		XMFLOAT4X4 projection;
+		XMFLOAT4X4 transformbones[96];
+	} vsConstants;
+
+	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovLH(
+		60.0f * XM_PI / 180.0f,
+		1,
+		0.01f,
+		100.0f
+	);
+	XMStoreFloat4x4(
+		&vsConstants.projection,
+		XMMatrixTranspose(perspectiveMatrix)
+	);
+
+	static XMVECTORF32 eye = { 0.0f, 0.5f, 1.0f, 0.0f };
+	static XMVECTORF32 at = { 0.0f, 0.5f, 0.0f, 0.0f };
+	static XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static float anger = 0;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_w))
+		eye.f[1] -= 0.02f;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_s))
+		eye.f[1] += 0.02f;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_a))
+		anger += XM_PI / 180;
+	if (GameInput::IsPressed(GameInput::DigitalInput::kKey_d))
+		anger -= XM_PI / 180;
+
+	XMStoreFloat4x4(&vsConstants.view, XMMatrixTranspose(XMMatrixLookAtLH(eye, at, up)));
 	while (!renderQueue.empty())
 	{
-		struct VSConstants
+		XMStoreFloat4x4(&vsConstants.model, XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back()->model)*XMMatrixRotationY(anger)));
+
+		for (int i = 0; i < renderQueue.back()->BoneCount; i++)
 		{
-			XMFLOAT4X4 model;
-			XMFLOAT4X4 view;
-			XMFLOAT4X4 projection;
-			XMFLOAT4X4 transformbones[32];
-		} vsConstants;
-
-		XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovLH(
-			60.0f * XM_PI / 180.0f,
-			1,
-			0.01f,
-			100.0f
-		);
-		XMStoreFloat4x4(
-			&vsConstants.projection,
-			XMMatrixTranspose(perspectiveMatrix)
-		);
-
-		static XMVECTORF32 eye = { 0.0f, 0.5f, 1.0f, 0.0f };
-		static XMVECTORF32 at = { 0.0f, 0.5f, 0.0f, 0.0f };
-		static XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
-		static float anger = 0;
-		if (GameInput::IsPressed(GameInput::DigitalInput::kKey_w))
-			eye.f[1] -= 0.02f;
-		if (GameInput::IsPressed(GameInput::DigitalInput::kKey_s))
-			eye.f[1] += 0.02f;
-		if (GameInput::IsPressed(GameInput::DigitalInput::kKey_a))
-			anger += XM_PI / 180;
-		if (GameInput::IsPressed(GameInput::DigitalInput::kKey_d))
-			anger -= XM_PI / 180;
-
-		XMStoreFloat4x4(&vsConstants.view, XMMatrixTranspose(XMMatrixLookAtLH(eye, at, up)));
-		XMStoreFloat4x4(&vsConstants.model, XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back().model)*XMMatrixRotationY(anger)));
-
-		//Ani(renderQueue[0]);
-		//vector<Bone>& BoneList = *(renderQueue[0].boneList);
-		for (int i = 0; i < renderQueue.back().BoneCount; i++)
-		{
-			XMStoreFloat4x4(&vsConstants.transformbones[i], XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back().BoneTransforms[i])));
-			//XMStoreFloat4x4(&vsConstants.transformbones[i], XMLoadFloat4x4(&renderQueue.back().BoneTransforms[i]));
+			XMStoreFloat4x4(&vsConstants.transformbones[i], XMMatrixTranspose(XMLoadFloat4x4(&renderQueue.back()->BoneTransforms[i])));
 		}
 
 		gfxContext.SetDynamicConstantBufferView(0, sizeof(vsConstants), &vsConstants);
 		if (isTexture)
 			gfxContext.SetDynamicDescriptors(3, 0, 1, &texture);
-
-		RenderObject& r = renderQueue.back();
-		gfxContext.SetIndexBuffer(renderQueue.back().m_IndexBuffer->IndexBufferView());
-		gfxContext.SetVertexBuffer(0, renderQueue.back().m_VertexBuffer->VertexBufferView());
-		gfxContext.DrawIndexed(renderQueue.back().indexCount);
+	
+		gfxContext.SetIndexBuffer(renderQueue.back()->m_IndexBuffer->IndexBufferView());
+		gfxContext.SetVertexBuffer(0, renderQueue.back()->m_VertexBuffer->VertexBufferView());
+		gfxContext.DrawIndexed(renderQueue.back()->indexCount);
 		renderQueue.pop_back();
 	}
 }
@@ -171,10 +169,8 @@ void RenderCore::Render(void)
 {
 	GraphicsContext& gfxContext = GraphicsContext::Begin(L"Scene Render");
 
-
 	gfxContext.TransitionResource(g_SceneColorBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, true);
 	gfxContext.ClearColor(g_SceneColorBuffer);
-
 
 	gfxContext.SetRootSignature(m_RootSig);
 	gfxContext.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

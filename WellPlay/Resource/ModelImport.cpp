@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <set>
 #include "Wnd\LogWnd.h"
+#include "Utility\FileUtility.h"
 #include "ResourceManager.h"
 #include "EngineRuntime\GameObject.h"
 #include "EngineRuntime\Transform.h"
@@ -15,6 +16,9 @@
 #include "Serialize.h"
 
 using namespace std;
+
+vector<pair<weak_ptr<SkinMeshRender>, Avatar*>> setupAvatar;
+shared_ptr<Assets> asset;
 
 void ProcessNode(const aiScene* scene, shared_ptr<GameObject> model, aiNode* node);
 void ProcessAnimation(const aiScene* scene);
@@ -147,75 +151,79 @@ void ProcessNode(const aiScene* scene, shared_ptr<GameObject> parent, aiNode* no
 		{
 			if (mesh->HasBones())
 			{
-				AniMesh meshdata;
+				shared_ptr<AniMesh> meshdata(new AniMesh());
 
-				meshdata.name = meshname;
+				meshdata->name = meshname;
 				vector<AniVertex> V(mesh->mNumVertices);
 				for (UINT j = 0; j < mesh->mNumVertices; j++)
 				{
 					ReadVertexUtility(V[j], mesh, j);
 				}
-				meshdata.vertexs = std::move(V);
+				meshdata->vertexs = std::move(V);
+
 				vector<UINT> I;
 				ReshIndicesUtility(I, mesh);
-				meshdata.indexs = std::move(I);
+				meshdata->indexs = std::move(I);
 
-				Avatar  avatar;
+				shared_ptr<Avatar>  avatar(new Avatar());
 				for (UINT j = 0; j < mesh->mNumBones; j++)
 				{
 					Bone bone;
 					aiBone* aibone = mesh->mBones[j];
 					bone.name = aibone->mName.C_Str();
 					CopyMatrix(bone.Bind, aibone->mOffsetMatrix.Transpose());
-					auto index = avatar.bonelists.size();
+					auto index = avatar->bonelists.size();
 					for (UINT k = 0; k < aibone->mNumWeights; k++)
 					{
 						int id = aibone->mWeights[k].mVertexId;
 						for (int q = 0; q < 4; q++)
 						{
-							if (meshdata.vertexs[id].BoneIndex[q] == 65536)
+							if (meshdata->vertexs[id].BoneIndex[q] == 65536)
 							{
-								meshdata.vertexs[id].BoneIndex[q] = index;
-								meshdata.vertexs[id].BoneWeights[q] = aibone->mWeights[k].mWeight;
+								meshdata->vertexs[id].BoneIndex[q] = index;
+								meshdata->vertexs[id].BoneWeights[q] = aibone->mWeights[k].mWeight;
 								break;
 							}
 						}
 					}
-					avatar.bonelists.push_back(bone);
+					avatar->bonelists.push_back(bone);
 				}
-				avatar.name = meshdata.name;
-				meshdata.avatra = &avatar;
+				avatar->name = meshdata->name;
 				ResourceManager::AddAvatar(avatar);
-				ResourceManager::AddMesh(meshdata);
+				asset->avatarlist.push_back(avatar);
+				ResourceManager::AddMesh(static_pointer_cast<Mesh>(meshdata),true);
+				asset->meshlist.push_back(make_pair(static_pointer_cast<Mesh>(meshdata),true));
 			}
 			else
 			{
-				CommonMesh meshdata;
-				meshdata.name = meshname;
+				shared_ptr<CommonMesh> meshdata(new CommonMesh);
+				meshdata->name = meshname;
 				vector<CommonVertex> V(mesh->mNumVertices);
 				for (UINT j = 0; j < mesh->mNumVertices; j++)
 				{
 					ReadVertexUtility(V[j], mesh, j);
 				}
-				meshdata.vertexs = std::move(V);
+				meshdata->vertexs = std::move(V);
 				vector<UINT> I;
 				ReshIndicesUtility(I, mesh);
-				meshdata.indexs = std::move(I);
+				meshdata->indexs = std::move(I);
 
-				ResourceManager::AddMesh(meshdata);
+				ResourceManager::AddMesh(static_pointer_cast<Mesh>(meshdata), false);
+				asset->meshlist.push_back(make_pair(static_pointer_cast<Mesh>(meshdata),false));
 			}
 		}
 		if (mesh->HasBones())
 		{
 			auto render = myNode->AddComponent<SkinMeshRender>();
-			render.lock()->SetMesh(ResourceManager::GetAniMesh(meshname));
-			render.lock()->SetAvatar(ResourceManager::GetAvatar(meshname));
+			render.lock()->SetMesh(ResourceManager::GetMesh(meshname));
+			setupAvatar.push_back(make_pair(render, ResourceManager::GetAvatar(meshname)));
+
 			auto ani=myNode->AddComponent<Animator>();
 		}
 		else
 		{
 			auto render = myNode->AddComponent<MeshRender>();
-			render.lock()->SetMesh(ResourceManager::GetCommonMesh(meshname));
+			render.lock()->SetMesh(ResourceManager::GetMesh(meshname));
 		}
 	}
 	
@@ -230,10 +238,10 @@ void ProcessAnimation(const aiScene* scene)
 	for (UINT i = 0; i < scene->mNumAnimations; i++)
 	{
 		aiAnimation* ani = scene->mAnimations[i];
-		AnimationClip clip;
-		clip.name = ani->mName.C_Str();
+		shared_ptr<AnimationClip> clip(new AnimationClip());
+		clip->name = ani->mName.C_Str();
 		double ticks = ani->mTicksPerSecond == 0 ? 1 : ani->mTicksPerSecond;
-		clip.durning = ani->mDuration / ticks;
+		clip->durning = ani->mDuration / ticks;
 		for (UINT j = 0; j < ani->mNumChannels; j++)
 		{
 			aiNodeAnim* node = ani->mChannels[j];
@@ -260,9 +268,10 @@ void ProcessAnimation(const aiScene* scene)
 				SetVertexVector(pos, node->mScalingKeys[j].mValue);
 				oneAni.S.push_back(make_pair(pos, time));
 			}
-			clip.clips.push_back(std::move(make_pair(AniName, oneAni)));
+			clip->clips.push_back(std::move(make_pair(AniName, oneAni)));
 		}
 		ResourceManager::AddAnimation(clip);
+		asset->cliplist.push_back(clip);
 	}
 }
 
@@ -271,7 +280,7 @@ void ModelImport::ImportModel(string path)
 	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path,
-		aiProcessPreset_TargetRealtime_MaxQuality |
+		aiProcessPreset_TargetRealtime_Fast |
 		aiProcess_ConvertToLeftHanded
 	);
 
@@ -280,8 +289,14 @@ void ModelImport::ImportModel(string path)
 		MessageBox(NULL, MakeWStr(importer.GetErrorString()).data(), TEXT("µº»Î ß∞‹"), 0);
 		return;
 	}
+	
+	string rootname = FileUtility::GetFileName(path);
+	asset.reset();
+	asset = shared_ptr<Assets>(new Assets);
+	asset->name = rootname;
 	ProcessAnimation(scene);
-	shared_ptr<GameObject> rootObject = GameObject::Instantiate(scene->mRootNode->mName.C_Str());
+
+	shared_ptr<GameObject> rootObject = GameObject::Instantiate(rootname);
 
 	weak_ptr<Transform> myTrans = rootObject->GetTransform();
 	aiVector3D aiS;
@@ -299,7 +314,14 @@ void ModelImport::ImportModel(string path)
 	for (int i = 0; i < scene->mRootNode->mNumChildren; i++)
 		ProcessNode(scene, rootObject, scene->mRootNode->mChildren[i]);
 
+	for (auto& iter : setupAvatar)
+	{
+		iter.first.lock()->SetAvatar(iter.second);
+	}
+	setupAvatar.clear();
+	ResourceManager::AddAssets(asset);
 	MakePrefab(rootObject);
+	MakeAssets(asset);
 }
 
 //FbxManager* FBXManager = NULL;

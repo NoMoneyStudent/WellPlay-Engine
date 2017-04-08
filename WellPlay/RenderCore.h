@@ -16,7 +16,7 @@ namespace RenderCore
 	UINT GetDisplayHeight();
 	void SetFullScreen(bool isFullScreen);
 
-	extern std::vector<RenderObject> renderQueue;
+	extern std::vector<RenderObject*> renderQueue;
 	extern bool isTexture;
 	extern D3D12_CPU_DESCRIPTOR_HANDLE texture;
 };

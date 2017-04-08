@@ -2,9 +2,6 @@
 #include "stdafx.h"
 #include <array>
 
-typedef std::vector<std::array<float, 2>> Curve;
-typedef Curve CurveXYZ[3];
-
 struct CommonVertex
 {
 	DirectX::XMFLOAT3 pos;
@@ -17,8 +14,10 @@ struct CommonVertex
 
 struct AniVertex:public CommonVertex
 {
-	float BoneWeights[4] = { 0,0,0,0 };
-	uint32_t BoneIndex[4] = { 65536,65536,65536,65536 };
+	//float BoneWeights[4] = { 0,0,0,0 };
+	std::array<float, 4> BoneWeights = { 0,0,0,0 };
+	//uint32_t BoneIndex[4] = { 65536,65536,65536,65536 };
+	std::array<uint32_t, 4> BoneIndex = { 65536,65536,65536,65536 };
 };
 
 struct Animation
@@ -74,23 +73,33 @@ struct Material
 	//void LoadTextures();
 };
 
-struct AniMesh
+struct Mesh
 {
 	std::string name;
-	std::vector<AniVertex> vertexs;
 	std::vector<UINT> indexs;
-	//std::vector<std::vector<UINT>> indexs;
-
 	std::vector<Material*> materials;
-	Avatar* avatra;
+	
+	virtual ~Mesh() {};
 };
 
-struct CommonMesh
+struct CommonMesh:public Mesh
+{
+	std::vector<CommonVertex> vertexs;
+
+	virtual ~CommonMesh() {};
+};
+
+struct AniMesh:public Mesh
+{
+	std::vector<AniVertex> vertexs;
+
+	virtual ~AniMesh() {};
+};
+
+struct Assets
 {
 	std::string name;
-	std::vector<CommonVertex> vertexs;
-	std::vector<UINT> indexs;
-	//std::vector<std::vector<UINT>> indexs;
-	
-	std::vector<Material*> materials;
+	std::vector<std::pair<std::shared_ptr<Mesh>,bool>> meshlist;
+	std::vector<std::shared_ptr<Avatar>> avatarlist;
+	std::vector<std::shared_ptr<AnimationClip>> cliplist;
 };

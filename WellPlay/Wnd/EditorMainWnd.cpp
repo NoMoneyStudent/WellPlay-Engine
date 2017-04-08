@@ -115,6 +115,10 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				ReadPrefab(MakeStr(filepath));
 			}
+			else if (ex == "asset")
+			{
+				ReadAssets(MakeStr(filepath));
+			}
 		}
 	}
 	else if (uMsg == WM_CLOSE) 
