@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>E439935D-B2A2-46AE-856D-2AA408428F33</ProjectGuid>
+    <!--$guid1$-->
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="x64\" />
+    <Folder Include="x64\Debug\" />
+    <Folder Include="x64\Debug\skin\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x64\Debug\assimp-vc140-mt.dll" />
+    <Content Include="x64\Debug\ChakraCore.dll" />
+    <Content Include="x64\Debug\DuiLib_d.dll" />
+    <Content Include="x64\Debug\postShaders.hlsl" />
+    <Content Include="x64\Debug\skin\DXSkin.xml" />
+    <Content Include="x64\Debug\skin\EditorSkin.xml" />
+    <Content Include="x64\Debug\skin\EngineVarMenu.xml" />
+    <Content Include="x64\Debug\skin\FileMenu.xml" />
+    <Content Include="x64\Debug\skin\hehe.jpg" />
+    <Content Include="x64\Debug\skin\hor_line.png" />
+    <Content Include="x64\Debug\skin\LogSkin.xml" />
+    <Content Include="x64\Debug\skin\menu_bk.png" />
+    <Content Include="x64\Debug\skin\sys_btn_close.png" />
+    <Content Include="x64\Debug\skin\sys_btn_max.png" />
+    <Content Include="x64\Debug\skin\sys_btn_min.png" />
+    <Content Include="x64\Debug\skin\sys_btn_restore.png" />
+    <Content Include="x64\Debug\skin\vscrollbar.png" />
+    <Content Include="x64\Debug\WellPlay.exe" />
+    <Content Include="x64\Debug\WellPlay.exp" />
+    <Content Include="x64\Debug\WellPlay.ilk" />
+    <Content Include="x64\Debug\WellPlay.lib" />
+    <Content Include="x64\Debug\WellPlay.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="x64\Class.lua" />
+    <Compile Include="x64\Engine.lua" />
+    <Compile Include="x64\LuaFile1.lua" />
+    <Compile Include="x64\vector3.lua" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>

@@ -14,6 +14,8 @@
 #include "stdafx.h"
 #include "Utility.h"
 #include <string>
+#include <locale>
+#include <codecvt>
 
 // A faster version of memcopy that uses SSE instructions.  TODO:  Write an ARM variant if necessary.
 void SIMDMemCopy( void* __restrict _Dest, const void* __restrict _Source, size_t NumQuadwords )
@@ -137,7 +139,10 @@ void SIMDMemFill( void* __restrict _Dest, __m128 FillVector, size_t NumQuadwords
 
 std::wstring MakeWStr( const std::string& str )
 {
-	return std::wstring(str.begin(), str.end());
+	/*return std::wstring(str.begin(), str.end());*/
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	std::wstring wchar = conv.from_bytes(str);
+	return wchar;
 }
 
 std::string MakeStr(const std::wstring& str)

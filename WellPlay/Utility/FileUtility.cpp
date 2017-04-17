@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "FileUtility.h"
 #include <fstream>
+#include <locale>
+#include <codecvt>
+#include <sstream>
 #include <Shlobj.h>  
 #include <Commdlg.h> 
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb\stb_image.h"
+using namespace std;
 
 namespace FileUtility
 {
@@ -24,9 +28,8 @@ namespace FileUtility
 		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;//文件、目录必须存在，隐藏只读选项  
 		if (GetOpenFileName(&ofn))
 		{
-			MessageBox(NULL, strFilename, TEXT("选择失败"), 0);
+			MessageBox(NULL, strFilename, TEXT("选择的文件"), 0);
 		}
-		MessageBox(NULL, MakeWStr(GetFileName(strFilename)).data(), TEXT("选择的文件"), 0);
 		return std::wstring(strFilename);
 	}
 
@@ -61,19 +64,28 @@ namespace FileUtility
 		}
 	}
 
-	ByteArray ReadFileHelper(const std::string& fileName)
+	ByteArray ReadFileByte(const std::string& fileName)
 	{
 		std::ifstream& file = std::ifstream(fileName, std::ios::in | std::ios::binary);
 		if (!file)
-			return std::make_shared<std::vector<byte> >(std::vector<byte>());
-
-		ByteArray byteArray = std::make_shared<std::vector<byte> >(file.seekg(0, std::ios::end).tellg());
-		file.seekg(0, std::ios::beg).read((char*)byteArray->data(), byteArray->size());
+			return std::string();
+		ByteArray byteArray;
+		byteArray.reserve((UINT)file.seekg(0, std::ios::end).tellg());
+		file.seekg(0, std::ios::beg);
+		byteArray.assign(istreambuf_iterator<char>(file), istreambuf_iterator<char>());
 		file.close();
 
-		ASSERT(byteArray->size() > 0);
+		ASSERT(byteArray.size() > 0);
 
 		return byteArray;
+	}
+
+	WcharArray ReadFileWchar(const std::string & path)
+	{
+		ByteArray byte = ReadFileByte(path);
+		wstring_convert<codecvt_utf8<wchar_t>> conv;
+		wstring wchar = conv.from_bytes(byte);
+		return wchar;
 	}
 
 	/*使用时要记得Delete*/

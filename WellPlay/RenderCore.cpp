@@ -75,11 +75,11 @@ void RenderCore::Initialize(HWND m_hwnd)
 	m_ModelPSO.SetDepthStencilState(DepthStateReadWrite);
 	m_ModelPSO.SetRenderTargetFormats(1, &ColorFormat, DepthFormat);
 
-	ByteArray m_vertexShader = FileUtility::ReadFileHelper("SampleVertexShader.cso");
-	ByteArray m_pixelShader = FileUtility::ReadFileHelper("SamplePixelShader.cso");
+	ByteArray m_vertexShader = FileUtility::ReadFileByte("SampleVertexShader.cso");
+	ByteArray m_pixelShader = FileUtility::ReadFileByte("SamplePixelShader.cso");
 
-	m_ModelPSO.SetVertexShader(m_vertexShader->data(), m_vertexShader->size());
-	m_ModelPSO.SetPixelShader(m_pixelShader->data(), m_pixelShader->size());
+	m_ModelPSO.SetVertexShader(m_vertexShader.data(), m_vertexShader.size());
+	m_ModelPSO.SetPixelShader(m_pixelShader.data(), m_pixelShader.size());
 	m_ModelPSO.Finalize();
 
 	m_ExtraTextures[0] = g_SSAOFullScreen.GetSRV();

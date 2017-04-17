@@ -1,7 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
-typedef std::shared_ptr<std::vector<byte> > ByteArray;
+typedef std::string ByteArray;
+typedef std::wstring WcharArray;
 
 namespace FileUtility
 {
@@ -12,7 +13,8 @@ namespace FileUtility
 	std::string GetExtension(const std::wstring& path);
 	std::string GetFileName(const std::string& path);
 	std::string GetFileName(const std::wstring& wpath);
-	ByteArray ReadFileHelper(const std::string& fileName);
+	ByteArray ReadFileByte(const std::string& path);
+	WcharArray ReadFileWchar(const std::string& path);
 	const unsigned char* ReadTextureStbi(const std::string path, int& w, int& h, int& channels);
 	const unsigned char* ReadTextureDDS(const std::string path, int& size);
 }

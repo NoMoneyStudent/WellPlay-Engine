@@ -8,6 +8,9 @@
 #include "Render\EngineTuning.h"
 #include "resource.h"
 #include "EngineRuntime\Scene.h"
+#include "EngineRuntime\GameObject.h"
+#include "Script\JSComponent.h"
+#include "Script\LuaScript.h"
 #include "Resource\Serialize.h"
 
 using namespace EditorWindows;
@@ -18,6 +21,7 @@ EditorMainWnd::EditorMainWnd( LPCTSTR pszXMLPath )
 	:  m_strXMLPath(pszXMLPath)
 {
 	EngineTuning::Initialize();
+	JSComponent::Bind();
 }
 
 EditorMainWnd::~EditorMainWnd()
@@ -118,6 +122,15 @@ LRESULT EditorMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lPar
 			else if (ex == "asset")
 			{
 				ReadAssets(MakeStr(filepath));
+			}
+			else if (ex == "js")
+			{
+				//auto lua=Scene::GetCurrentScene()->GetRootGameObject()[0]->AddComponent<LuaScript>();
+				JSComponent::SetJSFilePath(MakeStr(filepath));
+			}
+			else if (ex == "lua")
+			{
+				LuaScript::SetLuaFilePath(MakeStr(filepath));
 			}
 		}
 	}

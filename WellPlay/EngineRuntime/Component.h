@@ -42,7 +42,7 @@ private:
 #pragma endregion
 public:
 	virtual void SetEnable(bool setenable);
-    bool GetEnable() { return m_isEnable; }
+    bool GetEnable() const { return m_isEnable; }
 
-	std::shared_ptr<GameObject> gameobject() { return m_gameobject; }
+	std::shared_ptr<GameObject> gameobject() const { return m_gameobject; }
 };

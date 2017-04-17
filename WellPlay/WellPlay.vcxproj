@@ -111,7 +111,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Program Files\Autodesk\FBX\FBX SDK\2017.0.1\lib\vs2015\x64\debug;D:\visual studio 2015\Projects\WellPlay\3rd\DuiLib\Lib;D:\visual studio 2015\Projects\WellPlay\3rd\assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\visual studio 2015\Projects\WellPlay\3rd\lua;D:\visual studio 2015\Projects\WellPlay\3rd\DuiLib\Lib;D:\visual studio 2015\Projects\WellPlay\3rd\assimp\Lib;D:\visual studio 2015\Projects\WellPlay\3rd\ChakraCore;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -202,6 +203,9 @@
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Serialize.h" />
     <ClInclude Include="Resource\TextureManager.h" />
+    <ClInclude Include="Script\JSComponent.h" />
+    <ClInclude Include="Script\LuaScript.h" />
+    <ClInclude Include="Script\ScriptManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SystemTime.h" />
     <ClInclude Include="targetver.h" />
@@ -257,6 +261,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Serialize.cpp" />
     <ClCompile Include="Resource\TextureManager.cpp" />
+    <ClCompile Include="Script\JSComponent.cpp" />
+    <ClCompile Include="Script\LuaScript.cpp" />
+    <ClCompile Include="Script\ScriptManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>

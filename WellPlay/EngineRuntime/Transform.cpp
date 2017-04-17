@@ -5,13 +5,13 @@
 
 using namespace std;
 
-XMMATRIX Transform::GetLocalTranslationMatrix()
+XMMATRIX Transform::GetLocalTranslationMatrix() const
 {
 	XMMATRIX t= XMMatrixScalingFromVector(GetLocalScale())*XMMatrixRotationQuaternion(GetLocalRotation())*XMMatrixTranslationFromVector(GetLocalPosition());
 	return t;
 }
 
-XMMATRIX Transform::GetWorldTranslationMatrix()
+XMMATRIX Transform::GetWorldTranslationMatrix() const
 {
 	XMMATRIX worldSRT = GetLocalTranslationMatrix();
 	for (auto p = m_parent; p != nullptr; p = p->m_parent)
@@ -21,7 +21,7 @@ XMMATRIX Transform::GetWorldTranslationMatrix()
 	return worldSRT;
 }
 
-void Transform::GetWorldSRT(XMVECTOR & scale, XMVECTOR & rotation, XMVECTOR & position)
+void Transform::GetWorldSRT(XMVECTOR & scale, XMVECTOR & rotation, XMVECTOR & position) const
 {
 	XMMATRIX worldSRT = GetWorldTranslationMatrix();
 	XMMatrixDecompose(&scale, &rotation, &position, worldSRT);
@@ -135,24 +135,52 @@ Component* Transform::Clone()
 	return nullptr;
 }
 
-XMVECTOR Transform::GetLocalPosition()
+XMVECTOR Transform::GetLocalPosition() const
 {
 	return XMLoadFloat3(&localPosition);
 }
 
-XMVECTOR Transform::GetLocalRotation()
+XMVECTOR Transform::GetLocalRotation() const
 {
 	return XMLoadFloat4(&localRotation);
 }
 
-XMFLOAT3 Transform::GetLocalEulerAngles()
+XMFLOAT3 Transform::GetLocalEulerAngles() const
 {
 	return XMQuaternion2Euler(GetLocalRotation());
 }
 
-XMVECTOR Transform::GetLocalScale()
+XMVECTOR Transform::GetLocalScale() const
 {
 	return XMLoadFloat3(&localScale);
+}
+
+XMVECTOR Transform::GetWorldPosition() const
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return t;
+}
+
+XMVECTOR Transform::GetWorldRotation() const
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return r;
+}
+
+XMFLOAT3 Transform::GetWorldEulerAngles() const
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return XMQuaternion2Euler(r);
+}
+
+XMVECTOR Transform::GetWorldScale() const
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	return s;
 }
 
 void Transform::SetLocalPosition(FXMVECTOR position)
@@ -170,42 +198,63 @@ void Transform::SetLocalRotation(FXMVECTOR rotation)
 	XMStoreFloat4(&localRotation, rotation);
 }
 
-XMVECTOR Transform::GetRight()
+void Transform::SetWorldPosition(FXMVECTOR position)
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	SetWorldSRT(s, r, position);
+}
+
+void Transform::SetWorldScale(FXMVECTOR scale)
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	SetWorldSRT(scale, r, t);
+}
+
+void Transform::SetWorldRotation(FXMVECTOR rotation)
+{
+	XMVECTOR s, r, t;
+	GetWorldSRT(s, r, t);
+	SetWorldSRT(s, rotation, t);
+}
+
+XMVECTOR Transform::GetRight() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(1, 0, 0, 0), r);
-}
+} 
 
-XMVECTOR Transform::GetUp()
+XMVECTOR Transform::GetUp() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(0, 1, 0, 0), r);
 }
 
-XMVECTOR Transform::GetForward()
+XMVECTOR Transform::GetForward() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(0, 0, 1, 0), r);
 }
 
-XMVECTOR Transform::GetBehind()
+XMVECTOR Transform::GetBehind() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(0, 0, -1, 0), r);
 }
 
-XMVECTOR Transform::GetLeft()
+XMVECTOR Transform::GetLeft() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(-1, 0, 0, 0), r);
 }
 
-XMVECTOR Transform::GetDown()
+XMVECTOR Transform::GetDown() const
 {
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);

@@ -3,8 +3,11 @@
 界面库：Duilib
 模型读取库：ASSIMP
 序列化库：cereal
+C++准标准库：boost
 
-来路不明库:
+脚本语言相关：Lua，Luawrapper
+
+不在该文件夹中的库：
 Hash.h
 GameInput.h/cpp
 DDSTextureLoader.h/cpp

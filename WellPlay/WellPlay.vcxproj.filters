@@ -40,6 +40,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Engine\Script">
+      <UniqueIdentifier>{b9b26ff6-afb8-4cc0-a0ef-1988a97cfac1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -213,6 +216,15 @@
     <ClInclude Include="Resource\Serialize.h">
       <Filter>FileOperation</Filter>
     </ClInclude>
+    <ClInclude Include="Script\JSComponent.h">
+      <Filter>Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\LuaScript.h">
+      <Filter>Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ScriptManager.h">
+      <Filter>Engine\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WellPlayMain.cpp">
@@ -358,6 +370,15 @@
     </ClCompile>
     <ClCompile Include="Resource\Serialize.cpp">
       <Filter>FileOperation</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\JSComponent.cpp">
+      <Filter>Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\LuaScript.cpp">
+      <Filter>Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ScriptManager.cpp">
+      <Filter>Engine\Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 #include "Render\GraphicsCore.h"
 #include "RenderCore.h"
 #include "EngineRuntime\Scene.h"
+#include "Script\ScriptManager.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -18,7 +19,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	RenderCore::Initialize(m_Editor.GetDXWndHwnd());
 	GameInput::Initialize(m_Editor.GetDXWndHwnd());
 	SystemTime::Initialize();
-
+	Lua::Init();
 	MSG msg = { 0 };
 	while (true)
 	{

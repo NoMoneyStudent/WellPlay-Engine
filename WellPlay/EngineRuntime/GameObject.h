@@ -164,19 +164,19 @@ public:
 	}
 #pragma endregion
 
-	std::weak_ptr<GameObject> FindChild(std::string& name);
-	std::vector<std::weak_ptr<GameObject>> FindAllChildren(std::string& name);
+	std::weak_ptr<GameObject> FindChild(const std::string& name);
+	std::vector<std::weak_ptr<GameObject>> FindAllChildren(const std::string& name);
 	std::weak_ptr<GameObject> FindRootParent();
-	std::string GetName() { return m_name; }
+	std::string GetName() const { return m_name; }
 	void SetName(const std::string& name) { m_name = name; }
 
-	std::weak_ptr<Transform> GetTransform() { return m_transform; }
-	bool GetSelfActive() { self_active; }
+	std::weak_ptr<Transform> GetTransform() const { return m_transform; }
+	bool GetSelfActive() const { return self_active; }
 	void SetActive(bool active) { self_active = active; }
-	bool GetActiveInHierarchy();
+	bool GetActiveInHierarchy() const;
 
-	static std::weak_ptr<GameObject> Find(std::string& name);
-	static std::vector<std::weak_ptr<GameObject>> FindAll(std::string& name);
+	static std::weak_ptr<GameObject> Find(const std::string& name);
+	static std::vector<std::weak_ptr<GameObject>> FindAll(const std::string& name);
 	
 	static std::shared_ptr<GameObject> Instantiate(const std::string& name = "new GameObject");
 	static std::shared_ptr<GameObject> Instantiate(std::shared_ptr<GameObject> prototype);

@@ -12,33 +12,41 @@ class Transform:public Component,public std::enable_shared_from_this<Transform>
 {
 	friend class GameObject;
 	friend class cereal::access;
-
 public:
 	Transform();
 	virtual ~Transform();
 
-	XMVECTOR GetLocalPosition();
-	XMVECTOR GetLocalRotation();
-	XMFLOAT3 GetLocalEulerAngles();
-	XMVECTOR GetLocalScale();
-	XMMATRIX GetLocalTranslationMatrix();
-	XMMATRIX GetWorldTranslationMatrix();
-	void GetWorldSRT(XMVECTOR& scale, XMVECTOR& rotation, XMVECTOR& position);
+	XMVECTOR GetLocalPosition() const;
+	XMVECTOR GetLocalRotation() const;
+	XMFLOAT3 GetLocalEulerAngles() const;
+	XMVECTOR GetLocalScale() const;
+
+	XMVECTOR GetWorldPosition() const;
+	XMVECTOR GetWorldRotation() const;
+	XMFLOAT3 GetWorldEulerAngles() const;
+	XMVECTOR GetWorldScale() const;
+
+	XMMATRIX GetLocalTranslationMatrix() const;
+	XMMATRIX GetWorldTranslationMatrix() const;
+	void GetWorldSRT(XMVECTOR& scale, XMVECTOR& rotation, XMVECTOR& position) const;
 	void SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR position);
 
 	void SetLocalPosition(FXMVECTOR position);
-	void SetLocalScale(FXMVECTOR localscale);
+	void SetLocalScale(FXMVECTOR scale);
 	void SetLocalRotation(FXMVECTOR rotation);
+	void SetWorldPosition(FXMVECTOR position);
+	void SetWorldScale(FXMVECTOR scale);
+	void SetWorldRotation(FXMVECTOR rotation);
 
-	XMVECTOR GetRight();
-	XMVECTOR GetUp();
-	XMVECTOR GetForward();
-	XMVECTOR GetBehind();
-	XMVECTOR GetLeft();
-	XMVECTOR GetDown();
+	XMVECTOR GetRight() const;
+	XMVECTOR GetUp() const;
+	XMVECTOR GetForward() const;
+	XMVECTOR GetBehind() const;
+	XMVECTOR GetLeft() const;
+	XMVECTOR GetDown() const;
 
-	std::shared_ptr<Transform> GetParent() { return m_parent; }
-	std::vector<std::shared_ptr<Transform>> GetChildren() { return m_children; }
+	std::shared_ptr<Transform> GetParent() const { return m_parent; }
+	std::vector<std::shared_ptr<Transform>> GetChildren() const { return m_children; }
 	void SetParent(std::shared_ptr<Transform> parent);
 	void AddChild(std::shared_ptr<Transform> child, int index = -1);
 

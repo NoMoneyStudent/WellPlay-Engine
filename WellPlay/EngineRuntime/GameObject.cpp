@@ -98,7 +98,7 @@ GameObject::~GameObject()
 {
 }
 
-weak_ptr<GameObject> GameObject::FindChild(std::string & name)
+weak_ptr<GameObject> GameObject::FindChild(const std::string & name)
 {
 	shared_ptr<GameObject> child;
 	for (int i = 0; i < m_transform->m_children.size(); i++)
@@ -116,7 +116,7 @@ weak_ptr<GameObject> GameObject::FindChild(std::string & name)
 	return weak_ptr<GameObject>();
 }
 
-std::vector<weak_ptr<GameObject>> GameObject::FindAllChildren(std::string & name)
+std::vector<weak_ptr<GameObject>> GameObject::FindAllChildren(const std::string & name)
 {
 	std::vector<weak_ptr<GameObject>> children;
 	for (int i = 0; i < m_transform->m_children.size(); i++)
@@ -144,7 +144,7 @@ weak_ptr<GameObject> GameObject::FindRootParent()
 	return temp->m_gameobject;
 }
 
-weak_ptr<GameObject> GameObject::Find(std::string & name)
+weak_ptr<GameObject> GameObject::Find(const std::string & name)
 {
 	auto s = Scene::GetCurrentScene();
 	auto root = s->GetRootGameObject();
@@ -162,7 +162,7 @@ weak_ptr<GameObject> GameObject::Find(std::string & name)
 	return weak_ptr<GameObject>();
 }
 
-std::vector<weak_ptr<GameObject>> GameObject::FindAll(std::string & name)
+std::vector<weak_ptr<GameObject>> GameObject::FindAll(const std::string & name)
 {
 	std::vector<weak_ptr<GameObject>> result;
 	auto s = Scene::GetCurrentScene();
@@ -315,7 +315,7 @@ void GameObject::Destroy(shared_ptr<GameObject>& object)
 	target.reset();
 }
 
-bool GameObject::GetActiveInHierarchy()
+bool GameObject::GetActiveInHierarchy() const
 {
 	return self_active ? false : m_transform->m_parent->m_gameobject->GetActiveInHierarchy();
 }
