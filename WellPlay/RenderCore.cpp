@@ -4,7 +4,7 @@
 #include "Render\GpuBuffer.h"
 #include "Render\CommandContext.h"
 #include "Render\SamplerManager.h"
-#include "Render\EngineTuning.h"
+#include "EngineTuning.h"
 #include "Render\EngineProfiling.h"
 #include "SystemTime.h"
 #include "GameInput.h"

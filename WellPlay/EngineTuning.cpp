@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EngineTuning.h"
-#include "EngineProfiling.h"
+#include "Render\EngineProfiling.h"
 
 using namespace std;
 using namespace Math;
@@ -43,7 +43,7 @@ public:
 	}
 
 	EngineVar* VariableGroup::Select(std::wstring& ButtonName);
-	void Display(CMenuElementUI* rootMenu);
+	//void Display(CMenuElementUI* rootMenu);
 
 	void SaveToFile( FILE* file, int fileMargin );
 	void LoadSettingsFromFile( FILE* file );
@@ -91,28 +91,28 @@ EngineVar* VariableGroup::Select(std::wstring& ButtonName)
 	}*/
 }
 
-void VariableGroup::Display(CMenuElementUI* rootMenu)
-{
-	for (auto iter = m_Children.begin(); iter != m_Children.end(); ++iter)
-	{
-		VariableGroup* subGroup = dynamic_cast<VariableGroup*>(iter->second);
-		CMenuElementUI* pNew = new CMenuElementUI;
-		pNew->SetName(MakeWStr(iter->first).data());
-		pNew->SetText(MakeWStr(iter->first).data());
-		pNew->SetShowExplandIcon(true);
-
-		if (subGroup != nullptr)
-		{
-			subGroup->Display(pNew);
-		}
-		else
-		{
-			pNew->SetName(MakeWStr(iter->first).data());
-			iter->second->DisplayValue(pNew, MakeWStr(iter->first));
-		}
-		rootMenu->Add(pNew);
-	}
-}
+//void VariableGroup::Display(CMenuElementUI* rootMenu)
+//{
+//	for (auto iter = m_Children.begin(); iter != m_Children.end(); ++iter)
+//	{
+//		VariableGroup* subGroup = dynamic_cast<VariableGroup*>(iter->second);
+//		CMenuElementUI* pNew = new CMenuElementUI;
+//		pNew->SetName(MakeWStr(iter->first).data());
+//		pNew->SetText(MakeWStr(iter->first).data());
+//		pNew->SetShowExplandIcon(true);
+//
+//		if (subGroup != nullptr)
+//		{
+//			subGroup->Display(pNew);
+//		}
+//		else
+//		{
+//			pNew->SetName(MakeWStr(iter->first).data());
+//			iter->second->DisplayValue(pNew, MakeWStr(iter->first));
+//		}
+//		rootMenu->Add(pNew);
+//	}
+//}
 
 void VariableGroup::SaveToFile( FILE* file, int fileMargin )
 {
@@ -258,16 +258,16 @@ BoolVar::BoolVar( const std::string& path, bool val )
 	m_Flag = val;
 }
 
-void BoolVar::DisplayValue(CMenuElementUI* rootMenu,std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	std::wstring name;
-	name = m_Flag ? L"True" : L"False";
-	pNew->SetText(name.data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void BoolVar::DisplayValue(CMenuElementUI* rootMenu,std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	std::wstring name;
+//	name = m_Flag ? L"True" : L"False";
+//	pNew->SetText(name.data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 std::string BoolVar::ToString( void ) const
 {
@@ -305,14 +305,14 @@ void NumVar::Bang(void)
 
 }
 
-void NumVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	pNew->SetText(to_wstring(m_Value).data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void NumVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	pNew->SetText(to_wstring(m_Value).data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 std::string NumVar::ToString( void ) const
 {
@@ -353,14 +353,14 @@ ExpVar::operator float() const
 	return exp2(m_Value);
 }
 
-void ExpVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	pNew->SetText(to_wstring((float)*this).data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void ExpVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	pNew->SetText(to_wstring((float)*this).data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 std::string ExpVar::ToString( void ) const
 {
@@ -389,14 +389,14 @@ IntVar::IntVar( const std::string& path, int32_t val, int32_t minVal, int32_t ma
 	m_StepSize = stepSize;
 }
 
-void IntVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	pNew->SetText(to_wstring(m_Value).data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void IntVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	pNew->SetText(to_wstring(m_Value).data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 std::string IntVar::ToString( void ) const
 {
@@ -423,16 +423,16 @@ EnumVar::EnumVar( const std::string& path, int32_t initialVal, int32_t listLengt
 	m_Value = Clamp(initialVal);
 }
 
-void EnumVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	std::string hehe(m_EnumLabels[m_Value]);
-	std::wstring f = MakeWStr(hehe);
-	pNew->SetText(f.data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void EnumVar::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	std::string hehe(m_EnumLabels[m_Value]);
+//	std::wstring f = MakeWStr(hehe);
+//	pNew->SetText(f.data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 std::string EnumVar::ToString( void ) const
 {
@@ -470,14 +470,14 @@ CallbackTrigger::CallbackTrigger( const std::string& path, std::function<void (v
 	m_BangDisplay = 0;
 }
 
-void CallbackTrigger::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
-{
-	CMenuElementUI* pNew = new CMenuElementUI;
-	pNew->SetName(ButtonName.data());
-	pNew->SetText(ButtonName.data());
-	pNew->SetShowExplandIcon(false);
-	rootMenu->Add(pNew);
-}
+//void CallbackTrigger::DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)
+//{
+//	CMenuElementUI* pNew = new CMenuElementUI;
+//	pNew->SetName(ButtonName.data());
+//	pNew->SetText(ButtonName.data());
+//	pNew->SetShowExplandIcon(false);
+//	rootMenu->Add(pNew);
+//}
 
 void CallbackTrigger::SetValue(FILE* file, const std::string& setting) 
 {
@@ -540,10 +540,10 @@ void StartLoad(void*)
 std::function<void(void*)> StartLoadFunc = StartLoad;
 static CallbackTrigger Load("Load Settings", StartLoadFunc, nullptr); 
 
-void EngineTuning::Display(CMenuElementUI* rootMenu)
-{
-	VariableGroup::sm_RootGroup.Display(rootMenu);
-}
+//void EngineTuning::Display(CMenuElementUI* rootMenu)
+//{
+//	VariableGroup::sm_RootGroup.Display(rootMenu);
+//}
 
 EngineVar* EngineTuning::Select(std::wstring & ButtonName)
 {

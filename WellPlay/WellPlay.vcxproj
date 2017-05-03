@@ -39,7 +39,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -74,6 +74,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -120,6 +121,12 @@
       <ShaderType>Compute</ShaderType>
       <ObjectFileOutput>D:\visual studio 2015\Projects\WellPlay\WellPlay\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\visual studio 2015\Projects\WellPlay\3rd\assimp\Lib;D:\visual studio 2015\Projects\WellPlay\3rd\lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationCore.h" />
+    <ClInclude Include="EngineCallBack.h" />
     <ClInclude Include="EngineRuntime\Animator.h" />
     <ClInclude Include="EngineRuntime\Component.h" />
     <ClInclude Include="EngineRuntime\EditorComponent.h" />
@@ -168,6 +176,7 @@
     <ClInclude Include="EngineRuntime\SceneManager.h" />
     <ClInclude Include="EngineRuntime\SkinMeshRender.h" />
     <ClInclude Include="EngineRuntime\Transform.h" />
+    <ClInclude Include="EngineTuning.h" />
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="RenderCore.h" />
     <ClInclude Include="Render\BufferManager.h" />
@@ -183,7 +192,6 @@
     <ClInclude Include="Render\DXSampleHelper.h" />
     <ClInclude Include="Render\DynamicDescriptorHeap.h" />
     <ClInclude Include="Render\EngineProfiling.h" />
-    <ClInclude Include="Render\EngineTuning.h" />
     <ClInclude Include="Render\GpuBuffer.h" />
     <ClInclude Include="Render\GpuResource.h" />
     <ClInclude Include="Render\GpuTimeManager.h" />
@@ -212,10 +220,7 @@
     <ClInclude Include="Utility\FileUtility.h" />
     <ClInclude Include="Utility\Hash.h" />
     <ClInclude Include="Utility\Utility.h" />
-    <ClInclude Include="Wnd\DXWindows.h" />
-    <ClInclude Include="Wnd\Editor.h" />
-    <ClInclude Include="Wnd\EditorMainWnd.h" />
-    <ClInclude Include="Wnd\LogWnd.h" />
+    <ClInclude Include="WellPlayMain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationCore.cpp">
@@ -232,6 +237,7 @@
     <ClCompile Include="EngineRuntime\SceneManager.cpp" />
     <ClCompile Include="EngineRuntime\SkinMeshRender.cpp" />
     <ClCompile Include="EngineRuntime\Transform.cpp" />
+    <ClCompile Include="EngineTuning.cpp" />
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="RenderCore.cpp" />
     <ClCompile Include="Render\BufferManager.cpp" />
@@ -244,7 +250,6 @@
     <ClCompile Include="Render\DescriptorHeap.cpp" />
     <ClCompile Include="Render\DynamicDescriptorHeap.cpp" />
     <ClCompile Include="Render\EngineProfiling.cpp" />
-    <ClCompile Include="Render\EngineTuning.cpp" />
     <ClCompile Include="Render\GpuBuffer.cpp" />
     <ClCompile Include="Render\GpuTimeManager.cpp" />
     <ClCompile Include="Render\GraphicsCore.cpp" />
@@ -273,18 +278,9 @@
     <ClCompile Include="WellPlayMain.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Wnd\DXWindows.cpp" />
-    <ClCompile Include="Wnd\Editor.cpp" />
-    <ClCompile Include="Wnd\EditorMainWnd.cpp" />
-    <ClCompile Include="Wnd\LogWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WellPlay.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="c:\users\杨周\desktop\icon1.ico" />
-    <Image Include="c:\users\杨周\desktop\logo.ico" />
-    <Image Include="C:\Users\杨周\Desktop\LOGO1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="postShaders.hlsl">
@@ -292,14 +288,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy %(Identity) "$(OutDir)" &gt; NUL</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\%(Identity)</Outputs>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\x64\Debug\skin\DXSkin.xml" />
-    <Xml Include="..\x64\Debug\skin\EditorSkin.xml" />
-    <Xml Include="..\x64\Debug\skin\FileMenu.xml" />
-    <Xml Include="..\x64\Debug\skin\LogSkin.xml" />
-    <Xml Include="..\x64\Debug\skin\VarMenu.xml" />
-    <Xml Include="C:\Users\杨周\Desktop\DuiLib_Ultimate-master\Help\属性列表.xml" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\3rd\第三方开源库.txt" />

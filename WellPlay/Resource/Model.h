@@ -1,6 +1,10 @@
 #pragma once
-#include "stdafx.h"
 #include <array>
+#include <memory>
+#include <utility>
+#include <DirectXMath.h>
+
+typedef unsigned int UINT;
 
 struct CommonVertex
 {

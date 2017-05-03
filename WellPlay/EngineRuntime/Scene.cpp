@@ -40,6 +40,10 @@ void Scene::Update()
 	{
 		EngineUtility::isInPlay() ? rootObject[i]->Update() : rootObject[i]->EditorUpdate();
 	}
+	if (EngineUtility::isInPlay())
+	{
+		EngineCallBack::OnFinishUpdate();
+	}
 }
 
 std::shared_ptr<Scene> Scene::GetCurrentScene()

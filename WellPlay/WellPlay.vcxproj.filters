@@ -147,20 +147,8 @@
     <ClInclude Include="EngineRuntime\Component.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Wnd\DXWindows.h">
-      <Filter>窗口相关类</Filter>
-    </ClInclude>
-    <ClInclude Include="Wnd\EditorMainWnd.h">
-      <Filter>窗口相关类</Filter>
-    </ClInclude>
-    <ClInclude Include="Wnd\Editor.h">
-      <Filter>窗口相关类</Filter>
-    </ClInclude>
     <ClInclude Include="RenderCore.h">
       <Filter>系统模块</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\EngineTuning.h">
-      <Filter>窗口相关类</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Hash.h">
       <Filter>FileOperation</Filter>
@@ -188,9 +176,6 @@
     </ClInclude>
     <ClInclude Include="EngineRuntime\SceneManager.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Wnd\LogWnd.h">
-      <Filter>窗口相关类</Filter>
     </ClInclude>
     <ClInclude Include="EngineRuntime\SkinMeshRender.h">
       <Filter>Engine</Filter>
@@ -224,6 +209,15 @@
     </ClInclude>
     <ClInclude Include="Script\ScriptManager.h">
       <Filter>Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="WellPlayMain.h">
+      <Filter>系统模块</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineTuning.h">
+      <Filter>窗口相关类</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineCallBack.h">
+      <Filter>系统模块</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -311,20 +305,8 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>编译环境相关</Filter>
     </ClCompile>
-    <ClCompile Include="Wnd\EditorMainWnd.cpp">
-      <Filter>窗口相关类</Filter>
-    </ClCompile>
-    <ClCompile Include="Wnd\DXWindows.cpp">
-      <Filter>窗口相关类</Filter>
-    </ClCompile>
-    <ClCompile Include="Wnd\Editor.cpp">
-      <Filter>窗口相关类</Filter>
-    </ClCompile>
     <ClCompile Include="RenderCore.cpp">
       <Filter>系统模块</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\EngineTuning.cpp">
-      <Filter>窗口相关类</Filter>
     </ClCompile>
     <ClCompile Include="Utility\FileUtility.cpp">
       <Filter>FileOperation</Filter>
@@ -343,9 +325,6 @@
     </ClCompile>
     <ClCompile Include="EngineRuntime\SceneManager.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Wnd\LogWnd.cpp">
-      <Filter>窗口相关类</Filter>
     </ClCompile>
     <ClCompile Include="EngineRuntime\SkinMeshRender.cpp">
       <Filter>Engine</Filter>
@@ -380,6 +359,9 @@
     <ClCompile Include="Script\ScriptManager.cpp">
       <Filter>Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="EngineTuning.cpp">
+      <Filter>窗口相关类</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WellPlay.rc">
@@ -387,40 +369,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="c:\users\杨周\desktop\icon1.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="c:\users\杨周\desktop\logo.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="C:\Users\杨周\Desktop\LOGO1.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="postShaders.hlsl">
       <Filter>Shader</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="C:\Users\杨周\Desktop\DuiLib_Ultimate-master\Help\属性列表.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\DXSkin.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\EditorSkin.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\FileMenu.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\VarMenu.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
-    <Xml Include="..\x64\Debug\skin\LogSkin.xml">
-      <Filter>资源文件</Filter>
-    </Xml>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\3rd\第三方开源库.txt" />

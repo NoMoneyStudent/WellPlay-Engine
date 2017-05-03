@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "JSComponent.h"
 #include "Utility\FileUtility.h"
-#include "Wnd\LogWnd.h"
+
+#pragma comment(lib,"ChakraCore.lib")
 
 using namespace std;
 
@@ -59,11 +60,11 @@ JsValueRef CALLBACK JSLog(JsValueRef callee, bool isConstructCall, JsValueRef *a
 			size_t length;
 			JsStringToPointer(stringValue, &string, &length);
 			std::wstring f(string);
-			EditorWindows::LogWnd::Print(f);
+			//EditorWindows::LogWnd::Print(f);
 		}
 		else
 		{
-			EditorWindows::LogWnd::Print(L"不能转化 ");
+			//EditorWindows::LogWnd::Print(L"不能转化 ");
 		}
 	}
 	return JS_INVALID_REFERENCE;
@@ -92,7 +93,7 @@ void JSComponent::SetJSFilePath(const std::string & path)
 			size_t length;
 			ASSERT_SUCCEEDED(JsStringToPointer(messageValue, &message, &length), "failed to convert error message");
 		
-			EditorWindows::LogWnd::Print(message);
+			//EditorWindows::LogWnd::Print(message);
 			return;
 		}
 
@@ -103,7 +104,7 @@ void JSComponent::SetJSFilePath(const std::string & path)
 		
 		ASSERT_SUCCEEDED(JsStringToPointer(stringResult, &returnValue, &stringLength), "failed to convert return value.");
 		
-		EditorWindows::LogWnd::Print(returnValue);
+		//EditorWindows::LogWnd::Print(returnValue);
 		return;
 	/*}
 	catch (...)

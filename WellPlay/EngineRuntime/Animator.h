@@ -9,21 +9,26 @@ class Animator:public Component
 	friend class GameObject;
 	friend class cereal::access;
 public:
-	Animator();
-	virtual ~Animator();
+	Animator() = default;
+	virtual ~Animator() = default;
 
-	std::vector<AnimationClip*> animationClips;
 	void Play(int index);
 	void Stop();
 	bool isPlay() { return m_isPlay; }
 
+	std::vector<AnimationClip*> GetClips()const { return animationClips; };
+	void SetClips(std::vector<AnimationClip*>& aniclips);
+
 private:
 	std::vector<std::weak_ptr<Transform>> aniTransform;
 	std::vector<std::array<UINT, 3>> backup;
+	std::vector<AnimationClip*> animationClips;
 
 	bool m_isPlay = false;
 	UINT currentIndex = 0;
 	float timer = 0;
+
+	void UpdateAvatar();
 
 	virtual void OnInit() override;
 	virtual void Update() override;

@@ -3,7 +3,6 @@
 #include"EngineRuntime\Component.h"
 #include"EngineRuntime\GameObject.h"
 
-#pragma comment(lib,"ChakraCore.lib")
 
 class JSComponent :public Component
 {

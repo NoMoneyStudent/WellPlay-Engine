@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "ScriptManager.h"
 #include <fstream>
-#include "Wnd\LogWnd.h"
 #include "EngineRuntime\Component.h"
 #include "EngineRuntime\GameObject.h"
 #include "boost\variant.hpp"
 #include <type_traits>
+
+#pragma comment(lib,"Lua.lib")
 
 using namespace std;
 using namespace DirectX;
@@ -24,7 +25,7 @@ void Lua::AddScript(const std::string & name)
 		}
 		catch (const std::runtime_error& e)
 		{
-			EditorWindows::LogWnd::Print(MakeWStr(e.what()));
+			//EditorWindows::LogWnd::Print(MakeWStr(e.what()));
 		}
 	}
 }
@@ -49,8 +50,8 @@ void Lua::Init()
 	m_lua.writeFunction("_makevector4",
 		[](float x, float y, float z, float w) {return shared_ptr<XMFLOAT4>(new XMFLOAT4(x, y, z, w)); });
 
-	m_lua.writeFunction("Log",
-		[](const string& data) { EditorWindows::LogWnd::Print(MakeWStr(data)); });
+	/*m_lua.writeFunction("Log",
+		[](const string& data) { EditorWindows::LogWnd::Print(MakeWStr(data)); });*/
 
 #pragma region GameObject
 	m_lua.writeVariable("GameObject", LuaContext::EmptyArray);
@@ -129,6 +130,6 @@ void Lua::Init()
 	m_lua.registerFunction(string("AddChildren"), &Transform::AddChild);
 #pragma endregion
 
-	AddScript("Class.lua");
-	AddScript("vector3.lua");
+	AddScript("Script\\Class.lua");
+	AddScript("Script\\vector3.lua");
 }

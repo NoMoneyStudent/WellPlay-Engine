@@ -6,7 +6,6 @@
 #include <functional>
 #include <map>
 #include <set>
-#include "duilib.h"
 
 class VariableGroup;
 typedef void(*VarCallback)(void);
@@ -24,7 +23,7 @@ public:
 		callBack = m_callBack;
 	}
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) {}
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) {}
 	virtual std::string ToString( void ) const { return ""; }
 	virtual void SetValue( FILE* file, const std::string& setting) = 0; //set value read from file
 
@@ -64,7 +63,7 @@ public:
 	virtual void Decrement(void) override { Increment(); }
 	virtual void Bang(void) override { Increment(); }
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
 	virtual std::string ToString( void ) const override;
 	virtual void SetValue( FILE* file, const std::string& setting) override;
 
@@ -94,7 +93,7 @@ public:
 			(*callBack)();
 	}
 	virtual void Bang(void) override;
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
 	virtual std::string ToString( void ) const override;
 	virtual void SetValue( FILE* file, const std::string& setting)  override;
 
@@ -114,7 +113,7 @@ public:
 	ExpVar& operator=( float val );	// m_Value = log2(val)
 	operator float() const;			// returns exp2(m_Value)
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)  override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)  override;
 	virtual std::string ToString( void ) const override;
 	virtual void SetValue( FILE* file, const std::string& setting ) override;
 
@@ -142,7 +141,7 @@ public:
 			(*callBack)();
 	}
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName) override;
 	virtual std::string ToString( void ) const override;
 	virtual void SetValue( FILE* file, const std::string& setting ) override;
 
@@ -173,7 +172,7 @@ public:
 		(*callBack)();
 	}
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)  override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu, std::wstring& ButtonName)  override;
 	virtual std::string ToString( void ) const override;
 	virtual void SetValue( FILE* file, const std::string& setting ) override;
 
@@ -193,7 +192,7 @@ public:
 
 	virtual void Bang( void ) override { m_Callback(m_Arguments); m_BangDisplay = 64; }
 
-	virtual void DisplayValue(CMenuElementUI* rootMenu,std::wstring& ButtonName) override;
+	//virtual void DisplayValue(CMenuElementUI* rootMenu,std::wstring& ButtonName) override;
 	virtual void SetValue( FILE* file, const std::string& setting ) override;
 
 private:
@@ -208,7 +207,7 @@ namespace EngineTuning
 {
 	void Initialize( void );
 	void Update( float frameTime );
-	void Display(CMenuElementUI* rootMenu);
+	//void Display(CMenuElementUI* rootMenu);
 	EngineVar* Select(std::wstring& ButtonName);
 	bool IsFocused( void );
 

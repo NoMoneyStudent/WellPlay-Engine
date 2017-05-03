@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="800,800" sizebox="4,4,4,4"  mininfo="600,500" >
-
-  <VerticalLayout name="background" width="800" height="800"  bkcolor="#FF252A2F" >
-    <VerticalLayout >
-      
-    </VerticalLayout>
-  </VerticalLayout>
-</Window>

@@ -15,6 +15,8 @@
 
 namespace GameInput
 {
+	extern bool ifFocus;
+
 	void Initialize(HWND hwnd);
 	void Shutdown();
 	void Update();

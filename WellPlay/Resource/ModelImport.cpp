@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <set>
-#include "Wnd\LogWnd.h"
 #include "Utility\FileUtility.h"
 #include "ResourceManager.h"
 #include "EngineRuntime\GameObject.h"
@@ -12,12 +11,14 @@
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
-
 #include "Serialize.h"
+
+#pragma comment(lib, "assimp-vc140-mt.lib")
 
 using namespace std;
 
 vector<pair<weak_ptr<SkinMeshRender>, Avatar*>> setupAvatar;
+std::vector<AnimationClip*> animations;
 shared_ptr<Assets> asset;
 
 void ProcessNode(const aiScene* scene, shared_ptr<GameObject> model, aiNode* node);
@@ -140,7 +141,6 @@ void ProcessNode(const aiScene* scene, shared_ptr<GameObject> parent, aiNode* no
 	SetQuater(vc, aiR);
 	myTrans.lock()->SetLocalRotation(vc);
 
-	EditorWindows::LogWnd::Print(L"生成节点" + MakeWStr(node->mName.C_Str()) + L"   父节点" + ((parent == nullptr) ? L"" : MakeWStr(parent->GetName())));
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -219,6 +219,7 @@ void ProcessNode(const aiScene* scene, shared_ptr<GameObject> parent, aiNode* no
 			setupAvatar.push_back(make_pair(render, ResourceManager::GetAvatar(meshname)));
 
 			auto ani=myNode->AddComponent<Animator>();
+			ani.lock()->SetClips(animations);
 		}
 		else
 		{
@@ -226,7 +227,7 @@ void ProcessNode(const aiScene* scene, shared_ptr<GameObject> parent, aiNode* no
 			render.lock()->SetMesh(ResourceManager::GetMesh(meshname));
 		}
 	}
-	
+
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
 		ProcessNode(scene, myNode, node->mChildren[i]);
@@ -272,6 +273,7 @@ void ProcessAnimation(const aiScene* scene)
 		}
 		ResourceManager::AddAnimation(clip);
 		asset->cliplist.push_back(clip);
+		animations.push_back(clip.get());
 	}
 }
 
@@ -318,12 +320,15 @@ void ModelImport::ImportModel(string path)
 	{
 		iter.first.lock()->SetAvatar(iter.second);
 	}
+
 	setupAvatar.clear();
+	animations.clear();
+
 	ResourceManager::AddAssets(asset);
 	MakePrefab(rootObject);
 	MakeAssets(asset);
 }
-
+/*以下是FBX SDK读取代码，已弃用*/
 //FbxManager* FBXManager = NULL;
 //FbxScene* FBXScene = NULL;
 //

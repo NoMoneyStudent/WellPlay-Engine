@@ -1,7 +1,10 @@
 #pragma once
 #include "EditorComponent.h"
 #include "Resource\Model.h"
-#include "Render\RenderObject.h"
+namespace RenderCore
+{
+	struct RenderObject;
+}
 class GameObject;
 
 class Render:public EditorComponent
@@ -12,7 +15,7 @@ class Render:public EditorComponent
 protected:
 	Render();
 	virtual ~Render();
-	RenderCore::RenderObject render;
+	RenderCore::RenderObject* render;
 
 #pragma region –Ú¡–ªØ
 	template<class Archive>

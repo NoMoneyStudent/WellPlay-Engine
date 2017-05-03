@@ -1,7 +1,8 @@
 #pragma once
 #include "Render.h"
 #include "Transform.h"
-#include "ResourceManager.h"
+struct Avatar;
+struct AniMesh;
 
 class SkinMeshRender :public Render
 {
@@ -9,8 +10,8 @@ class SkinMeshRender :public Render
 	friend class cereal::access;
 
 public:
-	SkinMeshRender();
-	virtual ~SkinMeshRender();
+	SkinMeshRender() = default;
+	virtual ~SkinMeshRender() = default;
 	
 	Avatar* GetAvatar() { return m_avatar; }
 	void SetAvatar(Avatar* avatar);
@@ -22,7 +23,7 @@ private:
 	AniMesh* m_mesh;
 
 	std::vector<std::weak_ptr<Transform>> m_bones;
-	std::vector<XMFLOAT4X4> m_TransformMatrix;
+	std::vector<DirectX::XMFLOAT4X4> m_TransformMatrix;
 
 	void InitBoneMatrix();
 	void FindBoneTransform();

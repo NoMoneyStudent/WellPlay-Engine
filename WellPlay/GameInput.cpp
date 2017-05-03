@@ -14,6 +14,7 @@
 #include "stdafx.h"
 #include "GameInput.h"
 #include "SystemTime.h"
+#include <comdef.h>
 
 #define USE_XINPUT
 #include <XInput.h>
@@ -25,13 +26,19 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+namespace GameInput
+{
+	bool ifFocus = false;
+}
+
 namespace
 {
+	HWND g_hWnd;
+
 	bool s_Buttons[2][GameInput::kNumDigitalInputs];
 	float s_HoldDuration[GameInput::kNumDigitalInputs] = { 0.0f };
 	float s_Analogs[GameInput::kNumAnalogInputs];
 	float s_AnalogsTC[GameInput::kNumAnalogInputs];
-	HWND g_hWnd;
 
 #ifdef USE_KEYBOARD_MOUSE
 
@@ -312,8 +319,16 @@ namespace
 			ASSERT(false, "Keyboard CreateDevice failed.");
 		if (FAILED(s_Keyboard->SetDataFormat(&c_dfDIKeyboard)))
 			ASSERT(false, "Keyboard SetDataFormat failed.");
-		if (FAILED(s_Keyboard->SetCooperativeLevel(g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
+		HRESULT r;
+		r = s_Keyboard->SetCooperativeLevel(g_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+		if (FAILED(r))
+		{
+
+			_com_error error(r);
+			LPCTSTR errText = error.ErrorMessage();
+			
 			ASSERT(false, "Keyboard SetCooperativeLevel failed.");
+		}
 
 		DIPROPDWORD dipdw;
 		dipdw.diph.dwSize = sizeof(DIPROPDWORD);
@@ -364,7 +379,7 @@ namespace
 		HWND foreground = GetForegroundWindow();
 		bool visible = IsWindowVisible(foreground) != 0;
 
-		if (foreground != g_hWnd // wouldn't be able to acquire
+		if (!GameInput::ifFocus || foreground != g_hWnd 
 			|| !visible)
 		{
 			KbmZeroInputs();

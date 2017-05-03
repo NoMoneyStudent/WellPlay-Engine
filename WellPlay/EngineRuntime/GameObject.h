@@ -9,6 +9,8 @@
 #include "EngineUtility.h"
 #include <cereal/access.hpp>
 
+#include "EngineCallBack.h"
+
 class Scene;
 
 class GameObject:public std::enable_shared_from_this<GameObject>
@@ -20,7 +22,7 @@ public:
 	GameObject(std::shared_ptr<GameObject> prototype);
 	GameObject(GameObject*) = delete;
 	GameObject& operator=(GameObject&) = delete;
-	~GameObject();
+	~GameObject() = default;
 
 #pragma region Ä£°åº¯Êý
 	template<class T> std::weak_ptr<T> GetComponent()
@@ -180,6 +182,7 @@ public:
 	
 	static std::shared_ptr<GameObject> Instantiate(const std::string& name = "new GameObject");
 	static std::shared_ptr<GameObject> Instantiate(std::shared_ptr<GameObject> prototype);
+	
 	static void Destroy(std::shared_ptr<Component>& target);
 	static void Destroy(std::shared_ptr<GameObject>& target);
 
@@ -212,6 +215,8 @@ private:
 	{
 		archive(m_name, self_active);
 		archive(m_components, m_editorcomponents, m_transform);
+		
+		EngineCallBack::OnAddGameObject(*this);
 	}
 #pragma endregion
 };

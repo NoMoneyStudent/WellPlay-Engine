@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "Render.h"
+#include "Render\RenderObject.h"
 
-Render::Render()
-	:EditorComponent::EditorComponent()
+Render::Render():
+	render(new RenderCore::RenderObject),
+	EditorComponent::EditorComponent()
 {
 }
 

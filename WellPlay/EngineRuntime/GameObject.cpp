@@ -94,10 +94,6 @@ void GameObject::InitObject()
 	m_transform->OnEnable();
 }
 
-GameObject::~GameObject()
-{
-}
-
 weak_ptr<GameObject> GameObject::FindChild(const std::string & name)
 {
 	shared_ptr<GameObject> child;
@@ -185,6 +181,9 @@ shared_ptr<GameObject> GameObject::Instantiate(const std::string & name)
 {
 	shared_ptr<GameObject> newobject(new GameObject(name));
 	newobject->InitObject();
+
+	EngineCallBack::OnAddGameObject(*newobject);
+
 	return newobject;
 }
 
@@ -195,6 +194,9 @@ shared_ptr<GameObject> GameObject::Instantiate(std::shared_ptr<GameObject> proto
 	//newobject->CreateHierarchy(prototype);
 	newobject->InitHierarchy();
 	newobject->EnableHierarchy();
+
+	EngineCallBack::OnAddGameObject(*newobject);
+
 	return newobject;
 }
 
@@ -289,6 +291,9 @@ void GameObject::DisableHierarchy()
 void GameObject::Destroy(shared_ptr<GameObject>& object)
 {
 	shared_ptr<GameObject> target(std::move(object));
+	
+	EngineCallBack::OnRemoveGameObject(*target);
+
 	target->DisableHierarchy();
 	target->DestroyHierarchy();
 

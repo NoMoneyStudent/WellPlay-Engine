@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SkinMeshRender.h"
 #include "Render\RenderObject.h"
-#include "Wnd\LogWnd.h"
 #include "ResourceManager.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -28,21 +27,21 @@ void SkinMeshRender::SetMesh(Mesh * mesh)
 		return;
 
 	m_mesh = animesh;
-	ResourceManager::GetMeshGpuBuffer(m_mesh->name, render.m_VertexBuffer, render.m_IndexBuffer);
-	render.indexCount = m_mesh->indexs.size();
-	render.indexStride = sizeof(UINT);
-	render.vertexCount = m_mesh->vertexs.size();
-	render.vertexStride = sizeof(AniVertex);
-	render.name = m_mesh->name;
+	ResourceManager::GetMeshGpuBuffer(m_mesh->name, render->m_VertexBuffer, render->m_IndexBuffer);
+	render->indexCount = m_mesh->indexs.size();
+	render->indexStride = sizeof(UINT);
+	render->vertexCount = m_mesh->vertexs.size();
+	render->vertexStride = sizeof(AniVertex);
+	render->name = m_mesh->name;
 }
 
 void SkinMeshRender::InitBoneMatrix()
 {
 	m_TransformMatrix = std::vector<XMFLOAT4X4>(m_avatar->bonelists.size());
 
-	XMStoreFloat4x4(&render.model, XMMatrixIdentity());
-	render.BoneCount = m_avatar->bonelists.size();
-	render.BoneTransforms = m_TransformMatrix.data();
+	XMStoreFloat4x4(&render->model, XMMatrixIdentity());
+	render->BoneCount = m_avatar->bonelists.size();
+	render->BoneTransforms = m_TransformMatrix.data();
 }
 
 void SkinMeshRender::FindBoneTransform()
@@ -60,7 +59,7 @@ void SkinMeshRender::FindBoneTransform()
 		}
 		else
 		{
-			EditorWindows::LogWnd::Print(L"¹Ç÷À½ÚµãÈ±Ê§:  " + MakeWStr(m_avatar->bonelists[i].name));
+			//EditorWindows::LogWnd::Print(L"¹Ç÷À½ÚµãÈ±Ê§:  " + MakeWStr(m_avatar->bonelists[i].name));
 			m_bones.push_back(weak_ptr<Transform>());
 		}
 	}
@@ -84,7 +83,7 @@ void SkinMeshRender::Update()
 		if (!m_bones[i].expired())
 			XMStoreFloat4x4(&m_TransformMatrix[i], Bind * m_bones[i].lock()->GetWorldTranslationMatrix());
 	}
-	renderQueue.push_back(&render);
+	renderQueue.push_back(render);
 }
 
 void SkinMeshRender::EditorUpdate()
@@ -100,13 +99,4 @@ Component * SkinMeshRender::Clone()
 	copy->render = render;
 
 	return static_cast<Component*>(copy);
-}
-
-SkinMeshRender::SkinMeshRender()
-	:Render::Render()
-{
-}
-
-SkinMeshRender::~SkinMeshRender()
-{
 }

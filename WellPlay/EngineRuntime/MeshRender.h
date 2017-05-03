@@ -1,7 +1,6 @@
 #pragma once
 #include "Render.h"
-#include "Resource\Model.h"
-#include "ResourceManager.h"
+struct CommonMesh;
 
 class MeshRender:public Render
 {

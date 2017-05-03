@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "GameObject.h"
 #include "Scene.h"
+#include "EngineCallBack.h"
 
 using namespace std;
 
@@ -62,6 +63,14 @@ Transform::~Transform()
 
 void Transform::SetParent(shared_ptr<Transform> parent)
 {
+	if (parent == shared_from_this())
+	{
+		EngineCallBack::OnLog(L"不能设置自己为自己的父节点");
+		return;
+	}
+
+	EngineCallBack::OnMoveGameObject(*parent->gameobject(),*gameobject(),-1);
+
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	if (m_parent == nullptr)
@@ -91,6 +100,7 @@ void Transform::SetParent(shared_ptr<Transform> parent)
 	{
 		parent->m_children.push_back(shared_from_this());
 	}
+
 	SetWorldSRT(s, r, t);
 }
 
@@ -98,6 +108,8 @@ void Transform::AddChild(shared_ptr<Transform> child, int index)
 {
 	XMVECTOR s, r, t;
 	child->GetWorldSRT(s, r, t);
+
+	EngineCallBack::OnMoveGameObject(*gameobject(), *child->gameobject(), index);
 
 	if (child->m_parent == nullptr)
 	{
@@ -259,4 +271,36 @@ XMVECTOR Transform::GetDown() const
 	XMVECTOR s, r, t;
 	GetWorldSRT(s, r, t);
 	return XMQuaternionRotate(XMVectorSet(0, -1, 0, 0), r);
+}
+
+std::vector<int> Transform::GetIndexHierarchy() const
+{
+	std::vector<int> index;
+	auto child = shared_from_this();
+	while (child->m_parent != nullptr)
+	{
+		auto& childlist = child->m_parent->GetChildren();
+		for (UINT i = 0; i < childlist.size(); i++)
+		{
+			if (childlist[i] == child)
+			{
+				index.push_back(i);
+				break;
+			}
+		}
+		child = child->m_parent;
+	}
+	auto s = Scene::GetCurrentScene();
+	auto root = s->GetRootGameObject();
+	for (int i = 0; i < root.size(); i++)
+	{
+		if (root[i] == child->gameobject())
+		{
+			index.push_back(i);
+			break;
+		}
+	}
+	assert(index.size() > 0);
+	std::reverse(index.begin(), index.end());
+	return index;
 }

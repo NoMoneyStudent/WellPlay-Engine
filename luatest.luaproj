@@ -50,11 +50,5 @@
     <Content Include="x64\Debug\WellPlay.lib" />
     <Content Include="x64\Debug\WellPlay.pdb" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="x64\Class.lua" />
-    <Compile Include="x64\Engine.lua" />
-    <Compile Include="x64\LuaFile1.lua" />
-    <Compile Include="x64\vector3.lua" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>

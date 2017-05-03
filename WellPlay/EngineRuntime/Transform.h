@@ -1,8 +1,8 @@
 #pragma once
 #include "Component.h"
 #include "Scene.h"
-#include <vector>
 #include <DirectXMath.h>
+#include <vector>
 #include <cereal/access.hpp>
 class GameObject;
 
@@ -44,6 +44,8 @@ public:
 	XMVECTOR GetBehind() const;
 	XMVECTOR GetLeft() const;
 	XMVECTOR GetDown() const;
+
+	std::vector<int> GetIndexHierarchy() const;
 
 	std::shared_ptr<Transform> GetParent() const { return m_parent; }
 	std::vector<std::shared_ptr<Transform>> GetChildren() const { return m_children; }
