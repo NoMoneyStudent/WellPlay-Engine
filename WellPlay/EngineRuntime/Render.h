@@ -14,7 +14,7 @@ class Render:public EditorComponent
 
 protected:
 	Render();
-	virtual ~Render();
+	virtual ~Render() = default;
 	RenderCore::RenderObject* render;
 
 #pragma region –Ú¡–ªØ

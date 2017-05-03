@@ -3,11 +3,6 @@
 #include "Render\RenderObject.h"
 
 Render::Render():
-	render(new RenderCore::RenderObject),
-	EditorComponent::EditorComponent()
-{
-}
-
-Render::~Render()
+	render(new RenderCore::RenderObject)
 {
 }

@@ -14,8 +14,6 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDockWidget>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -24,8 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
@@ -68,31 +65,9 @@ public:
     QDockWidget *dockWidget_4;
     QWidget *dockWidgetContents_5;
     QVBoxLayout *verticalLayout_4;
-    QScrollArea *scrollArea;
-    QWidget *componentList;
-    QVBoxLayout *verticalLayout_5;
-    QGroupBox *groupBox;
-    QHBoxLayout *horizontalLayout_4;
-    QLabel *label_2;
-    QLineEdit *GameObjectNameEdit;
-    QGroupBox *groupBox_2;
-    QGridLayout *gridLayout;
-    QLabel *label_3;
-    QLineEdit *px;
-    QLineEdit *py;
-    QLineEdit *pz;
-    QLabel *label_4;
-    QLineEdit *rx;
-    QLineEdit *ry;
-    QLineEdit *rz;
-    QLabel *label_5;
-    QLineEdit *sx;
-    QLineEdit *sy;
-    QLineEdit *sz;
-    QLabel *labelX;
-    QLabel *labelZ;
-    QLabel *labelY;
-    QSpacerItem *horizontalSpacer;
+    QTabWidget *ComTab;
+    QWidget *tab;
+    QWidget *tab_2;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -125,21 +100,21 @@ public:
         Run->setObjectName(QStringLiteral("Run"));
         Run->setCheckable(true);
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/qss_icons/E:/\350\213\261\351\233\204\346\227\266\345\210\273/55_0005s_0001_play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QStringLiteral(":/qss_icons/rc/55_0005s_0001_play.png"), QSize(), QIcon::Normal, QIcon::Off);
         Run->setIcon(icon1);
         Run->setAutoRepeat(false);
         Next = new QAction(MainWindow);
         Next->setObjectName(QStringLiteral("Next"));
         Next->setCheckable(true);
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/qss_icons/E:/\350\213\261\351\233\204\346\227\266\345\210\273/55_0005s_0003_next.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QStringLiteral(":/qss_icons/rc/55_0005s_0003_next.png"), QSize(), QIcon::Normal, QIcon::Off);
         Next->setIcon(icon2);
         Next->setAutoRepeat(false);
         Interrupt = new QAction(MainWindow);
         Interrupt->setObjectName(QStringLiteral("Interrupt"));
         Interrupt->setCheckable(true);
         QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/qss_icons/E:/\350\213\261\351\233\204\346\227\266\345\210\273/55_0005s_0002_pause.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QStringLiteral(":/qss_icons/rc/55_0005s_0002_pause.png"), QSize(), QIcon::Normal, QIcon::Off);
         Interrupt->setIcon(icon3);
         Interrupt->setAutoRepeat(false);
         centralWidget = new QWidget(MainWindow);
@@ -294,165 +269,28 @@ public:
         sizePolicy.setHeightForWidth(dockWidgetContents_5->sizePolicy().hasHeightForWidth());
         dockWidgetContents_5->setSizePolicy(sizePolicy);
         verticalLayout_4 = new QVBoxLayout(dockWidgetContents_5);
-        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setSpacing(0);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        scrollArea = new QScrollArea(dockWidgetContents_5);
-        scrollArea->setObjectName(QStringLiteral("scrollArea"));
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-        scrollArea->setWidgetResizable(true);
-        scrollArea->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-        componentList = new QWidget();
-        componentList->setObjectName(QStringLiteral("componentList"));
-        componentList->setGeometry(QRect(0, 0, 579, 284));
-        sizePolicy.setHeightForWidth(componentList->sizePolicy().hasHeightForWidth());
-        componentList->setSizePolicy(sizePolicy);
-        componentList->setMinimumSize(QSize(0, 0));
-        componentList->setMaximumSize(QSize(16777215, 16777215));
-        verticalLayout_5 = new QVBoxLayout(componentList);
-        verticalLayout_5->setSpacing(10);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
-        verticalLayout_5->setContentsMargins(10, 10, 10, 10);
-        groupBox = new QGroupBox(componentList);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-        groupBox->setSizePolicy(sizePolicy1);
-        groupBox->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-        groupBox->setFlat(false);
-        groupBox->setCheckable(false);
-        horizontalLayout_4 = new QHBoxLayout(groupBox);
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        horizontalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
-        label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        verticalLayout_4->setContentsMargins(0, 0, 0, 0);
+        ComTab = new QTabWidget(dockWidgetContents_5);
+        ComTab->setObjectName(QStringLiteral("ComTab"));
+        ComTab->setTabPosition(QTabWidget::East);
+        ComTab->setTabShape(QTabWidget::Rounded);
+        ComTab->setElideMode(Qt::ElideNone);
+        ComTab->setUsesScrollButtons(false);
+        ComTab->setDocumentMode(false);
+        ComTab->setTabsClosable(true);
+        ComTab->setMovable(true);
+        ComTab->setTabBarAutoHide(false);
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        ComTab->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        ComTab->addTab(tab_2, QString());
 
-        horizontalLayout_4->addWidget(label_2);
-
-        GameObjectNameEdit = new QLineEdit(groupBox);
-        GameObjectNameEdit->setObjectName(QStringLiteral("GameObjectNameEdit"));
-        GameObjectNameEdit->setClearButtonEnabled(false);
-
-        horizontalLayout_4->addWidget(GameObjectNameEdit);
-
-
-        verticalLayout_5->addWidget(groupBox);
-
-        groupBox_2 = new QGroupBox(componentList);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        sizePolicy1.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy1);
-        groupBox_2->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-        groupBox_2->setCheckable(false);
-        gridLayout = new QGridLayout(groupBox_2);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout->addWidget(label_3, 1, 0, 1, 3);
-
-        px = new QLineEdit(groupBox_2);
-        px->setObjectName(QStringLiteral("px"));
-        px->setLayoutDirection(Qt::RightToLeft);
-        px->setFrame(true);
-
-        gridLayout->addWidget(px, 1, 4, 1, 1);
-
-        py = new QLineEdit(groupBox_2);
-        py->setObjectName(QStringLiteral("py"));
-        py->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(py, 1, 5, 1, 1);
-
-        pz = new QLineEdit(groupBox_2);
-        pz->setObjectName(QStringLiteral("pz"));
-        pz->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(pz, 1, 6, 1, 1);
-
-        label_4 = new QLabel(groupBox_2);
-        label_4->setObjectName(QStringLiteral("label_4"));
-
-        gridLayout->addWidget(label_4, 2, 0, 1, 3);
-
-        rx = new QLineEdit(groupBox_2);
-        rx->setObjectName(QStringLiteral("rx"));
-        rx->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(rx, 2, 4, 1, 1);
-
-        ry = new QLineEdit(groupBox_2);
-        ry->setObjectName(QStringLiteral("ry"));
-        ry->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(ry, 2, 5, 1, 1);
-
-        rz = new QLineEdit(groupBox_2);
-        rz->setObjectName(QStringLiteral("rz"));
-        rz->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(rz, 2, 6, 1, 1);
-
-        label_5 = new QLabel(groupBox_2);
-        label_5->setObjectName(QStringLiteral("label_5"));
-
-        gridLayout->addWidget(label_5, 3, 0, 1, 2);
-
-        sx = new QLineEdit(groupBox_2);
-        sx->setObjectName(QStringLiteral("sx"));
-        sx->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(sx, 3, 4, 1, 1);
-
-        sy = new QLineEdit(groupBox_2);
-        sy->setObjectName(QStringLiteral("sy"));
-        sy->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(sy, 3, 5, 1, 1);
-
-        sz = new QLineEdit(groupBox_2);
-        sz->setObjectName(QStringLiteral("sz"));
-        sz->setLayoutDirection(Qt::RightToLeft);
-
-        gridLayout->addWidget(sz, 3, 6, 1, 1);
-
-        labelX = new QLabel(groupBox_2);
-        labelX->setObjectName(QStringLiteral("labelX"));
-        labelX->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(labelX, 0, 4, 1, 1);
-
-        labelZ = new QLabel(groupBox_2);
-        labelZ->setObjectName(QStringLiteral("labelZ"));
-        labelZ->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(labelZ, 0, 6, 1, 1);
-
-        labelY = new QLabel(groupBox_2);
-        labelY->setObjectName(QStringLiteral("labelY"));
-        labelY->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(labelY, 0, 5, 1, 1);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer, 0, 1, 1, 1);
-
-
-        verticalLayout_5->addWidget(groupBox_2, 0, Qt::AlignTop);
-
-        scrollArea->setWidget(componentList);
-
-        verticalLayout_4->addWidget(scrollArea);
+        verticalLayout_4->addWidget(ComTab);
 
         dockWidget_4->setWidget(dockWidgetContents_5);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget_4);
@@ -496,15 +334,8 @@ public:
         dockWidget_3->setWindowTitle(QApplication::translate("MainWindow", "\345\234\272\346\231\257\350\247\206\345\233\276", Q_NULLPTR));
         SceneTree->setWindowTitle(QApplication::translate("MainWindow", "\345\234\272\346\231\257\346\240\221", Q_NULLPTR));
         dockWidget_4->setWindowTitle(QApplication::translate("MainWindow", "\347\273\204\344\273\266\350\247\206\345\233\276", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("MainWindow", "GameObject", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWindow", "Name:        ", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Transfrom", Q_NULLPTR));
-        label_3->setText(QApplication::translate("MainWindow", "Position", Q_NULLPTR));
-        label_4->setText(QApplication::translate("MainWindow", "Rotation", Q_NULLPTR));
-        label_5->setText(QApplication::translate("MainWindow", "Scale", Q_NULLPTR));
-        labelX->setText(QApplication::translate("MainWindow", "X", Q_NULLPTR));
-        labelZ->setText(QApplication::translate("MainWindow", "Z", Q_NULLPTR));
-        labelY->setText(QApplication::translate("MainWindow", "Y", Q_NULLPTR));
+        ComTab->setTabText(ComTab->indexOf(tab), QApplication::translate("MainWindow", "Tab 1", Q_NULLPTR));
+        ComTab->setTabText(ComTab->indexOf(tab_2), QApplication::translate("MainWindow", "Tab 2", Q_NULLPTR));
     } // retranslateUi
 
 };

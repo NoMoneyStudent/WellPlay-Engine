@@ -17,3 +17,18 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Editor.pri)
+
+FORMS += \
+    Control/combase.ui \
+    Control/transfromcontrol.ui \
+    Control/gocontrol.ui
+
+HEADERS += \
+    Control/combase.h \
+    Control/transfromcontrol.h \
+    Control/gocontrol.h
+
+SOURCES += \
+    Control/combase.cpp \
+    Control/transfromcontrol.cpp \
+    Control/gocontrol.cpp

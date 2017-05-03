@@ -45,8 +45,6 @@ void Transform::SetWorldSRT(FXMVECTOR scale, FXMVECTOR rotation, FXMVECTOR posit
 }
 
 Transform::Transform():
-	Component::Component(),
-	enable_shared_from_this<Transform>::enable_shared_from_this(),
 	localPosition(XMFLOAT3(0,0,0)),
 	localRotation(XMFLOAT4(0, 0, 0, 1)),
 	localScale(XMFLOAT3(1, 1, 1)),
@@ -58,7 +56,6 @@ Transform::~Transform()
 {
 	m_parent.reset();
 	m_children.clear();
-	Component::~Component();
 }
 
 void Transform::SetParent(shared_ptr<Transform> parent)

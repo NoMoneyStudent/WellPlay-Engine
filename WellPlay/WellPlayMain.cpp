@@ -67,7 +67,7 @@ void EngineMain(HWND m_hwnd,HWND input)
 	RenderCore::Initialize(m_hwnd);
 	GameInput::Initialize(input);
 	SystemTime::Initialize();
-	//Lua::Init();
+	Lua::Init();
 	ModelImport::ImportModel("E:/test.FBX");
 
 	EngineCallBack::OnLog(L"引擎初始化完成");

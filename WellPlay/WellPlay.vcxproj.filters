@@ -364,11 +364,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="WellPlay.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="postShaders.hlsl">
       <Filter>Shader</Filter>
     </CustomBuild>

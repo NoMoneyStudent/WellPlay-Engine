@@ -9,10 +9,10 @@ class EditorComponent:public Component
 	friend class cereal::access;
 
 protected:
-	EditorComponent():Component::Component() {}
+	EditorComponent() = default;
 	EditorComponent(EditorComponent&) = delete;
 	EditorComponent& operator=(EditorComponent&) = delete;
-	virtual ~EditorComponent() {}
+	virtual ~EditorComponent() = default;
 
 private:
 	virtual void EditorOnInit() {}

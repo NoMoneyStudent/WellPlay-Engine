@@ -5,13 +5,11 @@
 using namespace std;
 
 GameObject::GameObject(const std::string & name):
-	enable_shared_from_this<GameObject>::enable_shared_from_this(),
 	m_name(name)
 {
 }
 
 GameObject::GameObject(shared_ptr<GameObject> prototype):
-	enable_shared_from_this<GameObject>::enable_shared_from_this(),
 	m_name(prototype->m_name)
 {
 }

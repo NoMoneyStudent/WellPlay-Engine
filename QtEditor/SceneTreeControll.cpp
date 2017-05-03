@@ -10,8 +10,6 @@ SceneTreeControll::SceneTreeControll(QDockWidget *target):
 	treeview = scenetree->findChild<QTreeView*>("SceneTreeView");
 	treeview->setModel(model);
 
-	qRegisterMetaType<QVector<int>>("QVector<int>");
-
 	EngineCallBack::OnLoadedScene =
 		[&]() {emit this->LoadScene(); };
 	EngineCallBack::OnAddGameObject = 
@@ -25,6 +23,7 @@ SceneTreeControll::SceneTreeControll(QDockWidget *target):
 	{
 		auto i = go.GetTransform().lock()->GetIndexHierarchy();
 		emit this->OnRemoveGameObject(QVector<int>::fromStdVector(i), QString::fromStdString(go.GetName()));
+		emit this->OnRemoveComView(go.shared_from_this());
 	};
 	EngineCallBack::OnMoveGameObject =
 		[&](const GameObject& parent, const GameObject& child,int index)
@@ -46,6 +45,7 @@ SceneTreeControll::SceneTreeControll(QDockWidget *target):
 
 SceneTreeControll::~SceneTreeControll()
 {
+	delete model;
 }
 
 void SceneTreeControll::SelectGameObject(const QModelIndex & select)
@@ -68,11 +68,6 @@ void SceneTreeControll::SelectGameObject(const QModelIndex & select)
 		trans = trans->GetChildren()[indexarray[i]];
 	}
 	auto go = trans->gameobject();
-	std::string m_name = go->GetName();
-	auto transfrom = go->GetTransform().lock();
-	auto p = transfrom->GetLocalPosition();
-	auto r = transfrom->GetLocalEulerAngles();
-	auto s = transfrom->GetLocalScale();
-	currentSelect = go;
-	
+	lk.unlock();
+	emit OnSelect(go);
 }

@@ -166,6 +166,8 @@ public:
 	}
 #pragma endregion
 
+	std::vector<std::pair<std::string, std::shared_ptr<Component>>> GetAllComponents() const { return m_components; };
+
 	std::weak_ptr<GameObject> FindChild(const std::string& name);
 	std::vector<std::weak_ptr<GameObject>> FindAllChildren(const std::string& name);
 	std::weak_ptr<GameObject> FindRootParent();

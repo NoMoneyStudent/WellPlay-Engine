@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 #include "SceneTreeControll.h"
+#include "ComponentViewControll.h"
 #include <thread>
 #include <memory>
 
@@ -35,13 +36,12 @@ private slots:
     void on_FileSearch_textChanged(const QString &arg1);
 	void SceneFocus(QWidget* old, QWidget* now);
 	void EnginePlay(bool ifplay);
-	void SelectGameObject(const QModelIndex &select);
 
 private:
     Ui::MainWindow* ui;
     QFileSystemModel* f;
 	SceneTreeControll* scenetree;
-	std::weak_ptr<GameObject> currentSelect;
+	ComponentViewControll* comview;
 
 	std::thread engine;
 };

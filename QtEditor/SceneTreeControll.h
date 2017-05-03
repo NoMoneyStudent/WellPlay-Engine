@@ -18,6 +18,9 @@ signals:
 	void OnMoveGameObject(QVector<int>, QVector<int>, int);
 	void LoadScene();
 
+	void OnSelect(std::shared_ptr<GameObject> target);
+	void OnRemoveComView(std::shared_ptr<const GameObject> target);
+
 private:
 	void SelectGameObject(const QModelIndex &select);
 

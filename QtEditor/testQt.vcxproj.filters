@@ -36,6 +36,9 @@
     <Filter Include="窗口控制">
       <UniqueIdentifier>{448e93d5-1cb2-4af1-9c34-a775cf81b455}</UniqueIdentifier>
     </Filter>
+    <Filter Include="组件控件">
+      <UniqueIdentifier>{6c2acb15-d07a-495e-8501-0a6d84846e08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Resources\mainwindow.ui">
@@ -59,12 +62,42 @@
     <CustomBuild Include="SceneTreeControll.h">
       <Filter>窗口控制</Filter>
     </CustomBuild>
+    <CustomBuild Include="Control\transfromcontrol.ui">
+      <Filter>窗口布局</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\gocontrol.ui">
+      <Filter>窗口布局</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\combase.ui">
+      <Filter>窗口布局</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\combase.h">
+      <Filter>组件控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\gocontrol.h">
+      <Filter>组件控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\transfromcontrol.h">
+      <Filter>组件控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ComponentViewControll.h">
+      <Filter>窗口控制</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_projectchoose.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_transfromcontrol.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_gocontrol.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_combase.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -109,6 +142,42 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_SceneTreeControll.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\combase.cpp">
+      <Filter>组件控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_combase.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_combase.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\gocontrol.cpp">
+      <Filter>组件控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gocontrol.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gocontrol.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\transfromcontrol.cpp">
+      <Filter>组件控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_transfromcontrol.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_transfromcontrol.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentViewControll.cpp">
+      <Filter>窗口控制</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentViewControll.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentViewControll.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>

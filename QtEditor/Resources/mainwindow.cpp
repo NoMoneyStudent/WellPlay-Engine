@@ -21,14 +21,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	EngineCallBack::OnLog =
 		[&](const std::wstring& data) {emit onlog(data); };
-	scenetree = new SceneTreeControll(ui->SceneTree);
-
-    QWidget* p = takeCentralWidget();
-    if(p)
-       delete p;
-	
 	EngineCallBack::OnFinishUpdate =
 		[&]() {emit onEngineFinishUpdate(); };
+
+	qRegisterMetaType<QVector<int>>("QVector<int>");
+	qRegisterMetaType<std::shared_ptr<GameObject>>("std::shared_ptr<GameObject>");
+
+	scenetree = new SceneTreeControll(ui->SceneTree);
+
+	ui->ComTab->removeTab(1);
+	ui->ComTab->removeTab(0);
+	comview = new ComponentViewControll(ui->ComTab);
+
+    QWidget* p = takeCentralWidget();
+    if(p) delete p;
 	
 	engine = std::thread(EngineMain, GetHWND(), GetInput());
 
@@ -57,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	 connect(ui->Run, &QAction::triggered, this, &MainWindow::EnginePlay);
 	 connect(this, &MainWindow::onlog, this, &MainWindow::Log);
 	 connect(this, &MainWindow::onEngineFinishUpdate, this, &MainWindow::UpdateComponents);
+	 connect(scenetree, &SceneTreeControll::OnSelect, comview, &ComponentViewControll::OnSelect);
+	 connect(scenetree, &SceneTreeControll::OnRemoveComView, comview, &ComponentViewControll::OnRemoveComView);
 }
 
 MainWindow::~MainWindow()
@@ -74,6 +82,10 @@ MainWindow::~MainWindow()
 	setting.setValue("state", saveState());
 
     delete ui;
+	delete f;
+	delete scenetree;
+	delete comview;
+
 	engine.join();
 }
 
@@ -90,34 +102,9 @@ HWND MainWindow::GetInput() const
 void MainWindow::UpdateComponents()
 {
 	auto lk = Interrupt();
-	
-	auto go = currentSelect.lock();
-	std::string m_name = go->GetName();
-	auto transfrom = go->GetTransform().lock();
-	auto p = transfrom->GetLocalPosition();
-	auto r = transfrom->GetLocalEulerAngles();
-	auto s = transfrom->GetLocalScale();
-	currentSelect = go;
+	comview->ReadData();
 	lk.unlock();
-	ui->GameObjectNameEdit->setText(QString::fromStdString(m_name));
-	ui->px->setText(QString::number(p.m128_f32[0]));
-	ui->px->setCursorPosition(0);
-	ui->py->setText(QString::number(p.m128_f32[1]));
-	ui->py->setCursorPosition(0);
-	ui->pz->setText(QString::number(p.m128_f32[2]));
-	ui->pz->setCursorPosition(0);
-	ui->rx->setText(QString::number(r.x));
-	ui->rx->setCursorPosition(0);
-	ui->ry->setText(QString::number(r.y));
-	ui->ry->setCursorPosition(0);
-	ui->rz->setText(QString::number(r.z));
-	ui->rz->setCursorPosition(0);
-	ui->sx->setText(QString::number(s.m128_f32[0]));
-	ui->sx->setCursorPosition(0);
-	ui->sy->setText(QString::number(s.m128_f32[1]));
-	ui->sy->setCursorPosition(0);
-	ui->sz->setText(QString::number(s.m128_f32[2]));
-	ui->sz->setCursorPosition(0);
+	comview->UpdateData();
 }
 
 void MainWindow::SceneFocus(QWidget* old,QWidget* now)
@@ -136,55 +123,6 @@ void MainWindow::EnginePlay(bool ifplay)
 {
 	auto lk = Interrupt();
 	EngineUtility::SetPlay(ifplay);
-}
-
-void MainWindow::SelectGameObject(const QModelIndex & select)
-{
-	QModelIndex index = select;
-	std::vector<int> indexarray;
-	while (index.isValid())
-	{
-		indexarray.push_back(index.row());
-		index = index.parent();
-	}
-	std::reverse(indexarray.begin(), indexarray.end());
-	assert(indexarray.size() > 0);
-
-	auto lk = Interrupt();
-	auto rootobject = Scene::GetCurrentScene()->GetRootGameObject();
-	auto trans = rootobject[indexarray[0]]->GetTransform().lock();
-	for (int i = 1; i < indexarray.size(); i++)
-	{
-		trans = trans->GetChildren()[indexarray[i]];
-	}
-	auto go = trans->gameobject();
-	std::string m_name = go->GetName();
-	auto transfrom = go->GetTransform().lock();
-	auto p = transfrom->GetLocalPosition();
-	auto r = transfrom->GetLocalEulerAngles();
-	auto s = transfrom->GetLocalScale();
-	currentSelect = go;
-	lk.unlock();
-	ui->GameObjectNameEdit->setText(QString::fromStdString(m_name));
-	ui->px->setText(QString::number(p.m128_f32[0]));
-	ui->px->setCursorPosition(0);
-	ui->py->setText(QString::number(p.m128_f32[1]));
-	ui->py->setCursorPosition(0);
-	ui->pz->setText(QString::number(p.m128_f32[2]));
-	ui->pz->setCursorPosition(0);
-	ui->rx->setText(QString::number(r.x));
-	ui->rx->setCursorPosition(0);
-	ui->ry->setText(QString::number(r.y));
-	ui->ry->setCursorPosition(0);
-	ui->rz->setText(QString::number(r.z));
-	ui->rz->setCursorPosition(0);
-	ui->sx->setText(QString::number(s.m128_f32[0]));
-	ui->sx->setCursorPosition(0);
-	ui->sy->setText(QString::number(s.m128_f32[1]));
-	ui->sy->setCursorPosition(0);
-	ui->sz->setText(QString::number(s.m128_f32[2]));
-	ui->sz->setCursorPosition(0);
-
 }
 
 void MainWindow::on_FileSearch_textChanged(const QString &arg1)
