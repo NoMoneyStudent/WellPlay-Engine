@@ -5,13 +5,12 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WellPlay", "WellPlay\WellPlay.vcxproj", "{1C9D23E3-D243-4193-9080-375BFF3E4499}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor", "..\QtEditor\testQt.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor", "QtEditor\testQt.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 	ProjectSection(ProjectDependencies) = postProject
-		{E439935D-B2A2-46AE-856D-2AA408428F33} = {E439935D-B2A2-46AE-856D-2AA408428F33}
 		{1C9D23E3-D243-4193-9080-375BFF3E4499} = {1C9D23E3-D243-4193-9080-375BFF3E4499}
 	EndProjectSection
 EndProject
-Project("{5697748A-77EF-44CA-8824-4F5637E5945B}") = "LuaScript", "..\Script\LuaScript\LuaScript.luaproj", "{E439935D-B2A2-46AE-856D-2AA408428F33}"
+Project("{5697748A-77EF-44CA-8824-4F5637E5945B}") = "LuaScript", "Script\LuaScript\LuaScript.luaproj", "{E439935D-B2A2-46AE-856D-2AA408428F33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
