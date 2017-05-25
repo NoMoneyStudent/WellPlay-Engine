@@ -8,6 +8,7 @@
 #include <qaction.h>
 #include <qboxlayout.h>
 #include <qstandarditemmodel.h>
+#include "Wnd/settingwnd.h"
 
 #include "WellPlayMain.h"
 #include "EngineRuntime\EngineUtility.h"
@@ -20,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 	EngineCallBack::OnLog =
-		[&](const std::wstring& data) {emit onlog(data); };
+		[&](const std::wstring& data, int mode) {emit Log(QString::fromStdWString(data), mode); };
 	EngineCallBack::OnFinishUpdate =
 		[&]() {emit onEngineFinishUpdate(); };
 
@@ -32,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->ComTab->removeTab(1);
 	ui->ComTab->removeTab(0);
 	comview = new ComponentViewControll(ui->ComTab);
+
+	logview = new LogViewControll(ui->LogWidget);
 
     QWidget* p = takeCentralWidget();
     if(p) delete p;
@@ -49,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->FileView->hideColumn(3);
 
     QSettings setting("MySetting", "MyApp");
+	
     if(!setting.value("geometry").isNull())
         restoreGeometry(setting.value("geometry").toByteArray());
     if(!setting.value("state").isNull())
@@ -61,10 +65,10 @@ MainWindow::MainWindow(QWidget *parent) :
      }
 	 connect(qApp, &QApplication::focusChanged, this, &MainWindow::SceneFocus);
 	 connect(ui->Run, &QAction::triggered, this, &MainWindow::EnginePlay);
-	 connect(this, &MainWindow::onlog, this, &MainWindow::Log);
 	 connect(this, &MainWindow::onEngineFinishUpdate, this, &MainWindow::UpdateComponents);
 	 connect(scenetree, &SceneTreeControll::OnSelect, comview, &ComponentViewControll::OnSelect);
 	 connect(scenetree, &SceneTreeControll::OnRemoveComView, comview, &ComponentViewControll::OnRemoveComView);
+	 connect(this, &MainWindow::Log, logview, &LogViewControll::Log);
 }
 
 MainWindow::~MainWindow()
@@ -133,11 +137,8 @@ void MainWindow::on_FileSearch_textChanged(const QString &arg1)
     f->setNameFilterDisables(false);
 }
 
-void MainWindow::Log(const std::wstring& data)
+void MainWindow::on_Asetting_triggered()
 {
-    QIcon icon4;
-    icon4.addFile(QStringLiteral(":/qss_icons/rc/close-pressed.png"), QSize(), QIcon::Normal, QIcon::Off);
-    QListWidgetItem *qlistwidgetitem = new QListWidgetItem(ui->DebugLog);
-    qlistwidgetitem->setIcon(icon4);
-    qlistwidgetitem->setText(QString::fromStdWString(data));
+    QWidget* sw=new SettingWnd(this);
+	sw->show();
 }

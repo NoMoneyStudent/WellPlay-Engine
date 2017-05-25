@@ -21,14 +21,20 @@ include(Editor.pri)
 FORMS += \
     Control/combase.ui \
     Control/transfromcontrol.ui \
-    Control/gocontrol.ui
+    Control/gocontrol.ui \
+    Wnd/settingwnd.ui \
+    Control/settingfloat.ui
 
 HEADERS += \
     Control/combase.h \
     Control/transfromcontrol.h \
-    Control/gocontrol.h
+    Control/gocontrol.h \
+    Wnd/settingwnd.h \
+    Control/settingfloat.h
 
 SOURCES += \
     Control/combase.cpp \
     Control/transfromcontrol.cpp \
-    Control/gocontrol.cpp
+    Control/gocontrol.cpp \
+    Wnd/settingwnd.cpp \
+    Control/settingfloat.cpp

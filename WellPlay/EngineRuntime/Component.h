@@ -1,6 +1,7 @@
 #pragma once
 #include<memory>
 #include "cereal\access.hpp"
+#include <cereal\types\polymorphic.hpp>
 
 class GameObject;
 class EditorComponent;
@@ -11,7 +12,7 @@ class Component
 	friend class EditorComponent;
 	friend class cereal::access;
 protected:
-	Component() {}
+	Component() = default;
 	Component(Component&) = delete;
 	Component& operator=(Component&) = delete;
 	virtual ~Component() { m_gameobject.reset(); }

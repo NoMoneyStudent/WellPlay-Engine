@@ -134,12 +134,13 @@
       <x>316</x>
       <y>153</y>
       <width>137</width>
-      <height>54</height>
+      <height>78</height>
      </rect>
     </property>
     <property name="title">
      <string>设置</string>
     </property>
+    <addaction name="Asetting"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="geometry">
@@ -265,7 +266,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="LogWidget">
    <property name="windowTitle">
     <string>调试输出</string>
    </property>
@@ -468,6 +469,11 @@
    </property>
    <property name="autoRepeat">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="Asetting">
+   <property name="text">
+    <string>变量设置</string>
    </property>
   </action>
  </widget>

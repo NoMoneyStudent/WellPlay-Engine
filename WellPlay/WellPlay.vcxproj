@@ -176,6 +176,7 @@
     <ClInclude Include="EngineRuntime\SceneManager.h" />
     <ClInclude Include="EngineRuntime\SkinMeshRender.h" />
     <ClInclude Include="EngineRuntime\Transform.h" />
+    <ClInclude Include="SettingVar.h" />
     <ClInclude Include="EngineTuning.h" />
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="RenderCore.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Render\RootSignature.h" />
     <ClInclude Include="Render\SamplerManager.h" />
     <ClInclude Include="Render\ShadowBuffer.h" />
+    <ClInclude Include="Render\VulkanRender.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Resource\dds.h" />
@@ -237,6 +239,7 @@
     <ClCompile Include="EngineRuntime\SceneManager.cpp" />
     <ClCompile Include="EngineRuntime\SkinMeshRender.cpp" />
     <ClCompile Include="EngineRuntime\Transform.cpp" />
+    <ClCompile Include="SettingVar.cpp" />
     <ClCompile Include="EngineTuning.cpp" />
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="RenderCore.cpp" />
@@ -259,6 +262,7 @@
     <ClCompile Include="Render\RootSignature.cpp" />
     <ClCompile Include="Render\SamplerManager.cpp" />
     <ClCompile Include="Render\ShadowBuffer.cpp" />
+    <ClCompile Include="Render\VulkanRender.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Resource\DDSTextureLoader.cpp" />
     <ClCompile Include="Resource\ModelImport.cpp">

@@ -31,6 +31,7 @@ void Scene::RemoveRootGameObject(std::shared_ptr<GameObject> object)
 			return;
 		}
 	}
+	
 	ASSERT(false, "目标不在场景根下！");
 }
 

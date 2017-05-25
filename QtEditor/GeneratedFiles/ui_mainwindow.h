@@ -36,6 +36,7 @@ public:
     QAction *Run;
     QAction *Next;
     QAction *Interrupt;
+    QAction *Asetting;
     QWidget *centralWidget;
     QToolBar *toolBar;
     QMenuBar *menuBar;
@@ -50,7 +51,7 @@ public:
     QLabel *label;
     QLineEdit *FileSearch;
     QTreeView *FileView;
-    QDockWidget *dockWidget;
+    QDockWidget *LogWidget;
     QWidget *dockWidgetContents_4;
     QVBoxLayout *verticalLayout_2;
     QListWidget *DebugLog;
@@ -117,6 +118,8 @@ public:
         icon3.addFile(QStringLiteral(":/qss_icons/rc/55_0005s_0002_pause.png"), QSize(), QIcon::Normal, QIcon::Off);
         Interrupt->setIcon(icon3);
         Interrupt->setAutoRepeat(false);
+        Asetting = new QAction(MainWindow);
+        Asetting->setObjectName(QStringLiteral("Asetting"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setEnabled(true);
@@ -138,7 +141,7 @@ public:
         menu->setTearOffEnabled(false);
         menu_2 = new QMenu(menuBar);
         menu_2->setObjectName(QStringLiteral("menu_2"));
-        menu_2->setGeometry(QRect(316, 153, 137, 54));
+        menu_2->setGeometry(QRect(316, 153, 137, 78));
         menu_3 = new QMenu(menuBar);
         menu_3->setObjectName(QStringLiteral("menu_3"));
         menu_3->setGeometry(QRect(362, 153, 149, 132));
@@ -202,8 +205,8 @@ public:
 
         dockWidget_2->setWidget(dockWidgetContents);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockWidget_2);
-        dockWidget = new QDockWidget(MainWindow);
-        dockWidget->setObjectName(QStringLiteral("dockWidget"));
+        LogWidget = new QDockWidget(MainWindow);
+        LogWidget->setObjectName(QStringLiteral("LogWidget"));
         dockWidgetContents_4 = new QWidget();
         dockWidgetContents_4->setObjectName(QStringLiteral("dockWidgetContents_4"));
         verticalLayout_2 = new QVBoxLayout(dockWidgetContents_4);
@@ -222,8 +225,8 @@ public:
 
         verticalLayout_2->addWidget(DebugLog);
 
-        dockWidget->setWidget(dockWidgetContents_4);
-        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget);
+        LogWidget->setWidget(dockWidgetContents_4);
+        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(4), LogWidget);
         dockWidget_3 = new QDockWidget(MainWindow);
         dockWidget_3->setObjectName(QStringLiteral("dockWidget_3"));
         dockWidget_3->setMouseTracking(true);
@@ -302,6 +305,7 @@ public:
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menu_2->menuAction());
         menuBar->addAction(menu_3->menuAction());
+        menu_2->addAction(Asetting);
         menu_3->addAction(Run);
         menu_3->addAction(Next);
         menu_3->addAction(Interrupt);
@@ -317,13 +321,14 @@ public:
         Run->setText(QApplication::translate("MainWindow", "\350\277\220\350\241\214", Q_NULLPTR));
         Next->setText(QApplication::translate("MainWindow", "\344\270\213\344\270\200\345\270\247", Q_NULLPTR));
         Interrupt->setText(QApplication::translate("MainWindow", "\346\232\202\345\201\234", Q_NULLPTR));
+        Asetting->setText(QApplication::translate("MainWindow", "\345\217\230\351\207\217\350\256\276\347\275\256", Q_NULLPTR));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         menu_3->setTitle(QApplication::translate("MainWindow", "\350\277\220\350\241\214", Q_NULLPTR));
         dockWidget_2->setWindowTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266\347\256\241\347\220\206\345\231\250", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\346\220\234\347\264\242\346\226\207\344\273\266\357\274\232", Q_NULLPTR));
-        dockWidget->setWindowTitle(QApplication::translate("MainWindow", "\350\260\203\350\257\225\350\276\223\345\207\272", Q_NULLPTR));
+        LogWidget->setWindowTitle(QApplication::translate("MainWindow", "\350\260\203\350\257\225\350\276\223\345\207\272", Q_NULLPTR));
 
         const bool __sortingEnabled = DebugLog->isSortingEnabled();
         DebugLog->setSortingEnabled(false);

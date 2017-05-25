@@ -116,3 +116,13 @@ void ResourceManager::AddAssets(std::shared_ptr<Assets> asset)
 	}
 	assetList.push_back(asset);
 }
+
+void ResourceManager::ShutDown()
+{
+	assetList.clear();
+	MeshList.clear();
+	avatarList.clear();
+	aniClips.clear();
+	vertexBuffer.clear();
+	indexBuffer.clear();
+}

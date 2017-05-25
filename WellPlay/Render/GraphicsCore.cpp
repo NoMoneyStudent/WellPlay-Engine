@@ -31,6 +31,7 @@ namespace
 	uint64_t s_FrameIndex = 0;
 	int64_t s_FrameStartTick = 0;
 
+	//SettingVar<bool> s_EnableVSync(L"Timing/VSync", true);
 	BoolVar s_EnableVSync("Timing/VSync", true);
 	BoolVar s_LimitTo30Hz("Timing/Limit To 30Hz", false);
 }

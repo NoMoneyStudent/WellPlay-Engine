@@ -15,7 +15,7 @@ class Transform:public Component,public std::enable_shared_from_this<Transform>
 public:
 	Transform();
 	virtual ~Transform();
-
+public:
 	XMVECTOR GetLocalPosition() const;
 	XMVECTOR GetLocalRotation() const;
 	XMFLOAT3 GetLocalEulerAngles() const;

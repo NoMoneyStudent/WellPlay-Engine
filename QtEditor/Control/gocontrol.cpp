@@ -12,13 +12,13 @@ GOControl::GOControl(std::shared_ptr<GameObject> target) :
 	ui->GOEnable->setChecked(target->GetSelfActive());
 	ui->GOName->setText(QString::fromStdString(target->GetName()));
 
+	AddComControl<TransfromControl>(target->GetTransform().lock().get());
 	auto components = target->GetAllComponents();
 	for (auto& item : components)
 	{
-		auto ctype = item.first;
-		auto com = item.second.get();
-		ComBase* newcontrol;
-		if (ctype == typeid(Transform).name())
+		//auto ctype = item.first;
+		auto com = item.get();
+		if (typeid(*com) == typeid(Transform))
 			AddComControl<TransfromControl>(com);
 	}
 	static_cast<QVBoxLayout*>(ui->ComponentList->layout())->addStretch();

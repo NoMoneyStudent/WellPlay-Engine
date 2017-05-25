@@ -3,11 +3,10 @@
 
 #include <QMainWindow>
 #include <QFileSystemModel>
-#include <QSortFilterProxyModel>
 #include "SceneTreeControll.h"
 #include "ComponentViewControll.h"
+#include "LogViewControll.h"
 #include <thread>
-#include <memory>
 
 namespace Ui {
 class MainWindow;
@@ -25,11 +24,10 @@ public:
 	HWND GetInput() const;
 	
 signals:
-	void onlog(const std::wstring data);
+	void Log(const QString data, int mode);
 	void onEngineFinishUpdate();
 
 public slots:
-	void Log(const std::wstring& data);
 	void UpdateComponents();
 
 private slots:
@@ -37,11 +35,15 @@ private slots:
 	void SceneFocus(QWidget* old, QWidget* now);
 	void EnginePlay(bool ifplay);
 
+
+    void on_Asetting_triggered();
+
 private:
     Ui::MainWindow* ui;
     QFileSystemModel* f;
 	SceneTreeControll* scenetree;
 	ComponentViewControll* comview;
+	LogViewControll* logview;
 
 	std::thread engine;
 };

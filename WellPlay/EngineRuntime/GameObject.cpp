@@ -46,7 +46,7 @@ void GameObject::InitHierarchy()
 {
 	for (int i = 0; i < m_components.size(); i++)
 	{
-		m_components[i].second->OnInit();
+		m_components[i]->OnInit();
 	}
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
@@ -58,10 +58,10 @@ void GameObject::EnableHierarchy()
 {
 	for (int i = 0; i < m_components.size(); i++)
 	{
-		if (m_components[i].second->m_isEnable)
-			m_components[i].second->OnEnable();
+		if (m_components[i]->m_isEnable)
+			m_components[i]->OnEnable();
 		else
-			m_components[i].second->OnDisable();
+			m_components[i]->OnDisable();
 	}
 	for (int i = 0; i < m_transform->m_children.size(); i++)
 	{
@@ -84,12 +84,14 @@ void GameObject::InitObject()
 		m_name += " (" + to_string(count) + ")";
 	}
 	s->AddRootGameObject(shared_from_this());
-	m_transform = shared_ptr<Transform>(new Transform());
+	/*m_transform = shared_ptr<Transform>(new Transform());
 	m_transform->m_gameobject = shared_from_this();
 	m_transform->m_isEnable = true;
-	m_components.push_back(make_pair(typeid(Transform).name(), static_pointer_cast<Component>(m_transform)));
+	m_components.push_back(static_pointer_cast<Component>(m_transform));
 	m_transform->OnInit();
-	m_transform->OnEnable();
+	m_transform->OnEnable();*/
+	AddComponent<Transform>();
+	//m_components.push_back(static_pointer_cast<Component>(trans.lock()));
 }
 
 weak_ptr<GameObject> GameObject::FindChild(const std::string & name)
@@ -226,7 +228,7 @@ void GameObject::Destroy(shared_ptr<Component>& target)
 	}
 	for (auto iter = own->m_components.begin(); iter != own->m_components.end(); iter++)
 	{
-		if (iter->second == target)
+		if (*iter == target)
 		{
 			own->m_components.erase(iter);
 			break;
@@ -243,9 +245,9 @@ void GameObject::DestroyHierarchy()
 {
 	if (EngineUtility::isInPlay())
 	{
-		for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+		for (auto& iter:m_components)
 		{
-			iter->second->OnDestroy();
+			iter->OnDestroy();
 		}
 	}
 	else
@@ -267,9 +269,9 @@ void GameObject::DisableHierarchy()
 {
 	if (EngineUtility::isInPlay())
 	{
-		for (auto iter = m_components.begin(); iter != m_components.end(); iter++)
+		for (auto& iter : m_components)
 		{
-			iter->second->SetEnable(false);
+			iter->SetEnable(false);
 		}
 	}
 	else
@@ -327,7 +329,7 @@ void GameObject::Update()
 {
 	for (int i = 0; i < m_components.size(); i++)
 	{
-		m_components[i].second->Update();
+		m_components[i]->Update();
 	}
 	for (int i = 0; i < m_transform->GetChildren().size(); i++)
 	{

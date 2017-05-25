@@ -62,7 +62,7 @@ void Transform::SetParent(shared_ptr<Transform> parent)
 {
 	if (parent == shared_from_this())
 	{
-		EngineCallBack::OnLog(L"不能设置自己为自己的父节点");
+		EngineCallBack::OnLog(L"不能设置自己为自己的父节点",LogMode::Error);
 		return;
 	}
 

@@ -14,4 +14,6 @@ namespace ResourceManager
 	void GetMeshGpuBuffer(const std::string& name, std::shared_ptr<StructuredBuffer>& vb, std::shared_ptr<ByteAddressBuffer>& ib);
 	AnimationClip* GetAnimation(int index);
 	void AddAssets(std::shared_ptr<Assets> asset);
+
+	void ShutDown();
 }

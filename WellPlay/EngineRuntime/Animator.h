@@ -9,15 +9,15 @@ class Animator:public Component
 	friend class GameObject;
 	friend class cereal::access;
 public:
-	Animator() = default;
-	virtual ~Animator() = default;
-
 	void Play(int index);
 	void Stop();
 	bool isPlay() { return m_isPlay; }
 
 	std::vector<AnimationClip*> GetClips()const { return animationClips; };
 	void SetClips(std::vector<AnimationClip*>& aniclips);
+
+	Animator() = default;
+	virtual ~Animator() = default;
 
 private:
 	std::vector<std::weak_ptr<Transform>> aniTransform;
@@ -33,6 +33,7 @@ private:
 	virtual void OnInit() override;
 	virtual void Update() override;
 	virtual Component* Clone()override;
+
 #pragma region –Ú¡–ªØ
 	template<class Archive>
 	void save(Archive & archive) const

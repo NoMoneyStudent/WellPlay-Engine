@@ -26,9 +26,6 @@
     <Filter Include="FileOperation\Image">
       <UniqueIdentifier>{59c41db8-59b2-46a8-aefa-4f925befa657}</UniqueIdentifier>
     </Filter>
-    <Filter Include="窗口相关类">
-      <UniqueIdentifier>{f9cb7890-a7da-43f6-b835-4f33df2ceca1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine">
       <UniqueIdentifier>{07196db5-1b6a-4480-8745-7384848aba7e}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="Engine\Script">
       <UniqueIdentifier>{b9b26ff6-afb8-4cc0-a0ef-1988a97cfac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="引擎参数设置">
+      <UniqueIdentifier>{f9cb7890-a7da-43f6-b835-4f33df2ceca1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,11 +213,17 @@
     <ClInclude Include="WellPlayMain.h">
       <Filter>系统模块</Filter>
     </ClInclude>
-    <ClInclude Include="EngineTuning.h">
-      <Filter>窗口相关类</Filter>
-    </ClInclude>
     <ClInclude Include="EngineCallBack.h">
       <Filter>系统模块</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineTuning.h">
+      <Filter>引擎参数设置</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\VulkanRender.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingVar.h">
+      <Filter>引擎参数设置</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,7 +366,13 @@
       <Filter>Engine\Script</Filter>
     </ClCompile>
     <ClCompile Include="EngineTuning.cpp">
-      <Filter>窗口相关类</Filter>
+      <Filter>引擎参数设置</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\VulkanRender.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingVar.cpp">
+      <Filter>引擎参数设置</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

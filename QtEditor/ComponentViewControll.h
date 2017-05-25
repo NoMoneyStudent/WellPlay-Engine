@@ -28,5 +28,5 @@ private:
 
 	GOControl* currentSelect;
 
-	const unsigned int MaxNumber = 10;
+	static const unsigned int MaxNumber = 10;
 };

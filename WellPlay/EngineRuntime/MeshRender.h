@@ -8,11 +8,11 @@ class MeshRender:public Render
 	friend class cereal::access;
 
 public:
-	MeshRender();
-	virtual ~MeshRender();
-	
 	CommonMesh* GetMesh() { return m_mesh; }
 	void SetMesh(Mesh* mesh);
+
+	MeshRender();
+	virtual ~MeshRender();
 
 private:
 	CommonMesh* m_mesh;
@@ -22,6 +22,7 @@ private:
 	virtual void Update() override;
 	virtual void EditorUpdate() override;
 	virtual Component* Clone()override;
+
 #pragma region –Ú¡–ªØ
 	template<class Archive>
 	void save(Archive & archive) const

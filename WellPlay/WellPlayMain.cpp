@@ -5,6 +5,7 @@
 #include "EngineRuntime\Scene.h"
 #include "Script\ScriptManager.h"
 #include "Resource\ModelImport.h"
+#include "ResourceManager.h"
 #include "WellPlayMain.h"
 
 #include <atomic>
@@ -18,7 +19,7 @@ mutex InterruptLock;
 
 namespace EngineCallBack
 {
-	function<void(const std::wstring&)> OnLog;
+	function<void(const std::wstring&, int)> OnLog;
 	function<void(const GameObject&)> OnAddGameObject;
 	function<void(const GameObject&)> OnRemoveGameObject;
 	std::function<void(const GameObject&, const GameObject&,int)> OnMoveGameObject;
@@ -70,7 +71,7 @@ void EngineMain(HWND m_hwnd,HWND input)
 	Lua::Init();
 	ModelImport::ImportModel("E:/test.FBX");
 
-	EngineCallBack::OnLog(L"引擎初始化完成");
+	EngineCallBack::OnLog(L"引擎初始化完成",LogMode::Common);
 
 	while (!ifShutDown)
 	{
@@ -78,12 +79,12 @@ void EngineMain(HWND m_hwnd,HWND input)
 		GameInput::Update();
 		
 		{
+			//记得把渲染线程分离，不然会出问题
 			lock_guard<mutex> lk(InterruptLock);
 			Scene::GetCurrentScene()->Update();
+			RenderCore::Update();
+			RenderCore::Render();
 		}
-
-		RenderCore::Update();
-		RenderCore::Render();
 
 		auto messages = EngineMessage::PopMessage();
 		for (auto& message : messages)
@@ -94,4 +95,5 @@ void EngineMain(HWND m_hwnd,HWND input)
 
 	GameInput::Shutdown();
 	RenderCore::Shutdown();
+	ResourceManager::ShutDown();
 }
