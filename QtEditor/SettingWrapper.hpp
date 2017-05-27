@@ -2,7 +2,7 @@
 #include <type_traits>
 #include "SettingVar.h"
 #include "rttr\registration.h"
-
+#include <qstandarditemmodel.h>
 #include <qwidget.h>
 
 //所有的Setting控件类必须继承
@@ -12,6 +12,8 @@ class SettingWidget : public QWidget
 public:
 	explicit SettingWidget(QWidget *parent) :QWidget(parent) {};
 	~SettingWidget() = default;
+
+	virtual void FinishEdit() = 0;
 };
 
 //T必须是SettingWidget的派生类

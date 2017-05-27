@@ -9,7 +9,16 @@ using namespace rttr;
 using namespace std;
 #pragma comment(lib,"rttr_core_d.lib")
 
+enum class test
+{
+	enum1 = 0,
+    enum2 = 1
+};
+
 SettingVar<float> a(L"设置/浮点数", 0.5f, 0.0f, 2.0f);
+SettingVar<bool> b(L"设置/布尔值", true);
+SettingVar<test> c(L"设置/枚举值", test::enum1, vector<wstring>{ L"enum1",L"enum2" });
+SettingVar<wstring> d(L"设置/字符串", L"卢本伟牛逼");
 
 SettingWnd::SettingWnd(QWidget *parent) :
     QDockWidget(parent),
@@ -69,6 +78,21 @@ QWidget * SettingDelegate::createEditor(QWidget * parent, const QStyleOptionView
 	}
 }
 
+void SettingDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index) const
+{
+	auto edit = static_cast<SettingWidget*>(editor);
+	edit->FinishEdit();
+	auto target = index.data(Qt::UserRole).value<SettingBase*>();
+	assert(model->setData(index, QString::fromStdWString(target->toString()), Qt::DisplayRole));
+}
+
+QSize SettingDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+	QSize size = QStyledItemDelegate::sizeHint(option, index);
+	size.setHeight(size.height() +6);
+	return size;
+}
+
 void SettingModel::InitSetting()
 {
 	qRegisterMetaType<SettingBase*>("SettingBase*");
@@ -124,6 +148,7 @@ void SettingModel::AddSettingItem(const vector<SettingBase*>& list)
 				{
 					assert(parent->child(newitem->row(), 1) == nullptr);
 					QStandardItem* data = new QStandardItem();
+					data->setText(QString::fromStdWString(item->toString()));
 					parent->setChild(newitem->row(), 1, data);
 					parent = data;
 				}

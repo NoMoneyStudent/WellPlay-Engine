@@ -104,6 +104,15 @@
     <CustomBuild Include="Control\settingarithmetic.h">
       <Filter>组件控件\变量设置控件</Filter>
     </CustomBuild>
+    <CustomBuild Include="settingbool.h">
+      <Filter>组件控件\变量设置控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settingenum.h">
+      <Filter>组件控件\变量设置控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settingstring.h">
+      <Filter>组件控件\变量设置控件</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
@@ -253,6 +262,33 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_settingarithmetic.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="settingbool.cpp">
+      <Filter>组件控件\变量设置控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settingbool.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settingbool.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="settingenum.cpp">
+      <Filter>组件控件\变量设置控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settingenum.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settingenum.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="settingstring.cpp">
+      <Filter>组件控件\变量设置控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settingstring.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settingstring.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>

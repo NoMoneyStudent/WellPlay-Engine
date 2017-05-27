@@ -24,6 +24,7 @@ public:
 	{
 		m_OnChanged = callback;
 	}
+	virtual std::wstring toString() = 0;
 
 protected:
 	void OnChanged()
@@ -73,6 +74,11 @@ public:
 	}
 	operator DataType() const { return m_data; }
 
+	virtual std::wstring toString()
+	{
+		return std::to_wstring(m_data);
+	}
+
 	DataType GetMin()const { return m_min; };
 	DataType GetMax()const { return m_max; };
     
@@ -84,35 +90,64 @@ private:
 	DataType Clamp(DataType val) { return val > m_max ? m_max : val < m_min ? m_min : val; }
 };
 
-//枚举类型
-template <typename DataType>
-class SettingVar<DataType, typename std::enable_if<std::is_enum<DataType>::value>::type>
-	:public SettingBase
+//用来标志枚举
+struct EnumType 
+{
+	using type = unsigned int;
+};
+
+//这个是内部用的
+template <> class SettingVar<EnumType, void> :public SettingBase
 {
 	RTTR_ENABLE(SettingBase)
+
+	using type = typename EnumType::type;
 public:
-	SettingVar(const std::wstring& path, DataType data, std::vector<std::wstring>& list, ChangedCallBack& callback = ChangedCallBack()) :
+	SettingVar(const std::wstring& path, type data, std::vector<std::wstring>& list, ChangedCallBack& callback = ChangedCallBack()) :
 		m_data(data),
 		m_list(std::move(list)),
 		SettingBase(path, callback)
 	{}
 	~SettingVar() = default;
 
-	auto& operator=(DataType val)
+	void SetData(type val)
 	{
 		if (m_data != val)
 		{
 			m_data = val;
 			OnChanged();
 		}
-		return *this;
 	}
-	operator DataType() const { return m_data; }
+	type GetData() const { return m_data; }
 	const auto& GetList() const { return m_list; }
 
-private:
-	DataType m_data;
+	virtual std::wstring toString()
+	{
+		return m_list[static_cast<int>(m_data)];
+	}
+
+protected:
+	type m_data;
 	std::vector<std::wstring> m_list;
+};
+
+//枚举类型 必须是从0开始，一个一个过去
+template <typename DataType>
+class SettingVar<DataType, typename std::enable_if<std::is_enum<DataType>::value>::type>
+	:public SettingVar<EnumType,void>
+{
+public:
+	SettingVar(const std::wstring& path, DataType data, std::vector<std::wstring>& list, ChangedCallBack& callback = ChangedCallBack()) :
+		SettingVar<EnumType, void>(path, static_cast<EnumType::type>(data), list, callback)
+	{};
+	~SettingVar() = default;
+
+	auto& operator=(DataType val)
+	{
+		SetData(static_cast<EnumType::type>(val));
+		return *this;
+	}
+	operator DataType() const { return static_cast<EnumType::type>(GetData()); };
 };
 #include "Utility\MPointer.h"
 
@@ -151,8 +186,27 @@ public:
 		return m_data;
 	}
 
+	virtual std::wstring toString()
+	{
+		return GetName<DataType>();
+	}
+
 private:
 	DataType m_data;
+
+	class Component;
+	template<typename T>
+	std::wstring GetName()
+	{
+		static_assert(std::is_base_of<Component, T>::value);
+		return m_data.gameobject().GetName();
+	}
+
+	class GameObject;
+	template<> std::wstring GetName<GameObject>()
+	{
+		return m_data.GetName();
+	}
 };
 
 //宽字符串
@@ -174,6 +228,11 @@ public:
 		return *this;
 	}
 	operator const std::wstring&() const { return m_data; }
+
+	virtual std::wstring toString()
+	{
+		return m_data;
+	}
 
 private:
 	std::wstring m_data;
@@ -201,7 +260,11 @@ public:
 		return *this;
 	}
 	operator bool() const { return m_data; }
-	
+	virtual std::wstring toString()
+	{
+		return m_data ? L"True" : L"False";
+	}
+
 private:
 	bool m_data;
 };

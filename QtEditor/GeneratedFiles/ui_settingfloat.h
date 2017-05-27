@@ -42,6 +42,9 @@ public:
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         lineEdit = new QLineEdit(SettingFloat);
         lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        QFont font;
+        font.setPointSize(10);
+        lineEdit->setFont(font);
         lineEdit->setAcceptDrops(false);
         lineEdit->setFrame(true);
 

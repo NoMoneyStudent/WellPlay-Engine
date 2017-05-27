@@ -5,6 +5,7 @@
 #include <qstyleditemdelegate.h>
 #include <qstandarditemmodel.h>
 #include "SettingVar.h"
+#include <qtreeview.h>
 
 Q_DECLARE_METATYPE(SettingBase*)
 
@@ -34,6 +35,11 @@ public:
 
 	virtual QWidget *createEditor(QWidget *parent,
 		const QStyleOptionViewItem &option,
+		const QModelIndex &index) const override;
+	virtual void setModelData(QWidget *editor,
+		QAbstractItemModel *model,
+		const QModelIndex &index) const override;
+	QSize sizeHint(const QStyleOptionViewItem &option,
 		const QModelIndex &index) const override;
 };
 

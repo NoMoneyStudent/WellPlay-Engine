@@ -40,10 +40,14 @@ public:
 		m_target = static_cast<SettingVar<T>*>(target);
 		double min = static_cast<double>(m_target->GetMin());
 		double max = static_cast<double>(m_target->GetMax());
-		//默认显示6位小数
+		//默认6位小数
 		ui->lineEdit->setValidator(new QDoubleValidator(min, max,6, this));
+		ui->lineEdit->setText(QString::number(*m_target));
 	};
-	~SettingArithmetic() = default;
+	virtual void FinishEdit()
+	{
+		*m_target = static_cast<T>(ui->lineEdit->text().toDouble());
+	}
 
 private:
 	SettingVar<T>* m_target;
@@ -61,8 +65,12 @@ public:
 		int min = static_cast<int>(m_target->GetMin());
 		int max = static_cast<int>(m_target->GetMax());
 		ui->lineEdit->setValidator(new QIntValidator(min, max, this));
+		ui->lineEdit->setText(QString::number(*m_target));
 	};
-	~SettingArithmetic() = default;
+	virtual void FinishEdit()
+	{
+		*m_target = static_cast<T>(ui->lineEdit->text().toLongLong());
+	}
 
 private:
 	SettingVar<T>* m_target;
