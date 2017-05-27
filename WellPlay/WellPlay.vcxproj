@@ -213,7 +213,6 @@
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Serialize.h" />
     <ClInclude Include="Resource\TextureManager.h" />
-    <ClInclude Include="Script\JSComponent.h" />
     <ClInclude Include="Script\LuaScript.h" />
     <ClInclude Include="Script\ScriptManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -221,6 +220,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\FileUtility.h" />
     <ClInclude Include="Utility\Hash.h" />
+    <ClInclude Include="Utility\MPointer.h" />
     <ClInclude Include="Utility\Utility.h" />
     <ClInclude Include="WellPlayMain.h" />
   </ItemGroup>
@@ -270,7 +270,6 @@
     </ClCompile>
     <ClCompile Include="Resource\Serialize.cpp" />
     <ClCompile Include="Resource\TextureManager.cpp" />
-    <ClCompile Include="Script\JSComponent.cpp" />
     <ClCompile Include="Script\LuaScript.cpp" />
     <ClCompile Include="Script\ScriptManager.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -278,6 +277,7 @@
     </ClCompile>
     <ClCompile Include="SystemTime.cpp" />
     <ClCompile Include="Utility\FileUtility.cpp" />
+    <ClCompile Include="Utility\MPointer.cpp" />
     <ClCompile Include="Utility\Utility.cpp" />
     <ClCompile Include="WellPlayMain.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>

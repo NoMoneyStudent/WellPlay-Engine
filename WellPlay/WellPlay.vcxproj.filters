@@ -201,9 +201,6 @@
     <ClInclude Include="Resource\Serialize.h">
       <Filter>FileOperation</Filter>
     </ClInclude>
-    <ClInclude Include="Script\JSComponent.h">
-      <Filter>Engine\Script</Filter>
-    </ClInclude>
     <ClInclude Include="Script\LuaScript.h">
       <Filter>Engine\Script</Filter>
     </ClInclude>
@@ -224,6 +221,9 @@
     </ClInclude>
     <ClInclude Include="SettingVar.h">
       <Filter>引擎参数设置</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\MPointer.h">
+      <Filter>FileOperation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +356,6 @@
     <ClCompile Include="Resource\Serialize.cpp">
       <Filter>FileOperation</Filter>
     </ClCompile>
-    <ClCompile Include="Script\JSComponent.cpp">
-      <Filter>Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="Script\LuaScript.cpp">
       <Filter>Engine\Script</Filter>
     </ClCompile>
@@ -373,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="SettingVar.cpp">
       <Filter>引擎参数设置</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\MPointer.cpp">
+      <Filter>FileOperation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

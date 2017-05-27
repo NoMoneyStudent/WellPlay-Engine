@@ -98,7 +98,10 @@
     <CustomBuild Include="Control\settingfloat.ui">
       <Filter>窗口布局</Filter>
     </CustomBuild>
-    <CustomBuild Include="Control\settingfloat.h">
+    <CustomBuild Include="SettingWrapper.hpp">
+      <Filter>组件控件\变量设置控件</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Control\settingarithmetic.h">
       <Filter>组件控件\变量设置控件</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -129,9 +132,6 @@
     </ClInclude>
     <ClInclude Include="EditorUtility.h">
       <Filter>main</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingWrapper.hpp">
-      <Filter>组件控件\变量设置控件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -234,20 +234,26 @@
     <ClCompile Include="GeneratedFiles\Release\moc_settingwnd.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Control\settingfloat.cpp">
-      <Filter>组件控件\变量设置控件</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_settingfloat.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_settingfloat.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="EditorUtility.cpp">
       <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="SettingWrapper.cpp">
       <Filter>组件控件\变量设置控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SettingWrapper.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SettingWrapper.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\settingarithmetic.cpp">
+      <Filter>组件控件\变量设置控件</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settingarithmetic.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settingarithmetic.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

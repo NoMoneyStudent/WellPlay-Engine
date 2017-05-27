@@ -24,6 +24,7 @@ public:
 	{
 		m_OnChanged = callback;
 	}
+
 protected:
 	void OnChanged()
 	{
@@ -40,10 +41,7 @@ template <typename DataType, typename Enable = void>
 class SettingVar :public SettingBase
 {
 private:
-	SettingVar()
-	{
-		assert(false);
-	}
+	SettingVar();
 };
 
 // 整数和浮点数类型
@@ -75,6 +73,9 @@ public:
 	}
 	operator DataType() const { return m_data; }
 
+	DataType GetMin()const { return m_min; };
+	DataType GetMax()const { return m_max; };
+    
 private:
 	DataType m_min;
 	DataType m_max;
@@ -113,10 +114,11 @@ private:
 	DataType m_data;
 	std::vector<std::wstring> m_list;
 };
+#include "Utility\MPointer.h"
 
-//指针类型
+//MReference类型 for example,SettingVar<MReference<GameObject>>
 template <typename DataType>
-class SettingVar<DataType, typename std::enable_if<std::is_pointer<DataType>::value>::type>
+class SettingVar<DataType, typename std::enable_if<std::is_base_of<ReferenceBase,DataType>::value>::type>
 	:public SettingBase
 {
 	RTTR_ENABLE(SettingBase)
@@ -141,14 +143,16 @@ public:
 		return !m_data.expired();
 	}
 
-	operator DataType*() const
+	using type = typename DataType::type;
+
+	operator type&() const
 	{
-		assert(!m_data.expired());
-		return m_data.lock().get();
+		assert(!m_data);
+		return m_data;
 	}
 
 private:
-	std::weak_ptr<DataType> m_data;
+	DataType m_data;
 };
 
 //宽字符串
@@ -197,7 +201,7 @@ public:
 		return *this;
 	}
 	operator bool() const { return m_data; }
-
+	
 private:
 	bool m_data;
 };

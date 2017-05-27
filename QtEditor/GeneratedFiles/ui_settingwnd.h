@@ -15,7 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -26,7 +26,7 @@ class Ui_SettingWnd
 public:
     QWidget *dockWidgetContents;
     QVBoxLayout *verticalLayout;
-    QTreeWidget *treeWidget;
+    QTreeView *treeView;
 
     void setupUi(QDockWidget *SettingWnd)
     {
@@ -36,15 +36,17 @@ public:
         dockWidgetContents = new QWidget();
         dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
         verticalLayout = new QVBoxLayout(dockWidgetContents);
+        verticalLayout->setSpacing(0);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        verticalLayout->setContentsMargins(11, -1, -1, -1);
-        treeWidget = new QTreeWidget(dockWidgetContents);
-        QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem(treeWidget);
-        new QTreeWidgetItem(__qtreewidgetitem);
-        treeWidget->setObjectName(QStringLiteral("treeWidget"));
-        treeWidget->header()->setVisible(false);
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        treeView = new QTreeView(dockWidgetContents);
+        treeView->setObjectName(QStringLiteral("treeView"));
+        treeView->setFrameShape(QFrame::NoFrame);
+        treeView->setFrameShadow(QFrame::Plain);
+        treeView->setProperty("showDropIndicator", QVariant(false));
+        treeView->setUniformRowHeights(true);
 
-        verticalLayout->addWidget(treeWidget);
+        verticalLayout->addWidget(treeView);
 
         SettingWnd->setWidget(dockWidgetContents);
 
@@ -56,17 +58,6 @@ public:
     void retranslateUi(QDockWidget *SettingWnd)
     {
         SettingWnd->setWindowTitle(QApplication::translate("SettingWnd", "\350\256\276\347\275\256", Q_NULLPTR));
-        QTreeWidgetItem *___qtreewidgetitem = treeWidget->headerItem();
-        ___qtreewidgetitem->setText(0, QApplication::translate("SettingWnd", "1", Q_NULLPTR));
-
-        const bool __sortingEnabled = treeWidget->isSortingEnabled();
-        treeWidget->setSortingEnabled(false);
-        QTreeWidgetItem *___qtreewidgetitem1 = treeWidget->topLevelItem(0);
-        ___qtreewidgetitem1->setText(0, QApplication::translate("SettingWnd", "\351\235\231\346\200\201\346\265\213\350\257\225", Q_NULLPTR));
-        QTreeWidgetItem *___qtreewidgetitem2 = ___qtreewidgetitem1->child(0);
-        ___qtreewidgetitem2->setText(0, QApplication::translate("SettingWnd", "\345\221\265\345\221\265", Q_NULLPTR));
-        treeWidget->setSortingEnabled(__sortingEnabled);
-
     } // retranslateUi
 
 };
